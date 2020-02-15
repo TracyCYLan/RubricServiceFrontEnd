@@ -1,15 +1,20 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Rating from '../RatingEdition';
+// import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table';
 class EditCriterionComponent extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state ={
+        this.state = {
             id: '',
-            name:'',
-            description:'',
-            message:''
+            name: '',
+            description: '',
+            message: '',
+            ratings:[]
         }
         this.saveCriterion = this.saveCriterion.bind(this);
         this.loadCriterion = this.loadCriterion.bind(this);
@@ -24,9 +29,10 @@ class EditCriterionComponent extends Component {
             .then((res) => {
                 let criterion = res.data;
                 this.setState({
-                id: criterion.id,
-                name: criterion.name,
-                description: criterion.description
+                    id: criterion.id,
+                    name: criterion.name,
+                    description: criterion.description,
+                    ratings: criterion.ratings
                 })
             });
     }
@@ -36,10 +42,10 @@ class EditCriterionComponent extends Component {
 
     saveCriterion = (e) => {
         e.preventDefault();
-        let criterion = {id: this.state.id, name:this.state.name,description:this.state.description};
+        let criterion = { id: this.state.id, name: this.state.name, description: this.state.description };
         ApiService.editCriterion(criterion)
             .then(res => {
-                this.setState({message : 'Criterion updated successfully.'});
+                this.setState({ message: 'Criterion updated successfully.' });
                 this.props.history.push('/criteria');
             });
     }
@@ -49,17 +55,32 @@ class EditCriterionComponent extends Component {
             <div>
                 <h2 className="text-center">Edit Criterion</h2>
                 <form>
-
-                    <div className="form-group">
-                        <label>Name:</label>
-                        <input type="text" placeholder="name" name="name" className="form-control" value={this.state.name} onChange={this.onChange}/>
-                    </div>
-
-                    <div className="form-group">
-                        <label>Description:</label>
-                        <input placeholder="description" name="description" className="form-control" value={this.state.description} onChange={this.onChange}/>
-                    </div>
-
+                    <Table responsive="lg" hover="true" >
+                        <tbody>
+                            <tr>
+                                <th>Name</th>
+                                <td><input type="text" placeholder="name" name="name" className="form-control" value={this.state.name} onChange={this.onChange} /></td>
+                            </tr>
+                            {
+                                <tr>
+                                    <th>Description</th>
+                                    <td><input placeholder="description" name="description" className="form-control" value={this.state.description} onChange={this.onChange} /></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </Table>
+                    {
+                    <Container>
+                        <Row>
+                            {
+                                this.state.ratings.map(
+                                    rating =>
+                                        <Rating key={rating.id} value={rating.value} index={rating.id}>{rating.description}</Rating>
+                                )
+                            }
+                        </Row>
+                    </Container>
+                    }
                     <button className="btn btn-success" onClick={this.saveCriterion}>Save</button>
                 </form>
             </div>

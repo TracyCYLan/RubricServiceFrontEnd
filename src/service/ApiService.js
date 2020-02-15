@@ -36,12 +36,25 @@ class ApiService {
         return axios.delete(API_BASE_URL + '/criterion/delete/' + criterionId);
     }
 
-    addCriterion(criterion) {
-        return axios.post(""+API_BASE_URL+'/criterion', criterion);
+    addCriterion(criterion,ratings) {
+        return axios.post(""+API_BASE_URL+'/criterion', criterion).then(response => {
+            ratings.map(
+                rating =>
+                {
+                    const newRating = {description:rating.desc,value:rating.value}
+                    this.addRating(newRating,response.data)
+                }
+            ) 
+          });
+           
+        
     }
 
     editCriterion(criterion) {
         return axios.patch(API_BASE_URL + '/criterion/' + criterion.id, criterion);
+    }
+    addRating(rating,criterionId){
+        return axios.post(API_BASE_URL+'/criterion/'+criterionId+'/rating',rating);
     }
 }
 

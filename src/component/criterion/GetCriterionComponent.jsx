@@ -1,17 +1,23 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Rating from '../RatingView';
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 class GetCriterionComponent extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state ={
+        this.state = {
             id: '',
-            name:'',
-            description:'',
-            message:''
+            name: '',
+            description: '',
+            ratings: [],
+            message: ''
         }
         this.loadCriterion = this.loadCriterion.bind(this);
+        this.editCriterion = this.editCriterion.bind(this);
     }
 
     componentDidMount() {
@@ -23,13 +29,17 @@ class GetCriterionComponent extends Component {
             .then((res) => {
                 let criterion = res.data;
                 this.setState({
-                id: criterion.id,
-                name: criterion.name,
-                description: criterion.description
+                    id: criterion.id,
+                    name: criterion.name,
+                    description: criterion.description,
+                    ratings: criterion.ratings
                 })
             });
     }
-
+    editCriterion(id) {
+        window.localStorage.setItem("criterionId", id);
+        this.props.history.push('/edit-criterion');
+    }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
@@ -37,27 +47,34 @@ class GetCriterionComponent extends Component {
     render() {
         return (
             <div>
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th className="hidden">Id</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
+                <h2 className="text-center">View Criterion</h2>
+                <div className="text-right"><Button variant="info" onClick={() => this.editCriterion(this.state.id)}>Edit</Button></div>
+                <Table responsive="lg" hover="true" >
                     <tbody>
+                        <tr>
+                            <th>Name</th>
+                            <td>{this.state.name}</td>
+                        </tr>
                         {
-                                    <tr key={this.state.id}>
-                                        <td>{this.state.name}</td>
-                                        <td>{this.state.description}</td>
-                                        <td>
-                                            <button className="btn btn-success" onClick={() => this.deleteCrtierion(this.state.id)}> Delete</button>
-                                            <button className="btn btn-success" onClick={() => this.editCriterion(this.state.id)} style={{ marginLeft: '20px' }}> Edit</button>
-                                        </td>
-                                    </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td>{this.state.description}</td>
+                            </tr>
                         }
                     </tbody>
-                </table>
+                </Table>
+                {
+                    <Container>
+                        <Row>
+                            {
+                                this.state.ratings.map(
+                                    rating =>
+                                        <Rating key={rating.id} value={rating.value} index={rating.id}>{rating.description}</Rating>
+                                )
+                            }
+                        </Row>
+                    </Container>
+                }
 
             </div>
         );

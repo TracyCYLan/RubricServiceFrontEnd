@@ -11,7 +11,6 @@ class ListCriterionComponent extends Component {
             message: null
         }
         this.deleteCriterion = this.deleteCriterion.bind(this);
-        this.editCriterion = this.editCriterion.bind(this);
         this.addCriterion = this.addCriterion.bind(this);
         this.reloadCriterionList = this.reloadCriterionList.bind(this);
     }
@@ -36,11 +35,10 @@ class ListCriterionComponent extends Component {
 
     }
 
-    editCriterion(id) {
-        window.localStorage.setItem("criterionId", id);
-        this.props.history.push('/edit-criterion');
+    getCriterion(id){
+        window.localStorage.setItem("criterionId",id);
+        this.props.history.push('/criterion');
     }
-
     addCriterion() {
         window.localStorage.removeItem("criterionId");
         this.props.history.push('/add-criterion');
@@ -57,7 +55,7 @@ class ListCriterionComponent extends Component {
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
-                            <th>Edit</th>
+                            <th>View</th>
                             <th>Delete</th>
                         </tr>
                     </thead>
@@ -68,9 +66,8 @@ class ListCriterionComponent extends Component {
                                     <tr key={criterion.id}>
                                         <td>{criterion.name}</td>
                                         <td>{criterion.description}</td>
-                                        <td><Button variant="info" onClick={() => this.editCriterion(criterion.id)}> Edit</Button></td>
-                                        <td><Button variant="info" onClick={() => this.deleteCriterion(criterion.id)}> Delete</Button></td>
-                                        
+                                        <td><Button variant="info" onClick={() => this.getCriterion(criterion.id)}>View</Button></td>
+                                        <td><Button variant="info" onClick={() => this.deleteCriterion(criterion.id)}>Delete</Button></td>
                                     </tr>
                             )
                         }
