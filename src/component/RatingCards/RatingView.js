@@ -7,7 +7,7 @@ class RatingView extends Component {
         super(props);
         this.state = {
             index: props.index,
-            desc: props.children,
+            description: props.children,
             value: props.value,
             delete: props.delete,
             edit: props.edit
@@ -25,7 +25,7 @@ class RatingView extends Component {
             <Col lg>
                 <Card border="info">
                     <Card.Header as="h5" className="text-center">Rating</Card.Header>
-                    <Card.Text>{this.state.desc}</Card.Text>
+                    <Card.Text>{this.state.description}</Card.Text>
                     <Card.Footer className="text-center">{this.state.value}</Card.Footer>
                 </Card>
             </Col>

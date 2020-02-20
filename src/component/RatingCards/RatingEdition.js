@@ -8,7 +8,7 @@ class RatingEdition extends Component {
         super(props);
         this.state = {
             index: props.index,
-            desc: props.children,
+            description: props.children,
             value: props.value,
             delete: props.delete,
             edit: props.edit
@@ -27,7 +27,7 @@ class RatingEdition extends Component {
                 <Card>
                     <form>
                         <Card.Header className="text-right"><Button className="btn btn-warning" onClick={() => this.state.delete(this.state.index)}>Delete</Button></Card.Header>
-                        <Card.Text><textarea placeholder="description" name="desc" className="form-control" value={this.state.desc} onChange={this.onChange} /></Card.Text>
+                        <Card.Text><textarea placeholder="description" name="description" className="form-control" value={this.state.description} onChange={this.onChange} /></Card.Text>
                         <Card.Text><input type="text" placeholder="value" name="value" className="form-control" value={this.state.value} onChange={this.onChange} /></Card.Text>
                     </form>
                 </Card>

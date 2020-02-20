@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Rating from '../RatingEdition';
+import Rating from '../RatingCards/RatingEdition';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import uniqueId from 'react-html-id';
@@ -12,14 +12,15 @@ class AddCriterionComponent extends Component {
         super(props);
         uniqueId.enableUniqueIds(this);
         this.state = {
-            name: '',
-            description: '',
-            count: 0,
-            ratings: [{ id: this.nextUniqueId(), desc: 'Exceed Expectations', value: 5 },
-            { id: this.nextUniqueId(), desc: 'Meet Expectations', value: 3 },
-            { id: this.nextUniqueId(), desc: 'Does not Meet Expectations', value: 0 }],
+            name: this.props.location.state.name,
+            description: this.props.location.state.description,
+            count: 0, //counting for ratingId
+            publishDate: this.props.location.state.publishDate,
+            tags: this.props.location.state.tags,
+            ratings: this.props.location.state.ratings,
             message: null
         }
+
         this.saveCriterion = this.saveCriterion.bind(this);
         this.deleteRating = this.deleteRating.bind(this);
         this.addRating = this.addRating.bind(this);
@@ -27,9 +28,10 @@ class AddCriterionComponent extends Component {
     }
     saveCriterion = (e) => {
         e.preventDefault();
-        let criterion = { name: this.state.name, description: this.state.description };
+        let criterion = { name: this.state.name, description: this.state.description, publishDate: this.state.publishDate };
         let ratings = this.state.ratings;
-        ApiService.addCriterion(criterion, ratings)
+        let tags = this.state.tags;
+        ApiService.addCriterion(criterion, ratings, tags)
             .then(res => {
                 this.setState({ message: 'Criterion added successfully.' });
                 this.props.history.push('/criteria');
@@ -40,7 +42,7 @@ class AddCriterionComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
     addRating = () => {
         var ratings = this.state.ratings;
-        ratings.push({ id: this.state.count, desc: '', value: '', delete: this.deleteRating });
+        ratings.push({ id: this.state.count, description: '', value: '', delete: this.deleteRating });
         this.setState({ count: this.state.count + 1 });
         this.setState({
             ratings: ratings
@@ -74,12 +76,14 @@ class AddCriterionComponent extends Component {
                                 <th>Name</th>
                                 <td><input type="text" placeholder="name" name="name" className="form-control" value={this.state.name} onChange={this.onChange} /></td>
                             </tr>
-                            {
-                                <tr>
-                                    <th>Description</th>
-                                    <td><textarea placeholder="description" name="description" className="form-control" value={this.state.description} onChange={this.onChange} /></td>
-                                </tr>
-                            }
+                            <tr>
+                                <th>Description</th>
+                                <td><textarea placeholder="description" name="description" className="form-control" value={this.state.description} onChange={this.onChange} /></td>
+                            </tr>
+                            <tr>
+                                <th>Publish Date</th>
+                                <td><input type="date" name="publishDate" className="form-control" value={this.state.publishDate} onChange={this.onChange} /></td>
+                            </tr>
                         </tbody>
                     </Table>
                     <Button onClick={this.addRating}>Add new Rating</Button>
@@ -89,7 +93,7 @@ class AddCriterionComponent extends Component {
                                 {
                                     this.state.ratings.map(
                                         rating =>
-                                            <Rating key={rating.id} value={rating.value} index={rating.id} delete={this.deleteRating} edit={this.editRating}>{rating.desc}</Rating>
+                                            <Rating key={rating.id} value={rating.value} index={rating.id} delete={this.deleteRating} edit={this.editRating}>{rating.description}</Rating>
                                     )
                                 }
                             </Row>
