@@ -13,9 +13,10 @@ class EditCriterionComponent extends Component {
             id: '',
             name: '',
             description: '',
-            count:0,
+            ratingCount:0,
             message: '',
-            ratings: []
+            ratings: [],
+            tags:[]
         }
         this.saveCriterion = this.saveCriterion.bind(this);
         this.loadCriterion = this.loadCriterion.bind(this);
@@ -33,7 +34,8 @@ class EditCriterionComponent extends Component {
                     id: criterion.id,
                     name: criterion.name,
                     description: criterion.description,
-                    ratings: criterion.ratings
+                    ratings: criterion.ratings,
+                    tags:criterion.tags
                 })
             });
     }
@@ -43,8 +45,8 @@ class EditCriterionComponent extends Component {
 
     addRating = () => {
         var ratings = this.state.ratings;
-        ratings.push({ id: this.state.count, description: '', value: '', delete: this.deleteRating });
-        this.setState({ count: this.state.count + 1 });
+        ratings.push({ id: this.state.ratingCount, description: '', value: '', delete: this.deleteRating });
+        this.setState({ ratingCount: this.state.ratingCount + 1 });
         this.setState({
             ratings: ratings
         });
@@ -66,11 +68,37 @@ class EditCriterionComponent extends Component {
             ratings: this.state.ratings.filter(rating => rating.id !== index)
         })
     }
+    addTag = () => {
+        var tags = this.state.tags;
+        tags.push({ id: this.state.tagCount, name: '' });
+        this.setState({ tagCount: this.state.tagCount + 1 });
+        this.setState({
+            tags: tags
+        });
+    }
+    editTag = (e, index) => {
+        this.setState({ [e.target.name]: e.target.value });
+        var tags = this.state.tags;
+        tags.map(
+            tag => {
+                if (tag["id"] === index) {
+                    tag["name"] = e.target.value;
+                }
+                return tag;
+            }
+        )
+        this.setState({ tags: tags });
 
+    }
+    deleteTag = (index) => {
+        this.setState({
+            tags: this.state.tags.filter(tag => tag.id !== index)
+        })
+    }
     saveCriterion = (e) => {
         e.preventDefault();
         let criterion = { id: this.state.id, name: this.state.name, description: this.state.description};
-        ApiService.editCriterion(criterion,this.state.ratings)
+        ApiService.editCriterion(criterion,this.state.ratings,this.state.tags)
             .then(res => {
                 this.setState({ message: 'Criterion updated successfully.' });
                 this.props.history.push('/criteria');
@@ -94,6 +122,20 @@ class EditCriterionComponent extends Component {
                                     <td><input placeholder="description" name="description" className="form-control" value={this.state.description} onChange={this.onChange} /></td>
                                 </tr>
                             }
+                            <tr>
+                                <th>Tags: <Button variant="info" onClick={this.addTag}>Add Tag</Button> </th>
+                                <Container>
+                                    {
+                                        this.state.tags.map(
+                                            tag =>
+                                                <Row>
+                                                    <td><input type="text" name="tagname" className="form-control" value={tag.name} onChange={(e) => {this.editTag(e, tag.id)}} /></td>
+                                                    <td><Button size="sm" variant="warning" onClick={() => this.deleteTag(tag.id)}>Remove</Button></td>
+                                                </Row>
+                                        )
+                                    }
+                                </Container>
+                            </tr>
                         </tbody>
                     </Table>
                     <Button onClick={this.addRating}>Add new Rating</Button>

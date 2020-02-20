@@ -43,21 +43,35 @@ class ApiService {
         return axios.delete(API_BASE_URL + '/criterion/delete/' + criterionId);
     }
 
-    //need to add tag api later
     addCriterion(criterion,ratings,tags) {
         return axios.post(""+API_BASE_URL+'/criterion', criterion).then(response => {
+            tags.map(
+                tag =>
+                {
+                    const newTag = {name:tag.name};
+                    return this.addTag(newTag,response.data);
+                }
+            ) 
             ratings.map(
                 rating =>
                 {
                     const newRating = {description:rating.description,value:rating.value};
                     return this.addRating(newRating,response.data);
                 }
-            ) 
-          });
+            )
+          })
+          
     }
 
-    editCriterion(criterion,ratings) {
+    editCriterion(criterion,ratings,tags) {
         return axios.patch(API_BASE_URL + '/criterion/' + criterion.id, criterion).then(response => {
+            tags.map(
+                tag =>
+                {
+                    const newTag = {name:tag.name};
+                    return this.addTag(newTag,criterion.id);
+                }
+            ) 
             ratings.map(
                 rating =>
                 {
@@ -69,6 +83,10 @@ class ApiService {
     }
     addRating(rating,criterionId){
         return axios.post(API_BASE_URL+'/criterion/'+criterionId+'/rating',rating);
+    }
+
+    addTag(tag,criterionId){
+        return axios.post(API_BASE_URL+'/criterion/'+criterionId+'/tag',tag);
     }
 }
 

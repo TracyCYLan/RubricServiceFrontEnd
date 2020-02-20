@@ -14,10 +14,11 @@ class AddCriterionComponent extends Component {
         this.state = {
             name: this.props.location.state.name,
             description: this.props.location.state.description,
-            count: 0, //counting for ratingId
+            ratingCount: 0, //counting for ratingId
+            ratings: this.props.location.state.ratings,
             publishDate: this.props.location.state.publishDate,
             tags: this.props.location.state.tags,
-            ratings: this.props.location.state.ratings,
+            tagCount: 1000,//counting for tagId
             message: null
         }
 
@@ -25,6 +26,9 @@ class AddCriterionComponent extends Component {
         this.deleteRating = this.deleteRating.bind(this);
         this.addRating = this.addRating.bind(this);
         this.editRating = this.editRating.bind(this);
+        this.addTag = this.addTag.bind(this);
+        this.deleteTag = this.deleteTag.bind(this);
+        this.editTag = this.editTag.bind(this);
     }
     saveCriterion = (e) => {
         e.preventDefault();
@@ -42,8 +46,8 @@ class AddCriterionComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
     addRating = () => {
         var ratings = this.state.ratings;
-        ratings.push({ id: this.state.count, description: '', value: '', delete: this.deleteRating });
-        this.setState({ count: this.state.count + 1 });
+        ratings.push({ id: this.state.ratingCount, description: '', value: '' });
+        this.setState({ ratingCount: this.state.ratingCount + 1 });
         this.setState({
             ratings: ratings
         });
@@ -65,6 +69,33 @@ class AddCriterionComponent extends Component {
             ratings: this.state.ratings.filter(rating => rating.id !== index)
         })
     }
+    addTag = () => {
+        var tags = this.state.tags;
+        tags.push({ id: this.state.tagCount, name: '' });
+        this.setState({ tagCount: this.state.tagCount + 1 });
+        this.setState({
+            tags: tags
+        });
+    }
+    editTag = (e, index) => {
+        this.setState({ [e.target.name]: e.target.value });
+        var tags = this.state.tags;
+        tags.map(
+            tag => {
+                if (tag["id"] === index) {
+                    tag["name"] = e.target.value;
+                }
+                return tag;
+            }
+        )
+        this.setState({ tags: tags });
+
+    }
+    deleteTag = (index) => {
+        this.setState({
+            tags: this.state.tags.filter(tag => tag.id !== index)
+        })
+    }
     render() {
         return (
             <div>
@@ -83,6 +114,20 @@ class AddCriterionComponent extends Component {
                             <tr>
                                 <th>Publish Date</th>
                                 <td><input type="date" name="publishDate" className="form-control" value={this.state.publishDate} onChange={this.onChange} /></td>
+                            </tr>
+                            <tr>
+                                <th>Tags: <Button variant="info" onClick={this.addTag}>Add Tag</Button> </th>
+                                <Container>
+                                    {
+                                        this.state.tags.map(
+                                            tag =>
+                                                <Row>
+                                                    <td><input type="text" name="tagname" className="form-control" value={tag.name} onChange={(e) => {this.editTag(e, tag.id)}} /></td>
+                                                    <td><Button size="sm" variant="warning" onClick={() => this.deleteTag(tag.id)}>Remove</Button></td>
+                                                </Row>
+                                        )
+                                    }
+                                </Container>
                             </tr>
                         </tbody>
                     </Table>
