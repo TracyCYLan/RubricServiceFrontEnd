@@ -52,7 +52,7 @@ class ListCriterionComponent extends Component {
                     { id: 'default-id-3', description: 'Does not Meet Expectations', value: 0 }],
                     published: '',
                     publishDate:'',
-                    tags:[]
+                    tags:[{id:'default-id-4',name:''}]
                 }
             }
         );

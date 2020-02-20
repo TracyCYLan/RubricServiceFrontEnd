@@ -16,8 +16,8 @@ class GetCriterionComponent extends Component {
             ratings: [],
             message: '',
             published: '',
-            publishDate:'',
-            tags:[]
+            publishDate: '',
+            tags: []
         }
         this.loadCriterion = this.loadCriterion.bind(this);
         this.copyneditCriterion = this.copyneditCriterion.bind(this);
@@ -37,8 +37,8 @@ class GetCriterionComponent extends Component {
                     description: criterion.description,
                     ratings: criterion.ratings,
                     published: criterion.published,
-                    publishDate:criterion.publishDate,
-                    tags:criterion.tags
+                    publishDate: criterion.publishDate,
+                    tags: criterion.tags
                 })
             });
     }
@@ -48,13 +48,13 @@ class GetCriterionComponent extends Component {
         this.props.history.push(
             {
                 pathname: '/add-criterion',
-                state:{
-                    name:this.state.name,
+                state: {
+                    name: this.state.name+"_copy",
                     description: this.state.description,
                     ratings: this.state.ratings,
                     published: this.state.published,
-                    publishDate:this.state.publishDate,
-                    tags:this.state.tags
+                    publishDate: this.state.publishDate,
+                    tags: this.state.tags
                 }
             }
         );
@@ -85,6 +85,15 @@ class GetCriterionComponent extends Component {
                                 <td>{this.state.description}</td>
                             </tr>
                         }
+                        <tr>
+                            <th>Tags: </th>
+                                {
+                                    this.state.tags.map(
+                                        tag =>
+                                                <td>{tag.name}</td>
+                                    )
+                                }
+                        </tr>
                     </tbody>
                 </Table>
                 {
