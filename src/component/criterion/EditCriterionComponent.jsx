@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Rating from '../RatingEdition';
-// import Button from 'react-bootstrap/Button';
+import Rating from '../RatingCards/RatingEdition';
+import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 class EditCriterionComponent extends Component {
 
@@ -13,8 +13,9 @@ class EditCriterionComponent extends Component {
             id: '',
             name: '',
             description: '',
+            count:0,
             message: '',
-            ratings:[]
+            ratings: []
         }
         this.saveCriterion = this.saveCriterion.bind(this);
         this.loadCriterion = this.loadCriterion.bind(this);
@@ -40,10 +41,36 @@ class EditCriterionComponent extends Component {
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
+    addRating = () => {
+        var ratings = this.state.ratings;
+        ratings.push({ id: this.state.count, description: '', value: '', delete: this.deleteRating });
+        this.setState({ count: this.state.count + 1 });
+        this.setState({
+            ratings: ratings
+        });
+    }
+    editRating = (input_name, input_value, index) => {
+        var ratings = this.state.ratings;
+        ratings.map(
+            rating => {
+                if (rating["id"] === index) {
+                    rating[input_name] = input_value;
+                }
+                return rating;
+            }
+        )
+        this.setState({ ratings: ratings });
+    }
+    deleteRating = (index) => {
+        this.setState({
+            ratings: this.state.ratings.filter(rating => rating.id !== index)
+        })
+    }
+
     saveCriterion = (e) => {
         e.preventDefault();
-        let criterion = { id: this.state.id, name: this.state.name, description: this.state.description };
-        ApiService.editCriterion(criterion)
+        let criterion = { id: this.state.id, name: this.state.name, description: this.state.description};
+        ApiService.editCriterion(criterion,this.state.ratings)
             .then(res => {
                 this.setState({ message: 'Criterion updated successfully.' });
                 this.props.history.push('/criteria');
@@ -69,17 +96,18 @@ class EditCriterionComponent extends Component {
                             }
                         </tbody>
                     </Table>
+                    <Button onClick={this.addRating}>Add new Rating</Button>
                     {
-                    <Container>
-                        <Row>
-                            {
-                                this.state.ratings.map(
-                                    rating =>
-                                        <Rating key={rating.id} value={rating.value} index={rating.id}>{rating.description}</Rating>
-                                )
-                            }
-                        </Row>
-                    </Container>
+                        <Container>
+                            <Row>
+                                {
+                                    this.state.ratings.map(
+                                        rating =>
+                                            <Rating key={rating.id} value={rating.value} index={rating.id} edit={this.editRating} delete={this.deleteRating}>{rating.description}</Rating>
+                                    )
+                                }
+                            </Row>
+                        </Container>
                     }
                     <button className="btn btn-success" onClick={this.saveCriterion}>Save</button>
                 </form>

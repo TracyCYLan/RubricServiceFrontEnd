@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Rating from '../RatingView';
+import Rating from '../RatingCards/RatingView';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 class GetCriterionComponent extends Component {
@@ -14,10 +14,13 @@ class GetCriterionComponent extends Component {
             name: '',
             description: '',
             ratings: [],
-            message: ''
+            message: '',
+            published: '',
+            publishDate:'',
+            tags:[]
         }
         this.loadCriterion = this.loadCriterion.bind(this);
-        this.editCriterion = this.editCriterion.bind(this);
+        this.copyneditCriterion = this.copyneditCriterion.bind(this);
     }
 
     componentDidMount() {
@@ -32,9 +35,29 @@ class GetCriterionComponent extends Component {
                     id: criterion.id,
                     name: criterion.name,
                     description: criterion.description,
-                    ratings: criterion.ratings
+                    ratings: criterion.ratings,
+                    published: criterion.published,
+                    publishDate:criterion.publishDate,
+                    tags:criterion.tags
                 })
             });
+    }
+    copyneditCriterion(id) {
+        window.localStorage.setItem("criterionId", id);
+        //send exactly the same content to add-criterion
+        this.props.history.push(
+            {
+                pathname: '/add-criterion',
+                state:{
+                    name:this.state.name,
+                    description: this.state.description,
+                    ratings: this.state.ratings,
+                    published: this.state.published,
+                    publishDate:this.state.publishDate,
+                    tags:this.state.tags
+                }
+            }
+        );
     }
     editCriterion(id) {
         window.localStorage.setItem("criterionId", id);
@@ -48,7 +71,8 @@ class GetCriterionComponent extends Component {
         return (
             <div>
                 <h2 className="text-center">View Criterion</h2>
-                <div className="text-right"><Button variant="info" onClick={() => this.editCriterion(this.state.id)}>Edit</Button></div>
+                <div className="text-right"><Button variant="info" hidden={!this.state.published} onClick={() => this.copyneditCriterion(this.state.id)}>Copy</Button></div>
+                <div className="text-right"><Button variant="info" hidden={this.state.published} onClick={() => this.editCriterion(this.state.id)}>Edit</Button></div>
                 <Table responsive="lg" hover="true" >
                     <tbody>
                         <tr>

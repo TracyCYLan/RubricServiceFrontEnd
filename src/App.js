@@ -2,10 +2,12 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Layout from "./component/Layout";
 import ListRubricComponent from "./component/rubric/ListRubricComponent";
+// import SearchRubricComponent from "./component/criterion/SearchRubricComponent";
 import AddRubricComponent from "./component/rubric/AddRubricComponent";
 import EditRubricComponent from "./component/rubric/EditRubricComponent";
 import ListCriteriaComponent from "./component/criterion/ListCriterionComponent";
 import GetCriterionComponent from "./component/criterion/GetCriterionComponent";
+import SearchCriterionComponent from "./component/criterion/SearchCriterionComponent";
 import AddCriteriaComponent from "./component/criterion/AddCriterionComponent";
 import EditCriteriaComponent from "./component/criterion/EditCriterionComponent";
 import NavBar from "./component/NavigationBar";
@@ -23,7 +25,8 @@ function App() {
                         <Route path="/criteria" exact component={ListCriteriaComponent} />
                         <Route path="/add-criterion" component={AddCriteriaComponent} />
                         <Route path="/edit-criterion" component={EditCriteriaComponent} />
-                        <Route path="/criterion" component={GetCriterionComponent} />
+                        <Route path="/criterion" exact component={GetCriterionComponent} />
+                        <Route path="/criterion/search" component={SearchCriterionComponent} />
                     </Switch>
                 </Layout>
             </Router>
