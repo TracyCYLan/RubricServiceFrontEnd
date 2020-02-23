@@ -49,7 +49,7 @@ class GetCriterionComponent extends Component {
             {
                 pathname: '/add-criterion',
                 state: {
-                    name: this.state.name+"_copy",
+                    name: this.state.name + "_copy",
                     description: this.state.description,
                     ratings: this.state.ratings,
                     published: this.state.published,
@@ -87,12 +87,17 @@ class GetCriterionComponent extends Component {
                         }
                         <tr>
                             <th>Tags: </th>
-                                {
-                                    this.state.tags.map(
-                                        tag =>
-                                                <td>{tag.name}</td>
-                                    )
-                                }
+                            <td>
+                            {
+                                this.state.tags.map(
+                                    function(tag){
+                                       return ([<Button variant="primary" 
+                                       size="sm" disabled>
+                                       {tag.name}</Button>,' '])
+                                    }
+                                )
+                            }
+                            </td>
                         </tr>
                     </tbody>
                 </Table>
