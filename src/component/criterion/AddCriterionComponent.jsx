@@ -6,6 +6,8 @@ import Rating from '../RatingCards/RatingEdition';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import uniqueId from 'react-html-id';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 class AddCriterionComponent extends Component {
 
     constructor(props) {
@@ -19,9 +21,10 @@ class AddCriterionComponent extends Component {
             publishDate: this.props.location.state.publishDate,
             tags: this.props.location.state.tags,
             tagCount: 1000,//counting for tagId
+            hintTags: [],
             message: null
         }
-
+        this.loadHintTags = this.loadHintTags.bind(this);
         this.saveCriterion = this.saveCriterion.bind(this);
         this.deleteRating = this.deleteRating.bind(this);
         this.addRating = this.addRating.bind(this);
@@ -29,6 +32,17 @@ class AddCriterionComponent extends Component {
         this.addTag = this.addTag.bind(this);
         this.deleteTag = this.deleteTag.bind(this);
         this.editTag = this.editTag.bind(this);
+    }
+    componentDidMount() {
+        this.loadHintTags();
+    }
+    loadHintTags(){
+        ApiService.fetchTags()
+        .then((res) => {
+            this.setState({
+                hintTags: res.data
+            })
+        });
     }
     saveCriterion = (e) => {
         e.preventDefault();
@@ -77,19 +91,18 @@ class AddCriterionComponent extends Component {
             tags: tags
         });
     }
-    editTag = (e, index) => {
+    editTag = (e, index,value) => {
         this.setState({ [e.target.name]: e.target.value });
         var tags = this.state.tags;
         tags.map(
             tag => {
                 if (tag["id"] === index) {
-                    tag["name"] = e.target.value;
+                    tag["name"] = e.target.value||value;
                 }
                 return tag;
             }
         )
         this.setState({ tags: tags });
-
     }
     deleteTag = (index) => {
         this.setState({
@@ -122,7 +135,21 @@ class AddCriterionComponent extends Component {
                                         this.state.tags.map(
                                             tag =>
                                                 <Row>
-                                                    <td><input type="text" name="tagname" className="form-control" value={tag.name} onChange={(e) => {this.editTag(e, tag.id)}} /></td>
+                                                    <Autocomplete
+                                                        margin="normal"
+                                                        style={{ width: 300 }}
+                                                        name="tagname"
+                                                        freeSolo options={this.state.hintTags.map(tag=>tag.name)}
+                                                        onChange ={(e,value) =>{this.editTag(e,tag.id,value)}}
+                                                        renderInput={
+                                                            (params)=>(
+                                                                <TextField {...params} name="tagname"
+                                                                variant = "outlined" margin = "normal" value = {tag.name}
+                                                                onChange ={(e,value) =>{this.editTag(e,tag.id,value)}}
+                                                                fullWidth/>          
+                                                            )
+                                                        }
+                                                    />
                                                     <td><Button size="sm" variant="warning" onClick={() => this.deleteTag(tag.id)}>Remove</Button></td>
                                                 </Row>
                                         )

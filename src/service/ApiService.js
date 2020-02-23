@@ -88,6 +88,10 @@ class ApiService {
     addTag(tag,criterionId){
         return axios.post(API_BASE_URL+'/criterion/'+criterionId+'/tag',tag);
     }
+
+    fetchTags(){
+        return axios.get(API_BASE_URL+'/criterion/tag');
+    }
 }
 
 export default new ApiService();

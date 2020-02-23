@@ -5,6 +5,8 @@ import Row from 'react-bootstrap/Row';
 import Rating from '../RatingCards/RatingEdition';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 class EditCriterionComponent extends Component {
 
     constructor(props) {
@@ -13,13 +15,21 @@ class EditCriterionComponent extends Component {
             id: '',
             name: '',
             description: '',
-            ratingCount:0,
+            ratingCount: 0,
             message: '',
             ratings: [],
-            tags:[]
+            tags: [],
+            tagCount: 1000,//counting for tagId,
+            hintTags: []
         }
         this.saveCriterion = this.saveCriterion.bind(this);
         this.loadCriterion = this.loadCriterion.bind(this);
+        this.deleteRating = this.deleteRating.bind(this);
+        this.addRating = this.addRating.bind(this);
+        this.editRating = this.editRating.bind(this);
+        this.addTag = this.addTag.bind(this);
+        this.deleteTag = this.deleteTag.bind(this);
+        this.editTag = this.editTag.bind(this);
     }
 
     componentDidMount() {
@@ -35,7 +45,13 @@ class EditCriterionComponent extends Component {
                     name: criterion.name,
                     description: criterion.description,
                     ratings: criterion.ratings,
-                    tags:criterion.tags
+                    tags: criterion.tags
+                })
+            });
+        ApiService.fetchTags()
+            .then((res) => {
+                this.setState({
+                    hintTags: res.data
                 })
             });
     }
@@ -76,19 +92,18 @@ class EditCriterionComponent extends Component {
             tags: tags
         });
     }
-    editTag = (e, index) => {
+    editTag = (e, index, value) => {
         this.setState({ [e.target.name]: e.target.value });
         var tags = this.state.tags;
         tags.map(
             tag => {
                 if (tag["id"] === index) {
-                    tag["name"] = e.target.value;
+                    tag["name"] = e.target.value || value;
                 }
                 return tag;
             }
         )
         this.setState({ tags: tags });
-
     }
     deleteTag = (index) => {
         this.setState({
@@ -97,8 +112,8 @@ class EditCriterionComponent extends Component {
     }
     saveCriterion = (e) => {
         e.preventDefault();
-        let criterion = { id: this.state.id, name: this.state.name, description: this.state.description};
-        ApiService.editCriterion(criterion,this.state.ratings,this.state.tags)
+        let criterion = { id: this.state.id, name: this.state.name, description: this.state.description };
+        ApiService.editCriterion(criterion, this.state.ratings, this.state.tags)
             .then(res => {
                 this.setState({ message: 'Criterion updated successfully.' });
                 this.props.history.push('/criteria');
@@ -129,7 +144,22 @@ class EditCriterionComponent extends Component {
                                         this.state.tags.map(
                                             tag =>
                                                 <Row>
-                                                    <td><input type="text" name="tagname" className="form-control" value={tag.name} onChange={(e) => {this.editTag(e, tag.id)}} /></td>
+                                                    <Autocomplete
+                                                        margin="normal"
+                                                        style={{ width: 300 }}
+                                                        name="tagname"
+                                                        value={tag.name}
+                                                        freeSolo options={this.state.hintTags.map(tag => tag.name)}
+                                                        onChange={(e, value) => { this.editTag(e, tag.id, value) }}
+                                                        renderInput={
+                                                            (params) => (
+                                                                <TextField {...params} name="tagname"
+                                                                    variant="outlined" margin="normal" value={tag.name}
+                                                                    onChange={(e, value) => { this.editTag(e, tag.id, value) }}
+                                                                    fullWidth />
+                                                            )
+                                                        }
+                                                    />
                                                     <td><Button size="sm" variant="warning" onClick={() => this.deleteTag(tag.id)}>Remove</Button></td>
                                                 </Row>
                                         )
