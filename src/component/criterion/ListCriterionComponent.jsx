@@ -10,7 +10,6 @@ class ListCriterionComponent extends Component {
             criteria: [],
             message: null
         }
-        this.deleteCriterion = this.deleteCriterion.bind(this);
         this.addCriterion = this.addCriterion.bind(this);
         this.reloadCriterionList = this.reloadCriterionList.bind(this);
     }
@@ -26,14 +25,6 @@ class ListCriterionComponent extends Component {
             });
     }
 
-    deleteCriterion(criterionId) {
-        ApiService.deleteCriterion(criterionId)
-            .then(res => {
-                this.setState({ message: 'Criterion deleted successfully.' });
-                this.setState({ criteria: this.state.criteria.filter(c => c.id !== criterionId) });
-            })
-
-    }
 
     getCriterion(id){
         window.localStorage.setItem("criterionId",id);
@@ -65,17 +56,15 @@ class ListCriterionComponent extends Component {
     render() {
         return (
             <div>
-                <h2 className="text-center">All Criteria</h2>
-                <Button variant="light" onClick={() => this.addCriterion()}>Add Criterion</Button>
-                <Button variant="light" onClick={() => this.searchCriterion()}>Search Criterion</Button>
-                <Table responsive="lg" bg="gray" hover="true" bordered="true">
+                <h2 className="text-center" style={{ marginTop: '1rem'}}>All Criteria</h2>
+                <Button variant="outline-secondary" style={{marginLeft:'1rem'}} onClick={() => this.addCriterion()}>Add Criterion</Button> {' '}
+                <Button variant="outline-secondary" onClick={() => this.searchCriterion()}>Search Criterion</Button>
+                <Table className="mx-auto text-center" style={{ marginTop: '1rem', width: '95%' }} responsive="lg" hover="true" bordered="true">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Description</th>
                             <th>Publish</th>
                             <th>View</th>
-                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,10 +73,8 @@ class ListCriterionComponent extends Component {
                                 criterion =>
                                     <tr key={criterion.id}>
                                         <td>{criterion.name}</td>
-                                        <td>{criterion.description}</td>                                       
                                         <td>{criterion.published?"Yes":"No"}</td>
                                         <td><Button variant="info" onClick={() => this.getCriterion(criterion.id)}>View</Button></td>
-                                        <td><Button variant="info" onClick={() => this.deleteCriterion(criterion.id)}>Delete</Button></td>
                                     </tr>
                             )
                         }

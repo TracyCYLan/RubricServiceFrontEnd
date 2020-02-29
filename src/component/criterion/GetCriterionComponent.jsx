@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
+import { Button, Card, Badge, CardGroup } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingView';
-import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
 class GetCriterionComponent extends Component {
 
     constructor(props) {
@@ -21,6 +18,7 @@ class GetCriterionComponent extends Component {
         }
         this.loadCriterion = this.loadCriterion.bind(this);
         this.copyneditCriterion = this.copyneditCriterion.bind(this);
+        this.deleteCriterion = this.deleteCriterion.bind(this);
     }
 
     componentDidMount() {
@@ -54,7 +52,7 @@ class GetCriterionComponent extends Component {
                     ratings: this.state.ratings,
                     published: this.state.published,
                     publishDate: this.state.publishDate,
-                    tags: this.state.tags
+                    tags: this.state.tags.map(t => t.name)//send only string array
                 }
             }
         );
@@ -63,58 +61,47 @@ class GetCriterionComponent extends Component {
         window.localStorage.setItem("criterionId", id);
         this.props.history.push('/edit-criterion');
     }
+    deleteCriterion(id) {
+        ApiService.deleteCriterion(id)
+            .then(res => {
+                this.setState({ message: 'Criterion deleted successfully.' });
+                this.props.history.push('/criteria');
+            })
+    }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
-
     render() {
         return (
-            <div>
-                <h2 className="text-center">View Criterion</h2>
-                <div className="text-right"><Button variant="info" hidden={!this.state.published} onClick={() => this.copyneditCriterion(this.state.id)}>Copy</Button></div>
-                <div className="text-right"><Button variant="info" hidden={this.state.published} onClick={() => this.editCriterion(this.state.id)}>Edit</Button></div>
-                <Table responsive="lg" hover="true" >
-                    <tbody>
-                        <tr>
-                            <th>Name</th>
-                            <td>{this.state.name}</td>
-                        </tr>
+            <Card className="mx-auto" style={{ marginTop: '1rem', width: '95%' }}>
+                <Card.Body>
+                    <Card.Title as="h3">{this.state.name}
+                        <Button className="float-right" variant="outline-danger" hidden={this.state.published} onClick={() => this.deleteCriterion(this.state.id)} style={{marginLeft:'1rem'}}>Delete</Button>
+                        <Button className="float-right" variant="outline-secondary" hidden={!this.state.published} onClick={() => this.copyneditCriterion(this.state.id)} style={{marginLeft:'1rem'}}>Copy</Button>
+                        <Button className="float-right" variant="outline-secondary" hidden={this.state.published} onClick={() => this.editCriterion(this.state.id)} style={{marginLeft:'1rem'}}>Edit</Button>
+                    </Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">{this.state.description}</Card.Subtitle>
+                    <Card.Text>
                         {
-                            <tr>
-                                <th>Description</th>
-                                <td>{this.state.description}</td>
-                            </tr>
+                            this.state.tags.map(
+                                function (tag) {
+                                    return ([' ', <Badge variant="info">{tag.name}</Badge>])
+                                }
+                            )
                         }
-                        <tr>
-                            <th>Tags: </th>
-                            <td>
-                            {
-                                this.state.tags.map(
-                                    function(tag){
-                                       return ([<Button variant="primary" 
-                                       size="sm" disabled>
-                                       {tag.name}</Button>,' '])
-                                    }
-                                )
-                            }
-                            </td>
-                        </tr>
-                    </tbody>
-                </Table>
-                {
-                    <Container>
-                        <Row>
+                    </Card.Text>
+                    {
+                        <CardGroup>
                             {
                                 this.state.ratings.map(
                                     rating =>
                                         <Rating key={rating.id} value={rating.value} index={rating.id}>{rating.description}</Rating>
                                 )
                             }
-                        </Row>
-                    </Container>
-                }
-
-            </div>
+                        </CardGroup>
+                    }
+                </Card.Body>
+            </Card>
         );
     }
 

@@ -45,10 +45,11 @@ class ApiService {
 
     addCriterion(criterion,ratings,tags) {
         return axios.post(""+API_BASE_URL+'/criterion', criterion).then(response => {
+            //tags is an array of strings
             tags.map(
-                tag =>
+                tagvalue =>
                 {
-                    const newTag = {name:tag.name};
+                    const newTag = {name:tagvalue};
                     return this.addTag(newTag,response.data);
                 }
             ) 
@@ -65,10 +66,11 @@ class ApiService {
 
     editCriterion(criterion,ratings,tags) {
         return axios.patch(API_BASE_URL + '/criterion/' + criterion.id, criterion).then(response => {
+            //tags is an array of strings
             tags.map(
-                tag =>
+                tagvalue =>
                 {
-                    const newTag = {name:tag.name};
+                    const newTag = {name:tagvalue};
                     return this.addTag(newTag,criterion.id);
                 }
             ) 
