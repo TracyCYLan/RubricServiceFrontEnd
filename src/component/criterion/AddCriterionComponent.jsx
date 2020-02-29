@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, Container,Form, Card } from 'react-bootstrap';
+import { Row, Col, Button, CardGroup, Form, Card } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingEdition';
-import uniqueId from 'react-html-id';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
 class AddCriterionComponent extends Component {
 
     constructor(props) {
         super(props);
-        uniqueId.enableUniqueIds(this);
         this.state = {
             name: this.props.location.state.name,
             description: this.props.location.state.description,
@@ -17,7 +15,6 @@ class AddCriterionComponent extends Component {
             ratings: this.props.location.state.ratings,
             publishDate: this.props.location.state.publishDate,
             tags: this.props.location.state.tags,
-            tagCount: 1000,//counting for tagId
             hintTags: [],
             message: null
         }
@@ -79,86 +76,87 @@ class AddCriterionComponent extends Component {
         })
     }
     handleTag(value) {
-        this.setState({tags:value});
-      }
+        this.setState({ tags: value });
+    }
     render() {
         const getHintTags = this.state.hintTags;
-        function autocompleteRenderInput ({addTag, ...props}) {
-            const handleOnChange = (e, {newValue, method}) => {
-              if (method === 'enter') {
-                e.preventDefault()
-              } else {
-                props.onChange(e)
-              }
+        function autocompleteRenderInput({ addTag, ...props }) {
+            const handleOnChange = (e, { newValue, method }) => {
+                if (method === 'enter') {
+                    e.preventDefault()
+                } else {
+                    props.onChange(e)
+                }
             }
-      
+
             const inputValue = (props.value && props.value.trim().toLowerCase()) || ''
             const inputLength = inputValue.length
-            let suggestions = getHintTags.filter(t=>t.name.toLowerCase().slice(0, inputLength) === inputValue)
+            let suggestions = getHintTags.filter(t => t.name.toLowerCase().slice(0, inputLength) === inputValue)
             return (
                 <Autosuggest
-                  ref={props.ref}
-                  suggestions={suggestions}
-                  shouldRenderSuggestions={(value) => value && value.trim().length > 0}
-                  getSuggestionValue={(suggestion) => suggestion.name}
-                  renderSuggestion={(suggestion) => <span>{suggestion.name}</span>}
-                  inputProps={{...props, onChange: handleOnChange}}
-                  onSuggestionSelected={(e, {suggestion}) => {
-                    addTag(suggestion.name)
-                  }}
-                  onSuggestionsClearRequested={() => {}}
-                  onSuggestionsFetchRequested={() => {}}
+                    ref={props.ref}
+                    suggestions={suggestions}
+                    shouldRenderSuggestions={(value) => value && value.trim().length > 0}
+                    getSuggestionValue={(suggestion) => suggestion.name}
+                    renderSuggestion={(suggestion) => <span>{suggestion.name}</span>}
+                    inputProps={{ ...props, onChange: handleOnChange }}
+                    onSuggestionSelected={(e, { suggestion }) => {
+                        addTag(suggestion.name)
+                    }}
+                    onSuggestionsClearRequested={() => { }}
+                    onSuggestionsFetchRequested={() => { }}
                 />
-              )
-            }
+            )
+        }
         return (
-            <Card className="mx-auto" style={{ marginTop: '1rem' , width:'95%'}}>
-            <Card.Body>
-            <Card.Title>Add Criterion</Card.Title>
-            <Form>
-                <Form.Group as={Row} controlId="formGridName">
-                    <Form.Label column md={2}>Name</Form.Label>
-                    <Col md={10}>
-                        <Form.Control type="text" placeholder="Enter name" name="name" value={this.state.name} onChange={this.onChange} />
-                    </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="formGridDescription">
-                    <Form.Label column md={2}>Description</Form.Label>
-                    <Col md={10}>
-                        <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
-                    </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="formGridDate">
-                    <Form.Label column md={2}>Publish Date</Form.Label>
-                    <Col md={10}>
-                        <Form.Control type="date" name="publishDate" value={this.state.publishDate} onChange={this.onChange} />
-                    </Col>
-                </Form.Group>
-                <fieldset>
-                    <Form.Group as={Row}>
-                        <Form.Label as="legend" column md={2}>Tags</Form.Label>
-                        <Col md={10}>
-                        <TagsInput renderInput={autocompleteRenderInput} inputProps={{placeholder:'Enter to add a tag'}} value={this.state.tags} onChange={(v) => this.handleTag(v)} onlyUnique={true}/> 
-                        </Col>
-                    </Form.Group>
-                </fieldset>
-                <Button onClick={this.addRating}>Add new Rating</Button>
-                <div>
-                    <Container>
-                        <Row>
+            <Card className="mx-auto" style={{ marginTop: '1rem', width: '95%' }}>
+                <Card.Body>
+                    <Card.Title>Add Criterion</Card.Title>
+                    <Form>
+                        <Form.Group as={Row} controlId="formGridName">
+                            <Form.Label column md={2}>Name</Form.Label>
+                            <Col md={10}>
+                                <Form.Control type="text" placeholder="Enter name" name="name" value={this.state.name} onChange={this.onChange} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="formGridDescription">
+                            <Form.Label column md={2}>Description</Form.Label>
+                            <Col md={10}>
+                                <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="formGridDate">
+                            <Form.Label column md={2}>Publish Date</Form.Label>
+                            <Col md={10}>
+                                <Form.Control type="date" name="publishDate" value={this.state.publishDate} onChange={this.onChange} />
+                            </Col>
+                        </Form.Group>
+                        <fieldset>
+                            <Form.Group as={Row}>
+                                <Form.Label as="legend" column md={2}>Tags</Form.Label>
+                                <Col md={10}>
+                                    <TagsInput renderInput={autocompleteRenderInput} inputProps={{ placeholder: 'Enter to add a tag' }} value={this.state.tags} onChange={(v) => this.handleTag(v)} onlyUnique={true} />
+                                </Col>
+                            </Form.Group>
+                        </fieldset>
+                        <Form.Group as={Row}>
+                            <Form.Label column lg={10}>Criterion Ratings: </Form.Label>
+                        </Form.Group>
+                        <Form.Group>   
+                            <CardGroup>
                             {
                                 this.state.ratings.map(
                                     rating =>
                                         <Rating key={rating.id} value={rating.value} index={rating.id} delete={this.deleteRating} edit={this.editRating}>{rating.description}</Rating>
                                 )
                             }
-                        </Row>
-                    </Container>
-                </div>
-                <div>
-                    <Button className="btn btn-success" onClick={this.saveCriterion}>Create</Button> </div>
-            </Form>
-            </Card.Body>
+                            <Button variant="outline-secondary" onClick={this.addRating}>+</Button>
+                            </CardGroup>
+                        </Form.Group>
+                        <div>
+                            <Button variant="outline-secondary" onClick={this.saveCriterion}>Create</Button> </div>
+                    </Form>
+                </Card.Body>
             </Card>
         );
     }

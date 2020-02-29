@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
+import { Button, Card, Form} from 'react-bootstrap';
 class RatingEdition extends Component {
 
     constructor(props) {
@@ -23,15 +21,27 @@ class RatingEdition extends Component {
 
     render() {
         return (
-            <Col lg>
-                <Card>
-                    <form>
-                        <Card.Header className="text-right"><Button className="btn btn-warning" onClick={() => this.state.delete(this.state.index)}>Delete</Button></Card.Header>
-                        <Card.Text><textarea placeholder="description" name="description" className="form-control" value={this.state.description} onChange={this.onChange} /></Card.Text>
-                        <Card.Text><input type="text" placeholder="value" name="value" className="form-control" value={this.state.value} onChange={this.onChange} /></Card.Text>
-                    </form>
-                </Card>
-            </Col>
+            <Card>
+                <Form>
+                    <Button className="float-right" variant="light" size="sm" onClick={() => this.state.delete(this.state.index)}>x</Button>
+                    <Card.Text>
+                        <textarea placeholder="description"
+                            name="description"
+                            className="form-control"
+                            value={this.state.description}
+                            onChange={this.onChange} />
+                    </Card.Text>
+                    <Card.Text class="text-center"><input type="text"
+                            placeholder="value"
+                            name="value"
+                            className="form-control"
+                            value={this.state.value}
+                            onChange={this.onChange}
+                            style={{ width: '30%',display:'inline' }} />
+                            <label stlye={{ width: '10%'}}>{'points'}</label>
+                    </Card.Text>
+                </Form>
+            </Card>
         )
     }
 }

@@ -35,11 +35,12 @@
   }
   
   .react-tagsinput--focused {
-    border-color: #346cb4;
+    border: 1px solid #2c66d1;
+    box-shadow: 0 0 10px #9ad5e9;
   }
   
   .react-tagsinput-tag {
-    background-color: #5bc0de;
+    background-color: #4fb0ce;
     border-radius: 2px;
     color: #fbfbfd;
     display: inline-block;
@@ -72,4 +73,12 @@
     outline: none;
     padding: 5px;
     width: 100%;
+  }
+
+  .badge{
+    font-size:14px
+  }
+
+  .card{
+    background-color: rgba(202, 206, 209, 0.068);
   }

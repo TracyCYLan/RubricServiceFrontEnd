@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 class SearchCriterionComponent extends Component {
 
     constructor(props) {
@@ -9,61 +8,71 @@ class SearchCriterionComponent extends Component {
         this.state = {
             criteria: [],
             message: null,
-            searchingText:''
+            searchingText: ''
         }
+        this.getCriterion = this.getCriterion.bind(this);
+        this.search = this.search.bind(this);
     }
 
     componentDidMount() {
-        
+
     }
 
     onChange = (e) =>
-    this.setState({ [e.target.name]: e.target.value });
+        this.setState({ [e.target.name]: e.target.value });
 
-    getCriterion(id){
-        window.localStorage.setItem("criterionId",id);
+    getCriterion(id) {
+        window.localStorage.setItem("criterionId", id);
         this.props.history.push('/criterion');
     }
     search = (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         ApiService.searchCriterion(this.state.searchingText)
             .then(res => {
                 this.setState({ criteria: res.data })
             });
     }
-                
     render() {
         return (
             <div>
-                <h2 className="text-center">Search Criterion</h2>
-                <form>
-                <input type="text" name="searchingText" className="form-control" value={this.state.searchingText} onChange={this.onChange} />
-                <Button onClick={this.search}>Search</Button>
-                </form>
-                <Table responsive="lg" bg="gray" hover="true" bordered="true">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>View</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <h2 className="text-center" style={{ marginTop: '1rem' }}>Search Criterion</h2>
+                <Container>
+                    <Row>
+                        <Col>
+                            <input type="text" name="searchingText" className="form-control"
+                                value={this.state.searchingText}
+                                onChange={this.onChange}
+                                onKeyPress={event => {
+                                    if (event.key === 'Enter') {
+                                        this.search()
+                                    }
+                                }} />
+                        </Col>
+                        <Col>
+                            <Button variant="outline-secondary" onClick={this.search}>Search</Button>
+                        </Col>
+                    </Row>
+                </Container>
+                {this.state.criteria.length > 0 ?
+                    <div>
+                        <h6 style={{ marginTop: '1rem' }} class="text-primary">{'Found ' + this.state.criteria.length + ' results.'}</h6>
+                        <ol>
                         {
                             this.state.criteria.map(
                                 criterion =>
-                                    <tr key={criterion.id}>
-                                        <td>{criterion.name}</td>
-                                        <td>{criterion.description}</td>
-                                        <td><Button variant="info" onClick={() => this.getCriterion(criterion.id)}>View</Button></td>
-                                        <td><Button variant="info" onClick={() => this.deleteCriterion(criterion.id)}>Delete</Button></td>
-                                    </tr>
+                                    <div>
+                                        <li>
+                                            <span class="text-success" size="lg"
+                                                onClick={() => this.getCriterion(criterion.id)}
+                                                style={{ cursor: "pointer",fontSize:"20px",fontFamily: "sans-serif" }}>{criterion.name}</span>
+                                        </li>
+                                    </div>
                             )
                         }
-                    </tbody>
-                </Table>
-
+                        </ol>
+                    </div>
+                    : <h6 style={{ marginTop: '1rem' }} class="text-primary">No Criterion Found.</h6>
+                }
             </div>
         );
     }
