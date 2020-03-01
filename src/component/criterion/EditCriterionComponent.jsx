@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, CardGroup, Form, Card } from 'react-bootstrap';
+import { Row, Col, Button, CardGroup, Form, Card, Modal } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingEdition';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
@@ -16,7 +16,8 @@ class EditCriterionComponent extends Component {
             message: '',
             ratings: [],
             tags: [],
-            hintTags: []
+            hintTags: [],
+            showModal:false
         }
         this.saveCriterion = this.saveCriterion.bind(this);
         this.loadCriterion = this.loadCriterion.bind(this);
@@ -24,6 +25,7 @@ class EditCriterionComponent extends Component {
         this.addRating = this.addRating.bind(this);
         this.editRating = this.editRating.bind(this);
         this.handleTag = this.handleTag.bind(this);
+        this.backToListPage = this.backToListPage.bind(this);
     }
 
     componentDidMount() {
@@ -81,6 +83,7 @@ class EditCriterionComponent extends Component {
     handleTag(value) {
         this.setState({ tags: value });
     }
+    backToListPage =(e) =>this.props.history.push('/criteria');
     saveCriterion = (e) => {
         e.preventDefault();
         let criterion = { id: this.state.id, name: this.state.name, description: this.state.description };
@@ -122,50 +125,67 @@ class EditCriterionComponent extends Component {
             )
         }
         return (
-            <Card className="mx-auto" style={{ marginTop: '1rem', width: '95%' }}>
-                <Card.Body>
-                    <Card.Title>Edit Criterion</Card.Title>
-                    <Form>
-                        <Form.Group as={Row} controlId="formGridName">
-                            <Form.Label column md={2}>Name</Form.Label>
-                            <Col md={10}>
-                                <Form.Control type="text" placeholder="Enter name" name="name" value={this.state.name} onChange={this.onChange} />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} controlId="formGridDescription">
-                            <Form.Label column md={2}>Description</Form.Label>
-                            <Col md={10}>
-                                <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
-                            </Col>
-                        </Form.Group>
-                        <fieldset>
-                            <Form.Group as={Row}>
-                                <Form.Label as="legend" column md={2}>Tags</Form.Label>
+            [
+                <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Are you sure you want to leave this page?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>The modification will not be saved</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="outline-danger" onClick={() => this.backToListPage()}>
+                            Leave
+                    </Button>
+                        <Button variant="outline-secondary" onClick={() => this.setState({ showModal: false })}>
+                            Cancel
+                    </Button>
+                    </Modal.Footer>
+                </Modal>,
+                <Card className="mx-auto" style={{ marginTop: '1rem', width: '95%' }}>
+                    <Card.Body>
+                        <Card.Title>Edit Criterion</Card.Title>
+                        <Form>
+                            <Form.Group as={Row} controlId="formGridName">
+                                <Form.Label column md={2}>Name</Form.Label>
                                 <Col md={10}>
-                                    <TagsInput renderInput={autocompleteRenderInput} inputProps={{ placeholder: 'Enter to add a tag' }} value={this.state.tags} onChange={(v) => this.handleTag(v)} onlyUnique={true} />
+                                    <Form.Control type="text" placeholder="Enter name" name="name" value={this.state.name} onChange={this.onChange} />
                                 </Col>
                             </Form.Group>
-                        </fieldset>
-                        <Form.Group as={Row}>
-                            <Form.Label column lg={10}>Criterion Ratings:</Form.Label>
-                        </Form.Group>
-                        <Form.Group>
-                            {
-                                <CardGroup>
-                                    {
-                                        this.state.ratings.map(
-                                            rating =>
-                                                <Rating key={rating.id} value={rating.value} index={rating.id} edit={this.editRating} delete={this.deleteRating}>{rating.description}</Rating>
-                                        )
-                                    }
-                                <Button variant="outline-secondary" onClick={this.addRating}>+</Button> 
-                                </CardGroup>
-                            }
-                        </Form.Group>
-                        <Button variant="outline-secondary" onClick={this.saveCriterion}>Save</Button>
-                    </Form>
-                </Card.Body>
-            </Card>
+                            <Form.Group as={Row} controlId="formGridDescription">
+                                <Form.Label column md={2}>Description</Form.Label>
+                                <Col md={10}>
+                                    <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                                </Col>
+                            </Form.Group>
+                            <fieldset>
+                                <Form.Group as={Row}>
+                                    <Form.Label as="legend" column md={2}>Tags</Form.Label>
+                                    <Col md={10}>
+                                        <TagsInput renderInput={autocompleteRenderInput} inputProps={{ placeholder: 'Enter to add a tag' }} value={this.state.tags} onChange={(v) => this.handleTag(v)} onlyUnique={true} />
+                                    </Col>
+                                </Form.Group>
+                            </fieldset>
+                            <Form.Group as={Row}>
+                                <Form.Label column lg={10}>Criterion Ratings:</Form.Label>
+                            </Form.Group>
+                            <Form.Group>
+                                {
+                                    <CardGroup>
+                                        {
+                                            this.state.ratings.map(
+                                                rating =>
+                                                    <Rating key={rating.id} value={rating.value} index={rating.id} edit={this.editRating} delete={this.deleteRating}>{rating.description}</Rating>
+                                            )
+                                        }
+                                        <Button variant="outline-secondary" onClick={this.addRating}>+</Button>
+                                    </CardGroup>
+                                }
+                            </Form.Group>
+                            <Button variant="outline-secondary" onClick={this.saveCriterion}>Save</Button>
+                            <Button variant="outline-secondary" style={{marginLeft:'1rem'}} onClick={() => { this.setState({ showModal: true })}}>Leave</Button>
+                        </Form>
+                    </Card.Body>
+                </Card>
+            ]
         );
     }
 }
