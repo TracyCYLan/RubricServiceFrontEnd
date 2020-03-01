@@ -52,6 +52,9 @@ class AddCriterionComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
     addRating = () => {
         var ratings = this.state.ratings;
+        //assume maximum rating num till 10
+        if(ratings.length>=21)
+            return;
         ratings.push({ id: this.state.ratingCount, description: '', value: '' });
         this.setState({ ratingCount: this.state.ratingCount + 1 });
         this.setState({
@@ -109,7 +112,7 @@ class AddCriterionComponent extends Component {
             )
         }
         return (
-            <Card className="mx-auto" style={{ marginTop: '1rem', width: '95%' }}>
+            <Card className="mx-auto mt-2" style={{ width: '95%' }}>
                 <Card.Body>
                     <Card.Title>Add Criterion</Card.Title>
                     <Form>

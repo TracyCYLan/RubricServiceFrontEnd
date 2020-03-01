@@ -88,12 +88,12 @@ class GetCriterionComponent extends Component {
                     </Button>
                 </Modal.Footer>
             </Modal>,
-            <Card className="mx-auto" style={{ marginTop: '1rem', width: '95%' }}>
+            <Card className="mx-auto mt-2" style={{ width: '95%' }}>
                 <Card.Body>
                     <Card.Title as="h3">{this.state.name}
-                        <Button className="float-right" variant="outline-danger" hidden={this.state.published} onClick={() => { this.setState({ showModal: true }) }} style={{ marginLeft: '1rem' }}>Delete</Button>
-                        <Button className="float-right" variant="outline-secondary" hidden={!this.state.published} onClick={() => this.copyneditCriterion(this.state.id)} style={{ marginLeft: '1rem' }}>Copy</Button>
-                        <Button className="float-right" variant="outline-secondary" hidden={this.state.published} onClick={() => this.editCriterion(this.state.id)} style={{ marginLeft: '1rem' }}>Edit</Button>
+                        <Button className="float-right" variant="outline-danger ml-1" hidden={this.state.published} onClick={() => { this.setState({ showModal: true }) }}>Delete</Button>
+                        <Button className="float-right" variant="outline-secondary ml-1" hidden={!this.state.published} onClick={() => this.copyneditCriterion(this.state.id)}>Copy</Button>
+                        <Button className="float-right" variant="outline-secondary ml-1" hidden={this.state.published} onClick={() => this.editCriterion(this.state.id)}>Edit</Button>
                     </Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">{this.state.description}</Card.Subtitle>
                     <Card.Text>

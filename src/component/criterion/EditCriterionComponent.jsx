@@ -57,6 +57,9 @@ class EditCriterionComponent extends Component {
 
     addRating = () => {
         var ratings = this.state.ratings;
+        //assume maximum rating num till 10
+        if(ratings.length>=21)
+            return;
         ratings.push({ id: this.state.ratingCount, description: '', value: '', delete: this.deleteRating });
         this.setState({ ratingCount: this.state.ratingCount + 1 });
         this.setState({
@@ -140,7 +143,7 @@ class EditCriterionComponent extends Component {
                     </Button>
                     </Modal.Footer>
                 </Modal>,
-                <Card className="mx-auto" style={{ marginTop: '1rem', width: '95%' }}>
+                <Card className="mx-auto mt-2" style={{ width: '95%' }}>
                     <Card.Body>
                         <Card.Title>Edit Criterion</Card.Title>
                         <Form>
@@ -176,12 +179,12 @@ class EditCriterionComponent extends Component {
                                                     <Rating key={rating.id} value={rating.value} index={rating.id} edit={this.editRating} delete={this.deleteRating}>{rating.description}</Rating>
                                             )
                                         }
-                                        <Button variant="outline-secondary" onClick={this.addRating}>+</Button>
+                                        <Button variant="secondary" onClick={this.addRating}>+</Button>
                                     </CardGroup>
                                 }
                             </Form.Group>
                             <Button variant="outline-secondary" onClick={this.saveCriterion}>Save</Button>
-                            <Button variant="outline-secondary" style={{marginLeft:'1rem'}} onClick={() => { this.setState({ showModal: true })}}>Leave</Button>
+                            <Button variant="outline-secondary ml-1" onClick={() => { this.setState({ showModal: true })}}>Cancel</Button>
                         </Form>
                     </Card.Body>
                 </Card>

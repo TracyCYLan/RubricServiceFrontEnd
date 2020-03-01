@@ -35,7 +35,7 @@ class SearchCriterionComponent extends Component {
     render() {
         return (
             <div>
-                <h2 className="text-center" style={{ marginTop: '1rem' }}>Search Criterion</h2>
+                <h2 className="text-center mt-2">Search Criterion</h2>
                 <Container>
                     <Row>
                         <Col>
@@ -55,7 +55,7 @@ class SearchCriterionComponent extends Component {
                 </Container>
                 {this.state.criteria.length > 0 ?
                     <div>
-                        <h6 style={{ marginTop: '1rem' }} class="text-primary">{'Found ' + this.state.criteria.length + ' results.'}</h6>
+                        <h6 class="text-primary mt-2">{'Found ' + this.state.criteria.length + ' results.'}</h6>
                         <ol>
                         {
                             this.state.criteria.map(
@@ -71,7 +71,7 @@ class SearchCriterionComponent extends Component {
                         }
                         </ol>
                     </div>
-                    : <h6 style={{ marginTop: '1rem' }} class="text-primary">No Criterion Found.</h6>
+                    : <h6 class="text-primary mt-2">No Criterion Found.</h6>
                 }
             </div>
         );
