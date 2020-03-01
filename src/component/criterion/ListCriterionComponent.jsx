@@ -74,10 +74,10 @@ class ListCriterionComponent extends Component {
     render() {
         return (
             <div>
-                <h2 className="text-center" style={{ marginTop: '1rem' }}>All Criteria</h2>
-                <Button variant="outline-secondary" style={{ marginLeft: '1rem' }} onClick={() => this.addCriterion()}>Add Criterion</Button> {' '}
+                <h2 className="text-center mt-1">All Criteria</h2>
+                <Button variant="outline-secondary ml-1" onClick={() => this.addCriterion()}>Add Criterion</Button> {' '}
                 <Button variant="outline-secondary" onClick={() => this.searchCriterion()}>Search Criterion</Button>
-                <Table className="mx-auto" style={{ marginTop: '1rem', width: '95%' }} responsive="lg" hover="true" bordered="true">
+                <Table className="mx-auto mt-2" style={{ width: '95%' }} responsive="lg" hover="true" bordered="true">
                     <thead>
                         <tr>
                             <th style={{ width: '80%' }}>Name</th>
