@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Button, Card, Badge, CardGroup } from 'react-bootstrap';
+import { Button, Card, Badge, CardGroup, Modal } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingView';
 class GetCriterionComponent extends Component {
 
@@ -14,7 +14,8 @@ class GetCriterionComponent extends Component {
             message: '',
             published: '',
             publishDate: '',
-            tags: []
+            tags: [],
+            showModal: false
         }
         this.loadCriterion = this.loadCriterion.bind(this);
         this.copyneditCriterion = this.copyneditCriterion.bind(this);
@@ -73,12 +74,26 @@ class GetCriterionComponent extends Component {
 
     render() {
         return (
+            [<Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Are you sure you want to delete?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>This action will delete the criterion permanently. Click DELETE to continue the action.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="outline-danger" onClick={() => this.deleteCriterion(this.state.id)}>
+                        Delete
+                    </Button>
+                    <Button variant="outline-secondary" onClick={() => this.setState({ showModal: false })}>
+                        Cancel
+                    </Button>
+                </Modal.Footer>
+            </Modal>,
             <Card className="mx-auto" style={{ marginTop: '1rem', width: '95%' }}>
                 <Card.Body>
                     <Card.Title as="h3">{this.state.name}
-                        <Button className="float-right" variant="outline-danger" hidden={this.state.published} onClick={() => this.deleteCriterion(this.state.id)} style={{marginLeft:'1rem'}}>Delete</Button>
-                        <Button className="float-right" variant="outline-secondary" hidden={!this.state.published} onClick={() => this.copyneditCriterion(this.state.id)} style={{marginLeft:'1rem'}}>Copy</Button>
-                        <Button className="float-right" variant="outline-secondary" hidden={this.state.published} onClick={() => this.editCriterion(this.state.id)} style={{marginLeft:'1rem'}}>Edit</Button>
+                        <Button className="float-right" variant="outline-danger" hidden={this.state.published} onClick={() => { this.setState({ showModal: true }) }} style={{ marginLeft: '1rem' }}>Delete</Button>
+                        <Button className="float-right" variant="outline-secondary" hidden={!this.state.published} onClick={() => this.copyneditCriterion(this.state.id)} style={{ marginLeft: '1rem' }}>Copy</Button>
+                        <Button className="float-right" variant="outline-secondary" hidden={this.state.published} onClick={() => this.editCriterion(this.state.id)} style={{ marginLeft: '1rem' }}>Edit</Button>
                     </Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">{this.state.description}</Card.Subtitle>
                     <Card.Text>
@@ -102,6 +117,7 @@ class GetCriterionComponent extends Component {
                     }
                 </Card.Body>
             </Card>
+            ]
         );
     }
 
