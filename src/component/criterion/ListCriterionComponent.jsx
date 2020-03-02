@@ -1,16 +1,24 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Table, Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import PaginationComponent from "../pageComponents/Pagination";
+import Posts from "../pageComponents/Posts";
 class ListCriterionComponent extends Component {
-
     constructor(props) {
         super(props)
         this.state = {
             criteria: [],
-            message: null
+            message: null,
+            postsPerPage: 10,
+            currentPage: 1,
+            loading: false
         }
         this.addCriterion = this.addCriterion.bind(this);
         this.reloadCriterionList = this.reloadCriterionList.bind(this);
+        this.paginate = this.paginate.bind(this);
+        this.editCriterion = this.editCriterion.bind(this);
+        this.copyneditCriterion = this.copyneditCriterion.bind(this);
+        this.getCriterion = this.getCriterion.bind(this);
     }
 
     componentDidMount() {
@@ -18,12 +26,15 @@ class ListCriterionComponent extends Component {
     }
 
     reloadCriterionList() {
+        this.setState({ loading: true });
         ApiService.fetchCriteria()
             .then((res) => {
-                this.setState({ criteria: res.data })
+                this.setState({
+                    criteria: res.data,
+                    loading: false
+                })
             });
     }
-
 
     getCriterion(id) {
         window.localStorage.setItem("criterionId", id);
@@ -71,41 +82,25 @@ class ListCriterionComponent extends Component {
         window.localStorage.setItem("criterionId", id);
         this.props.history.push('/edit-criterion');
     }
+    paginate(pageNumber) {
+        this.setState({ currentPage: pageNumber })
+    }
     render() {
-        return (
-            <div>
-                <h2 className="text-center mt-1">All Criteria</h2>
-                <Button variant="outline-secondary ml-1" onClick={() => this.addCriterion()}>Add Criterion</Button> {' '}
-                <Button variant="outline-secondary" onClick={() => this.searchCriterion()}>Search Criterion</Button>
-                <Table className="mx-auto mt-2" style={{ width: '95%' }} responsive="lg" hover="true" bordered="true">
-                    <thead>
-                        <tr>
-                            <th style={{ width: '80%' }}>Name</th>
-                            <th style={{ width: '10%' }}>Publish</th>
-                            <th style={{ width: '10%' }}>Operation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            this.state.criteria.map(
-                                criterion =>
-                                    <tr key={criterion.id}>
-                                        <td style={{ width: '80%' }}><span class="text-primary" style={{ cursor: "pointer", fontSize: "20px", fontFamily: "sans-serif" }} onClick={() => this.getCriterion(criterion.id)}>{criterion.name}</span></td>
-                                        <td style={{ width: '10%' }}><span>{criterion.published ? "Yes" : "No"}</span></td>
-                                        <td style={{ width: '10%' }}>
-                                            {criterion.published ?
-                                                <Button variant="info" style={{width:'80%',height:'50%'}} onClick={() => this.copyneditCriterion(criterion)}>Copy</Button>
-                                                : <Button variant="info" style={{width:'80%',height:'50%'}} onClick={() => this.editCriterion(criterion.id)}>Edit</Button>
-                                            }
-                                        </td>
-                                    </tr>
-                            )
-                        }
-                    </tbody>
-                </Table>
-
-            </div>
-        );
+        const currentPosts = this.state.criteria.slice(this.state.currentPage * this.state.postsPerPage - this.state.postsPerPage, this.state.currentPage * this.state.postsPerPage);
+        return (<div>
+            {
+                !this.state.loading ?
+                    [<h2 className="text-center mt-1">All Criteria</h2>,
+                    <Button variant="outline-secondary ml-1" onClick={() => this.addCriterion()}>Add Criterion</Button>,
+                    <Button variant="outline-secondary ml-2" onClick={() => this.searchCriterion()}>Search Criterion</Button>,
+                    <Posts posts={currentPosts} loading={this.state.loading} edit={this.editCriterion} copynedit={this.copyneditCriterion} get={this.getCriterion} />,
+                    <PaginationComponent
+                        postsPerPage={this.state.postsPerPage}
+                        totalPosts={this.state.criteria.length}
+                        paginate={this.paginate}
+                        currentPage={this.state.currentPage}
+                    />] : "Loading..."
+            }</div>);
     }
 
 }
