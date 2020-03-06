@@ -29,7 +29,8 @@ class RatingEdition extends Component {
                             name="description"
                             className="form-control"
                             value={this.state.description}
-                            onChange={this.onChange} />
+                            onChange={this.onChange} 
+                            rows="6"/>
                     </Card.Text>
                     <Card.Text class="text-center"><input type="text"
                             placeholder="value"

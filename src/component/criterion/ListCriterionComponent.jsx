@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Button } from 'react-bootstrap';
+import { Button, InputGroup, FormControl, Row, Col } from 'react-bootstrap';
 import PaginationComponent from "../pageComponents/Pagination";
 import Posts from "../pageComponents/Posts";
 class ListCriterionComponent extends Component {
@@ -11,7 +11,8 @@ class ListCriterionComponent extends Component {
             message: null,
             postsPerPage: 10,
             currentPage: 1,
-            loading: false
+            loading: false,
+            searchingText: ''
         }
         this.addCriterion = this.addCriterion.bind(this);
         this.reloadCriterionList = this.reloadCriterionList.bind(this);
@@ -19,6 +20,7 @@ class ListCriterionComponent extends Component {
         this.editCriterion = this.editCriterion.bind(this);
         this.copyneditCriterion = this.copyneditCriterion.bind(this);
         this.getCriterion = this.getCriterion.bind(this);
+        this.search = this.search.bind(this);
     }
 
     componentDidMount() {
@@ -34,6 +36,11 @@ class ListCriterionComponent extends Component {
                     loading: false
                 })
             });
+    }
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+        if (e.target.value.length === 0)
+            this.reloadCriterionList()
     }
 
     getCriterion(id) {
@@ -58,10 +65,6 @@ class ListCriterionComponent extends Component {
             }
         );
     }
-    searchCriterion() {
-        window.localStorage.removeItem("criterionId");
-        this.props.history.push('/criterion/search');
-    }
     copyneditCriterion(criterion) {
         //send exactly the same content to add-criterion
         this.props.history.push(
@@ -85,21 +88,61 @@ class ListCriterionComponent extends Component {
     paginate(pageNumber) {
         this.setState({ currentPage: pageNumber })
     }
+    search = (e) => {
+        this.setState({ searchingText: this.state.searchingText.trim() })
+        if (this.state.searchingText.length === 0)
+            this.reloadCriterionList();
+        else {
+            ApiService.searchCriterion(this.state.searchingText)
+                .then(res => {
+                    this.setState({ criteria: res.data })
+                });
+        }
+    }
+    clearSearchBox = () => {
+        this.setState({ searchingText: "" });
+        this.reloadCriterionList();
+    }
     render() {
         const currentPosts = this.state.criteria.slice(this.state.currentPage * this.state.postsPerPage - this.state.postsPerPage, this.state.currentPage * this.state.postsPerPage);
         return (<div>
             {
                 !this.state.loading ?
-                    [<h2 className="text-center mt-1">All Criteria</h2>,
-                    <Button variant="outline-secondary ml-1" onClick={() => this.addCriterion()}>Add Criterion</Button>,
-                    <Button variant="outline-secondary ml-2" onClick={() => this.searchCriterion()}>Search Criterion</Button>,
-                    <Posts posts={currentPosts} loading={this.state.loading} edit={this.editCriterion} copynedit={this.copyneditCriterion} get={this.getCriterion} />,
+                    [<h2 className="text-center mt-3">All Criteria</h2>,
+                    <Row>
+                        <Col lg={8} md={10}>
+                            <Button variant="outline-secondary" onClick={() => this.addCriterion()}>Add Criterion</Button>
+                        </Col>
+                        <Col className="mt-1">
+                            <InputGroup>
+                                <InputGroup.Prepend>
+                                    <Button variant="outline-danger" onClick={this.clearSearchBox}>x</Button>
+                                </InputGroup.Prepend>
+                                <FormControl name="searchingText"
+                                    value={this.state.searchingText}
+                                    onChange={this.onChange}
+                                    onKeyPress={event => {
+                                        if (event.key === 'Enter') {
+                                            this.search()
+                                        }
+                                    }} />
+                                <InputGroup.Append>
+                                    <Button variant="outline-secondary" onClick={this.search}>Search</Button>
+                                </InputGroup.Append>
+                            </InputGroup>
+                        </Col>
+                    </Row>,
+                    <Posts
+                        posts={typeof (currentPosts) === 'string' ? [] : currentPosts}
+                        loading={this.state.loading}
+                        edit={this.editCriterion}
+                        copynedit={this.copyneditCriterion} get={this.getCriterion} />,
                     <PaginationComponent
                         postsPerPage={this.state.postsPerPage}
                         totalPosts={this.state.criteria.length}
                         paginate={this.paginate}
                         currentPage={this.state.currentPage}
-                    />] : "Loading..."
+                    />] : <h2>Loading...</h2>
             }</div>);
     }
 

@@ -112,7 +112,7 @@ class AddCriterionComponent extends Component {
             )
         }
         return (
-            <Card className="mx-auto mt-2" style={{ width: '95%' }}>
+            <Card className="mx-auto mt-3" style={{ width: '95%' }}>
                 <Card.Body>
                     <Card.Title>Add Criterion</Card.Title>
                     <Form>
