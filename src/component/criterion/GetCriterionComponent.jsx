@@ -51,8 +51,8 @@ class GetCriterionComponent extends Component {
                     name: this.state.name + "_copy",
                     description: this.state.description,
                     ratings: this.state.ratings,
-                    published: this.state.published,
-                    publishDate: this.state.publishDate,
+                    // published: this.state.published,
+                    // publishDate: this.state.publishDate,
                     tags: this.state.tags.map(t => t.name)//send only string array
                 }
             }

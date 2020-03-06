@@ -35,7 +35,7 @@ class SearchCriterionComponent extends Component {
     render() {
         return (
             <div>
-                <h2 className="text-center mt-2">Search Criterion</h2>
+                <h2 className="text-center mt-3">Search Criterion</h2>
                 <Container>
                     <Row>
                         <Col>

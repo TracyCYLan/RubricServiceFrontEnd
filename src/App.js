@@ -12,6 +12,7 @@ import SearchCriterionComponent from "./component/criterion/SearchCriterionCompo
 import AddCriteriaComponent from "./component/criterion/AddCriterionComponent";
 import EditCriteriaComponent from "./component/criterion/EditCriterionComponent";
 import NavBar from "./component/NavigationBar";
+import TestComponent from "./component/TestComponent";
 function App() {
     return (
         <React.Fragment>
@@ -28,6 +29,7 @@ function App() {
                         <Route path="/edit-criterion" component={EditCriteriaComponent} />
                         <Route path="/criterion" exact component={GetCriterionComponent} />
                         <Route path="/criterion/search" component={SearchCriterionComponent} />
+                        <Route path="/test" exact component={TestComponent}/>
                     </Switch>
                 </Layout>
             </Router>

@@ -12,12 +12,13 @@ class EditCriterionComponent extends Component {
             id: '',
             name: '',
             description: '',
+            publishDate: '',
             ratingCount: 0,
             message: '',
             ratings: [],
             tags: [],
             hintTags: [],
-            showModal:false
+            showModal: false
         }
         this.saveCriterion = this.saveCriterion.bind(this);
         this.loadCriterion = this.loadCriterion.bind(this);
@@ -40,6 +41,8 @@ class EditCriterionComponent extends Component {
                     id: criterion.id,
                     name: criterion.name,
                     description: criterion.description,
+                    // publishDate: criterion.publishDate,
+                    publishDate: new Date(criterion.publishDate).toLocaleDateString('fr-CA'),
                     ratings: criterion.ratings,
                     tags: criterion.tags.map(t => t.name)
                 })
@@ -51,14 +54,13 @@ class EditCriterionComponent extends Component {
                 })
             });
     }
-
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
     addRating = () => {
         var ratings = this.state.ratings;
         //assume maximum rating num till 10
-        if(ratings.length>=21)
+        if (ratings.length >= 21)
             return;
         ratings.push({ id: this.state.ratingCount, description: '', value: '', delete: this.deleteRating });
         this.setState({ ratingCount: this.state.ratingCount + 1 });
@@ -86,17 +88,16 @@ class EditCriterionComponent extends Component {
     handleTag(value) {
         this.setState({ tags: value });
     }
-    backToListPage =(e) =>this.props.history.push('/criteria');
+    backToListPage = (e) => this.props.history.push('/criteria');
     saveCriterion = (e) => {
         e.preventDefault();
-        let criterion = { id: this.state.id, name: this.state.name, description: this.state.description };
+        let criterion = { id: this.state.id, name: this.state.name, description: this.state.description,publishDate:this.state.publishDate };
         ApiService.editCriterion(criterion, this.state.ratings, this.state.tags)
             .then(res => {
                 this.setState({ message: 'Criterion updated successfully.' });
                 this.props.history.push('/criteria');
             });
-    }
-
+    }                            
     render() {
         const getHintTags = this.state.hintTags;
         function autocompleteRenderInput({ addTag, ...props }) {
@@ -143,7 +144,7 @@ class EditCriterionComponent extends Component {
                     </Button>
                     </Modal.Footer>
                 </Modal>,
-                <Card className="mx-auto mt-2" style={{ width: '95%' }}>
+                <Card className="mx-auto mt-3" style={{ width: '95%' }}>
                     <Card.Body>
                         <Card.Title>Edit Criterion</Card.Title>
                         <Form>
@@ -157,6 +158,15 @@ class EditCriterionComponent extends Component {
                                 <Form.Label column md={2}>Description</Form.Label>
                                 <Col md={10}>
                                     <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group as={Row} controlId="formGridDate">
+                                <Form.Label column md={2}>Publish Date</Form.Label>
+                                <Col md={10}>
+                                    <Form.Control type="date" 
+                                    name="publishDate"
+                                    value={this.state.publishDate}
+                                    onChange={this.onChange} />
                                 </Col>
                             </Form.Group>
                             <fieldset>
@@ -184,7 +194,7 @@ class EditCriterionComponent extends Component {
                                 }
                             </Form.Group>
                             <Button variant="outline-secondary" onClick={this.saveCriterion}>Save</Button>
-                            <Button variant="outline-secondary ml-1" onClick={() => { this.setState({ showModal: true })}}>Cancel</Button>
+                            <Button variant="outline-secondary ml-1" onClick={() => { this.setState({ showModal: true }) }}>Cancel</Button>
                         </Form>
                     </Card.Body>
                 </Card>

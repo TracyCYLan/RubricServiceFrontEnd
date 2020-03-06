@@ -23,9 +23,9 @@ class RatingView extends Component {
         return (
                 <Card border="dark">
                     <Card.Body>
-                    <Card.Text className="text-primary">{this.state.description}</Card.Text>
+                    <Card.Text>{this.state.description}</Card.Text>
                     </Card.Body>
-                    <Card.Text className="text-center">{this.state.value} points</Card.Text>
+                    <Card.Text className="text-center text-primary">{this.state.value} points</Card.Text>
                 </Card>
         )
     }
