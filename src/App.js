@@ -8,9 +8,13 @@ import AddRubricComponent from "./component/rubric/AddRubricComponent";
 import EditRubricComponent from "./component/rubric/EditRubricComponent";
 import ListCriteriaComponent from "./component/criterion/ListCriterionComponent";
 import GetCriterionComponent from "./component/criterion/GetCriterionComponent";
-import SearchCriterionComponent from "./component/criterion/SearchCriterionComponent";
+// import SearchCriterionComponent from "./component/criterion/SearchCriterionComponent";
 import AddCriteriaComponent from "./component/criterion/AddCriterionComponent";
 import EditCriteriaComponent from "./component/criterion/EditCriterionComponent";
+import ListTagComponent from "./component/tag/ListTagComponent";
+import GetTagComponent from "./component/tag/GetTagComponent";
+// import AddTagComponent from "./component/tag/AddTagComponent";
+// import EditTagComponent from "./component/tag/EditTagComponent";
 import NavBar from "./component/NavigationBar";
 import TestComponent from "./component/TestComponent";
 function App() {
@@ -28,8 +32,12 @@ function App() {
                         <Route path="/add-criterion" component={AddCriteriaComponent} />
                         <Route path="/edit-criterion" component={EditCriteriaComponent} />
                         <Route path="/criterion" exact component={GetCriterionComponent} />
-                        <Route path="/criterion/search" component={SearchCriterionComponent} />
-                        <Route path="/test" exact component={TestComponent}/>
+                        {/* <Route path="/criterion/search" component={SearchCriterionComponent} /> */}
+                        <Route path="/tags" exact component={ListTagComponent} />
+                        <Route path="/tag"  component={GetTagComponent} />
+                        {/* <Route path="/add-tag" exact component={AddTagComponent} /> */}
+                        {/* <Route path="/edit-tag" exact component={EditTagComponent} /> */}
+                        <Route path="/test" exact component={TestComponent} />
                     </Switch>
                 </Layout>
             </Router>

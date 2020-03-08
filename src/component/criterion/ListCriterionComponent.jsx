@@ -136,7 +136,9 @@ class ListCriterionComponent extends Component {
                         posts={typeof (currentPosts) === 'string' ? [] : currentPosts}
                         loading={this.state.loading}
                         edit={this.editCriterion}
-                        copynedit={this.copyneditCriterion} get={this.getCriterion} />,
+                        copynedit={this.copyneditCriterion} 
+                        get={this.getCriterion} 
+                        category='criterion'/>,
                     <PaginationComponent
                         postsPerPage={this.state.postsPerPage}
                         totalPosts={this.state.criteria.length}
