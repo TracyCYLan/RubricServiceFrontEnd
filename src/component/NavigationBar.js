@@ -18,6 +18,10 @@ const NavigationBar = (props) => (
                     <NavDropdown.Item href="/add-rubric">Add a Rubric</NavDropdown.Item>
                     <NavDropdown.Divider />
                 </NavDropdown>
+                <NavDropdown title="Tag" id="collasible-nav-dropdown">
+                    <NavDropdown.Item href="/tags">See All Tags</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                </NavDropdown>
             </Nav>
             <Nav>
                 <Nav.Link href="/login">Login</Nav.Link>
