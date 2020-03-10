@@ -53,7 +53,7 @@ class GetCriterionComponent extends Component {
                     ratings: this.state.ratings,
                     // published: this.state.published,
                     // publishDate: this.state.publishDate,
-                    tags: this.state.tags.map(t => t.name)//send only string array
+                    tags: this.state.tags.map(t => t.value)//send only string array
                 }
             }
         );
@@ -100,7 +100,7 @@ class GetCriterionComponent extends Component {
                         {
                             this.state.tags.map(
                                 function (tag) {
-                                    return ([' ', <Badge variant="info">{tag.name}</Badge>])
+                                    return ([' ', <Badge variant="info">{tag.value}</Badge>])
                                 }
                             )
                         }

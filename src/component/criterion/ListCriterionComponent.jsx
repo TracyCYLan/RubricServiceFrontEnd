@@ -28,7 +28,7 @@ class ListCriterionComponent extends Component {
     }
 
     reloadCriterionList() {
-        this.setState({ loading: true });
+        // this.setState({ loading: true }); //if this line is not commented. the whole page will refresh somehow
         ApiService.fetchCriteria()
             .then((res) => {
                 this.setState({
@@ -39,8 +39,10 @@ class ListCriterionComponent extends Component {
     }
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
-        if (e.target.value.length === 0)
+        if (e.target.value.length === 0) {
             this.reloadCriterionList()
+        }
+
     }
 
     getCriterion(id) {
@@ -76,7 +78,7 @@ class ListCriterionComponent extends Component {
                     ratings: criterion.ratings,
                     published: criterion.published,
                     publishDate: criterion.publishDate,
-                    tags: criterion.tags.map(t => t.name)//send only string array
+                    tags: criterion.tags.map(t => t.value)//send only string array
                 }
             }
         );
@@ -90,8 +92,18 @@ class ListCriterionComponent extends Component {
     }
     search = (e) => {
         this.setState({ searchingText: this.state.searchingText.trim() })
-        if (this.state.searchingText.length === 0)
-            this.reloadCriterionList();
+        if (this.state.searchingText.length === 0) {
+            e.stopPropagation();
+            // this.reloadCriterionList();
+            this.setState({ loading: true });
+            ApiService.fetchCriteria()
+                .then((res) => {
+                    this.setState({
+                        criteria: res.data,
+                        loading: false
+                    })
+                });
+        }
         else {
             ApiService.searchCriterion(this.state.searchingText)
                 .then(res => {
@@ -99,7 +111,7 @@ class ListCriterionComponent extends Component {
                 });
         }
     }
-    clearSearchBox = () => {
+    clearSearchBox = (e) => {
         this.setState({ searchingText: "" });
         this.reloadCriterionList();
     }
@@ -136,9 +148,9 @@ class ListCriterionComponent extends Component {
                         posts={typeof (currentPosts) === 'string' ? [] : currentPosts}
                         loading={this.state.loading}
                         edit={this.editCriterion}
-                        copynedit={this.copyneditCriterion} 
-                        get={this.getCriterion} 
-                        category='criterion'/>,
+                        copynedit={this.copyneditCriterion}
+                        get={this.getCriterion}
+                        category='criterion' />,
                     <PaginationComponent
                         postsPerPage={this.state.postsPerPage}
                         totalPosts={this.state.criteria.length}

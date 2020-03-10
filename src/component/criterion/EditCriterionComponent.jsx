@@ -44,7 +44,7 @@ class EditCriterionComponent extends Component {
                     // publishDate: criterion.publishDate,
                     publishDate: new Date(criterion.publishDate).toLocaleDateString('fr-CA'),
                     ratings: criterion.ratings,
-                    tags: criterion.tags.map(t => t.name)
+                    tags: criterion.tags.map(t => t.value)
                 })
             });
         ApiService.fetchTags()
@@ -111,17 +111,17 @@ class EditCriterionComponent extends Component {
 
             const inputValue = (props.value && props.value.trim().toLowerCase()) || ''
             const inputLength = inputValue.length
-            let suggestions = getHintTags.filter(t => t.name.toLowerCase().slice(0, inputLength) === inputValue)
+            let suggestions = getHintTags.filter(t => t.value.toLowerCase().slice(0, inputLength) === inputValue)
             return (
                 <Autosuggest
                     ref={props.ref}
                     suggestions={suggestions}
                     shouldRenderSuggestions={(value) => value && value.trim().length > 0}
-                    getSuggestionValue={(suggestion) => suggestion.name}
-                    renderSuggestion={(suggestion) => <span>{suggestion.name}</span>}
+                    getSuggestionValue={(suggestion) => suggestion.value}
+                    renderSuggestion={(suggestion) => <span>{suggestion.value}</span>}
                     inputProps={{ ...props, onChange: handleOnChange }}
                     onSuggestionSelected={(e, { suggestion }) => {
-                        addTag(suggestion.name)
+                        addTag(suggestion.value)
                     }}
                     onSuggestionsClearRequested={() => { }}
                     onSuggestionsFetchRequested={() => { }}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import { Card } from 'react-bootstrap';
+import Posts from "../pageComponents/Posts";
 class GetTagComponent extends Component {
 
     constructor(props) {
@@ -27,7 +28,7 @@ class GetTagComponent extends Component {
                 this.setState({
                     tag: res.data
                 })
-                ApiService.fetchCriteriaByTag(res.data.name)
+                ApiService.fetchCriteriaByTag(res.data.value)
                     .then((res2) => {
                         this.setState({
                             criteria: res2.data
@@ -40,26 +41,17 @@ class GetTagComponent extends Component {
 
     render() {
         return (
-            <Card className="mx-auto mt-2" style={{ width: '95%' }}>
-                <Card.Body>
-                    <Card.Title as="h3" className="text-info">{this.state.tag.name} </Card.Title>
-                    <Card.Text as="h4">
-                        {
-                            this.state.criteria.map(
-                                (c, index)=> {
-                                    return <h4>{[index + 1,'. ',
-                                        <span
-                                            className="text-primary"
-                                            onClick={() => this.getCriterion(c.id)}>
-                                            {c.name}
-                                        </span>]}
-                                    </h4>
-                                }
-                            )
-                        }
-                    </Card.Text>
-                </Card.Body>
-            </Card>
+            [
+                <Card.Title as="h3" className="text-info mt-3 mb-3">{this.state.tag.value} 
+                </Card.Title>,
+                <Posts
+                    posts={this.state.criteria}
+                    loading={this.state.loading}
+                    edit={this.editCriterion}
+                    copynedit={this.copyneditCriterion}
+                    get={this.getCriterion}
+                    category='criterion' />
+            ]
         );
     }
 

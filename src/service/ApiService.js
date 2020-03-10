@@ -51,7 +51,7 @@ class ApiService {
             //tags is an array of strings
             tags.map(
                 tagvalue => {
-                    const newTag = { name: tagvalue };
+                    const newTag = { value: tagvalue };
                     return this.addTag(newTag, response.data);
                 }
             )
@@ -70,7 +70,7 @@ class ApiService {
             //tags is an array of strings
             tags.map(
                 tagvalue => {
-                    const newTag = { name: tagvalue };
+                    const newTag = { value: tagvalue };
                     return this.addTag(newTag, criterion.id);
                 }
             )
