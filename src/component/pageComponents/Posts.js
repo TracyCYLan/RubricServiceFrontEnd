@@ -48,7 +48,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, category, loadTag }) => {
                         posts.map(
                             post =>
                                 <tr key={post.id}>
-                                    <td style={{ width: '90%' }}><span class="text-primary" style={{ cursor: "pointer", fontSize: "20px", fontFamily: "sans-serif" }} onClick={() => get(post.id)}>{post.name}</span></td>
+                                    <td style={{ width: '90%' }}><span class="text-primary" style={{ cursor: "pointer", fontSize: "20px", fontFamily: "sans-serif" }} onClick={() => get(post.id)}>{post.value}</span></td>
                                 </tr>
                         )
                     }
