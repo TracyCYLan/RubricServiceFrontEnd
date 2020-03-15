@@ -9,8 +9,7 @@ const NavigationBar = (props) => (
             <Nav className="mr-auto">
                 <NavDropdown title="Criteria" id="collasible-nav-dropdown">
                     <NavDropdown.Item href="/criteria">See All Criteria</NavDropdown.Item>
-                    {/* so far add-criterion cannot work cuz I am not able to check if this.props.location.state.name is null in AddCriterionComponent constructor */}
-                    {/* <NavDropdown.Item href="/add-criterion">Add a Criterion</NavDropdown.Item> */}
+                    <NavDropdown.Item href="/add-criterion">Add a Criterion</NavDropdown.Item>
                     <NavDropdown.Divider />
                 </NavDropdown>
                 <NavDropdown title="Rubrics" id="collasible-nav-dropdown">

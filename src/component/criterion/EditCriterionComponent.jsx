@@ -13,7 +13,7 @@ class EditCriterionComponent extends Component {
             name: '',
             description: '',
             publishDate: '',
-            ratingCount: 0,
+            ratingCount: 'r0',
             message: '',
             ratings: [],
             tags: [],
@@ -62,8 +62,9 @@ class EditCriterionComponent extends Component {
         //assume maximum rating num till 10
         if (ratings.length >= 21)
             return;
-        ratings.push({ id: this.state.ratingCount, description: '', value: '', delete: this.deleteRating });
-        this.setState({ ratingCount: this.state.ratingCount + 1 });
+        ratings.push({ id: this.state.ratingCount, description: '', value: ''});
+        let num = this.state.ratingCount.substr(1);
+        this.setState({ ratingCount: 'r'+(+num+1)});
         this.setState({
             ratings: ratings
         });

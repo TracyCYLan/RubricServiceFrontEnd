@@ -89,15 +89,15 @@ class ListTagComponent extends Component {
                     </InputGroup>
                 </Col>
             </Row>
-            ,<Row>
-                <TagCloud
-                    minSize={22}
-                    maxSize={51}
-                    tags={this.state.tags}
-                    onClick={tag => { this.getTag(tag.id) }}
-                    colorOptions={colorOptions}
-                />
-            </Row>];
+            ,<TagCloud
+                minSize={22}
+                maxSize={45}
+                tags={this.state.tags}
+                onClick={tag => { this.getTag(tag.id) }}
+                className="simple-cloud"
+                colorOptions={colorOptions}
+                style={{backgroundColor:'#00000', textAlign:'center'}}
+            />];
     }
 
 }
