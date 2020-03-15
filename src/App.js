@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Layout from "./component/Layout";
 import ListRubricComponent from "./component/rubric/ListRubricComponent";
 // import SearchRubricComponent from "./component/criterion/SearchRubricComponent";
+import GetRubricComponent from "./component/rubric/GetRubricComponent";
 import AddRubricComponent from "./component/rubric/AddRubricComponent";
 import EditRubricComponent from "./component/rubric/EditRubricComponent";
 import ListCriteriaComponent from "./component/criterion/ListCriterionComponent";
@@ -24,6 +25,7 @@ function App() {
                     <Switch>
                         <Route path="/" exact component={ListCriteriaComponent} />
                         <Route path="/rubrics" component={ListRubricComponent} />
+                        <Route path="/rubric" exact component={GetRubricComponent} />
                         <Route path="/add-rubric" component={AddRubricComponent} />
                         <Route path="/edit-rubric" component={EditRubricComponent} />
                         <Route path="/criteria" exact component={ListCriteriaComponent} />

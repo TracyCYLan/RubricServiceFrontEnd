@@ -4,26 +4,49 @@ class RatingEdition extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            index: props.index,
-            description: props.children,
-            value: props.value,
-            delete: props.delete,
-            edit: props.edit
+        if(typeof(props.criterionId) ==='undefined'){
+            this.state = {
+                index: props.index,
+                description: props.children,
+                value: props.value,
+                delete: props.delete,
+                edit: props.edit,
+                criterionId:''
+            }
         }
+        else //if we pass rating in addRubric, we need criterionId when edit rating 
+        {
+            this.state = {
+                index: props.index,
+                description: props.children,
+                value: props.value,
+                delete: props.delete,
+                edit: props.edit,
+                criterionId:props.criterionId,
+            }
+        }
+        this.deleteRating = this.deleteRating.bind(this);
     }
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
         //pass the attribute name,attribute updated value, rating index to edit
-        this.state.edit(e.target.name, e.target.value, this.state.index);
+        if(this.state.criterionId ==='')
+            this.state.edit(e.target.name, e.target.value, this.state.index);
+        else
+            this.state.edit(e.target.name, e.target.value, this.state.index,this.state.criterionId);
     }
 
-
+    deleteRating = () =>{
+        if(this.state.criterionId ==='')
+            this.state.delete(this.state.index);
+        else 
+            this.state.delete(this.state.index,this.state.criterionId);
+    }
     render() {
         return (
             <Card>
                 <Form>
-                    <Button className="float-right" variant="light" size="sm" onClick={() => this.state.delete(this.state.index)}>x</Button>
+                    <Button className="float-right" variant="light" size="sm" onClick={this.deleteRating}>x</Button>
                     <Card.Text>
                         <textarea placeholder="description"
                             name="description"

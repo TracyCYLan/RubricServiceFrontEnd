@@ -9,12 +9,14 @@ class AddCriterionComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: this.props.location.state.name,
-            description: this.props.location.state.description,
-            ratingCount: 0, //counting for ratingId
-            ratings: this.props.location.state.ratings,
-            publishDate: this.props.location.state.publishDate,
-            tags: this.props.location.state.tags,
+            name: '',
+            description: '',
+            ratingCount: 'r0', //counting for ratingId
+            ratings: [{ id: 'default-id-1', description: 'Exceed Expectations', value: 5 },
+            { id: 'default-id-2', description: 'Meet Expectations', value: 3 },
+            { id: 'default-id-3', description: 'Does not Meet Expectations', value: 0 }],
+            publishDate: '',
+            tags: [],
             hintTags: [],
             message: null
         }
@@ -26,6 +28,16 @@ class AddCriterionComponent extends Component {
         this.handleTag = this.handleTag.bind(this);
     }
     componentDidMount() {
+        //if we passed default value to this page: (i.e., copy original one to add)
+        if (typeof (this.props.location.state) !== 'undefined') {
+            this.setState({
+                name: this.props.location.state.name,
+                description: this.props.location.state.description,
+                ratings: this.props.location.state.ratings,
+                tags: this.props.location.state.tags
+            })
+        }
+        //load suggestions for tags to do autocomplete
         this.loadHintTags();
     }
     loadHintTags() {
@@ -38,7 +50,12 @@ class AddCriterionComponent extends Component {
     }
     saveCriterion = (e) => {
         e.preventDefault();
-        let criterion = { name: this.state.name, description: this.state.description, publishDate: this.state.publishDate };
+        let criterion = {
+            name: this.state.name,
+            description: this.state.description,
+            publishDate: this.state.publishDate,
+            reusable: true
+        };
         let ratings = this.state.ratings;
         let tags = this.state.tags;
         ApiService.addCriterion(criterion, ratings, tags)
@@ -52,11 +69,12 @@ class AddCriterionComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
     addRating = () => {
         var ratings = this.state.ratings;
-        //assume maximum rating num till 10
-        if(ratings.length>=21)
+        //assume maximum rating num till 21
+        if (ratings.length >= 21)
             return;
         ratings.push({ id: this.state.ratingCount, description: '', value: '' });
-        this.setState({ ratingCount: this.state.ratingCount + 1 });
+        let num = this.state.ratingCount.substr(1);
+        this.setState({ ratingCount: 'r'+(+num+1)});
         this.setState({
             ratings: ratings
         });
@@ -145,15 +163,15 @@ class AddCriterionComponent extends Component {
                         <Form.Group as={Row}>
                             <Form.Label column lg={10}>Criterion Ratings: </Form.Label>
                         </Form.Group>
-                        <Form.Group>   
+                        <Form.Group>
                             <CardGroup>
-                            {
-                                this.state.ratings.map(
-                                    rating =>
-                                        <Rating key={rating.id} value={rating.value} index={rating.id} delete={this.deleteRating} edit={this.editRating}>{rating.description}</Rating>
-                                )
-                            }
-                            <Button variant="outline-secondary" onClick={this.addRating}>+</Button>
+                                {
+                                    this.state.ratings.map(
+                                        rating =>
+                                            <Rating key={rating.id} value={rating.value} index={rating.id} delete={this.deleteRating} edit={this.editRating}>{rating.description}</Rating>
+                                    )
+                                }
+                                <Button variant="outline-secondary" onClick={this.addRating}>+</Button>
                             </CardGroup>
                         </Form.Group>
                         <div>

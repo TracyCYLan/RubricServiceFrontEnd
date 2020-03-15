@@ -28,7 +28,6 @@ class ListCriterionComponent extends Component {
     }
 
     reloadCriterionList() {
-        // this.setState({ loading: true }); //if this line is not commented. the whole page will refresh somehow
         ApiService.fetchCriteria()
             .then((res) => {
                 this.setState({
@@ -40,32 +39,17 @@ class ListCriterionComponent extends Component {
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
         if (e.target.value.length === 0) {
-            this.reloadCriterionList()
+            this.setState({loading:true});
+            this.reloadCriterionList();
         }
-
     }
-
     getCriterion(id) {
         window.localStorage.setItem("criterionId", id);
         this.props.history.push('/criterion');
     }
     addCriterion() {
         window.localStorage.removeItem("criterionId");
-        this.props.history.push(
-            {
-                pathname: '/add-criterion',
-                state: {
-                    name: '',
-                    description: '',
-                    ratings: [{ id: 'default-id-1', description: 'Exceed Expectations', value: 5 },
-                    { id: 'default-id-2', description: 'Meet Expectations', value: 3 },
-                    { id: 'default-id-3', description: 'Does not Meet Expectations', value: 0 }],
-                    published: '',
-                    publishDate: '',
-                    tags: []
-                }
-            }
-        );
+        this.props.history.push('add-criterion');
     }
     copyneditCriterion(criterion) {
         //send exactly the same content to add-criterion
@@ -93,16 +77,9 @@ class ListCriterionComponent extends Component {
     search = (e) => {
         this.setState({ searchingText: this.state.searchingText.trim() })
         if (this.state.searchingText.length === 0) {
-            e.stopPropagation();
-            // this.reloadCriterionList();
-            this.setState({ loading: true });
-            ApiService.fetchCriteria()
-                .then((res) => {
-                    this.setState({
-                        criteria: res.data,
-                        loading: false
-                    })
-                });
+            this.setState({loading:true});
+            this.reloadCriterionList();
+            this.setState({loading:false});
         }
         else {
             ApiService.searchCriterion(this.state.searchingText)
