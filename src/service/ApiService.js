@@ -27,60 +27,81 @@ class ApiService {
         return axios.post("" + API_BASE_URL, rubric).then(response => {
             importedCriteria.map(
                 c => {
-                    return this.addExistedCriterionUnderRubric(response.data,c.id);
+                    return this.addExistedCriterionUnderRubric(response.data, c.id);
                 }
             )
-            //add criteria
-            criteria.map(
+            //add criterion asyc
+            var promises = criteria.map(
                 criterion => {
-                    const newCriterion = {
-                        name: criterion.name,
-                        description: criterion.description,
-                        publihDate: rubric.publihDate,
-                        reusable: false
-                    };
-                    return this.addCriterionUnderRubric(response.data, newCriterion, criterion.ratings);
+                    return this.asyncAddCriterion(criterion, rubric.publishDate);
                 }
-            )
+            );
+            //then send an array of cids to backend (bind cid with rubric)
+            Promise.all(promises).then(function (results) {
+                return axios.post(API_BASE_URL + "/" + response.data + "/criteria/", results);
+            });
         })
     }
     addExistedCriterionUnderRubric(rubricId, criterionId) {
         return axios.post(API_BASE_URL + "/" + rubricId + "/criterion/" + criterionId);
     }
-    addCriterionUnderRubric(rubricId, criterion, ratings) {
-        return axios.post(API_BASE_URL + '/criterion', criterion).then(response => {
+    async asyncAddCriterion(criterion, publishDate) {
+        const newCriterion = {
+            name: criterion.name,
+            description: criterion.description,
+            publishDate: publishDate,
+            reusable: false
+        };
+        var response = await axios.post(API_BASE_URL + '/criterion', newCriterion);
+        var data = response.data;
+        criterion.ratings.map(
+            rating => {
+                const newRating = { description: rating.description, value: rating.value };
+                return this.addRating(newRating, response.data);
+            })
+        return new Promise(function (resolve, reject) {
+            resolve(data);
+        });
+    }
+    addCriterionUnderRubric(rubricId, criterion, publishDate) {
+        const newCriterion = {
+            name: criterion.name,
+            description: criterion.description,
+            publishDate: publishDate,
+            reusable: false
+        };
+        return axios.post(API_BASE_URL + '/criterion', newCriterion).then(response => {
+            //bind relationship between criterion and rubric
+            this.addExistedCriterionUnderRubric(rubricId, response.data);
+
             //bind relationship between ratings and criterion
-            ratings.map(
+            criterion.ratings.map(
                 rating => {
                     const newRating = { description: rating.description, value: rating.value };
                     return this.addRating(newRating, response.data);
                 })
-            //bind relationship between criterion and rubric
-            return this.addExistedCriterionUnderRubric(rubricId, response.data);
 
         })
     }
     editRubric(rubric, criteria, importedCriteria) {
         //first update rubric basic props, then clear all original criteria with original rubric
-        return axios.patch(API_BASE_URL + '/' + rubric.id, rubric).then(response=>{
+        return axios.patch(API_BASE_URL + '/' + rubric.id, rubric).then(response => {
             //then we are going to create connection with rubric and importedCriteria
             importedCriteria.map(
                 c => {
-                    return this.addExistedCriterionUnderRubric(rubric.id,c.id);
+                    return this.addExistedCriterionUnderRubric(rubric.id, c.id);
                 }
             )
-            //and bind rubric with newcriteria
-            criteria.map(
+            //first add all criterion
+            var promises = criteria.map(
                 criterion => {
-                    const newCriterion = {
-                        name: criterion.name,
-                        description: criterion.description,
-                        publihDate: rubric.publihDate,
-                        reusable: false
-                    };
-                    return this.addCriterionUnderRubric(rubric.id, newCriterion, criterion.ratings);
+                    return this.asyncAddCriterion(criterion, rubric.publishDate);
                 }
-            )
+            );
+            //then bind all criterion with rubric (results: array of cid)
+            Promise.all(promises).then(function (results) {
+                return axios.post(API_BASE_URL + "/" + rubric.id + "/criteria/", results);
+            });
         })
     }
 
