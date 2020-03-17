@@ -90,7 +90,7 @@ class EditRubricComponent extends Component {
             alert("You need to select a Criterion to import")
         else {
             let importedCriteria = this.state.importedCriteria;
-            if (!importedCriteria.includes(this.state.importedCriterion)) {
+            if (!importedCriteria.find(c => c.id === this.state.importedCriterion.id)) {
                 importedCriteria.push(this.state.importedCriterion);
                 this.setState({
                     importedCriteria: importedCriteria,
