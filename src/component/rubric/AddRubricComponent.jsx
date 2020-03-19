@@ -19,6 +19,7 @@ class AddRubricComponent extends Component {
             importedCriterion: '',//the certain criterion we just select in the autocomplete box
             importedCriteria: [], //criteria which is already existed
             criteria: [], //criteria created by(with) rubric
+            openAutoComplete:false,
             message: null
         }
         this.saveRubric = this.saveRubric.bind(this);
@@ -31,6 +32,7 @@ class AddRubricComponent extends Component {
         this.deleteRating = this.deleteRating.bind(this);
         this.addRating = this.addRating.bind(this);
         this.handleCriterionChange = this.handleCriterionChange.bind(this);
+        this.onInputChange = this.onInputChange.bind(this);
     }
     componentDidMount() {
         //if we passed default value to this page: (i.e., copy original one to add)
@@ -193,6 +195,16 @@ class AddRubricComponent extends Component {
         )
         this.setState({ criteria: criteria });
     }
+    onInputChange(event, value, reason) {
+        if( value.length >= 2 && reason ==='input') {
+            this.setState({
+                openAutoComplete: true
+            })
+        }
+        else{
+            this.setState({openAutoComplete:false})
+        }
+      }
     render() {
         return (
             <Card className="mx-auto mt-3" style={{ width: '95%' }}>
@@ -223,6 +235,8 @@ class AddRubricComponent extends Component {
                                 <div class="input-group">
                                     <Autocomplete
                                         key={this.state.resetText}
+                                        onInputChange={this.onInputChange}
+                                        open={this.state.openAutoComplete}
                                         options={this.state.suggestionCriteria}
                                         getOptionLabel={option => option.name}
                                         style={{ width: 300 }}
