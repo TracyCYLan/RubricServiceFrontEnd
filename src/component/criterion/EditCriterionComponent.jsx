@@ -62,9 +62,9 @@ class EditCriterionComponent extends Component {
         //assume maximum rating num till 10
         if (ratings.length >= 21)
             return;
-        ratings.push({ id: this.state.ratingCount, description: '', value: ''});
+        ratings.push({ id: this.state.ratingCount, description: '', value: '' });
         let num = this.state.ratingCount.substr(1);
-        this.setState({ ratingCount: 'r'+(+num+1)});
+        this.setState({ ratingCount: 'r' + (+num + 1) });
         this.setState({
             ratings: ratings
         });
@@ -92,13 +92,19 @@ class EditCriterionComponent extends Component {
     backToListPage = (e) => this.props.history.push('/criteria');
     saveCriterion = (e) => {
         e.preventDefault();
-        let criterion = { id: this.state.id, name: this.state.name, description: this.state.description,publishDate:this.state.publishDate };
+        let criterion = {
+            id: this.state.id,
+            name: this.state.name,
+            description: this.state.description,
+            publishDate: this.state.publishDate,
+            reusable: true
+        };
         ApiService.editCriterion(criterion, this.state.ratings, this.state.tags)
             .then(res => {
                 this.setState({ message: 'Criterion updated successfully.' });
                 this.props.history.push('/criteria');
             });
-    }                            
+    }
     render() {
         const getHintTags = this.state.hintTags;
         function autocompleteRenderInput({ addTag, ...props }) {
@@ -164,10 +170,10 @@ class EditCriterionComponent extends Component {
                             <Form.Group as={Row} controlId="formGridDate">
                                 <Form.Label column md={2}>Publish Date</Form.Label>
                                 <Col md={10}>
-                                    <Form.Control type="date" 
-                                    name="publishDate"
-                                    value={this.state.publishDate}
-                                    onChange={this.onChange} />
+                                    <Form.Control type="date"
+                                        name="publishDate"
+                                        value={this.state.publishDate}
+                                        onChange={this.onChange} />
                                 </Col>
                             </Form.Group>
                             <fieldset>

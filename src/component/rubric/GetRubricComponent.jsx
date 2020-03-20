@@ -42,17 +42,13 @@ class GetRubricComponent extends Component {
     copyneditRubric(id) {
         window.localStorage.setItem("rubricId", id);
         //send exactly the same content to add-rubric
-        //we need to separate criteria into "existed" and "imported"
-        let importedCriteria = this.state.criteria.filter(criterion => criterion.reusable === true);
-        let criteria = this.state.criteria.filter(criterion =>criterion.reusable === false);
         this.props.history.push(
             {
                 pathname: '/add-rubric',
                 state: {
                     name: this.state.name + "_copy",
                     description: this.state.description,
-                    criteria: criteria,
-                    importedCriteria: importedCriteria
+                    criteria: this.state.criteria
                 }
             }
         );

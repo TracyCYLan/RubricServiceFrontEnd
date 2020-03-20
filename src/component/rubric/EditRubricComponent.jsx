@@ -204,7 +204,7 @@ class EditRubricComponent extends Component {
         this.setState({ criteria: criteria });
     }
 
-    backToListPage = (e) => this.props.history.push('/criteria');
+    backToListPage = (e) => this.props.history.push('/rubrics');
 
     render() {
         return (
