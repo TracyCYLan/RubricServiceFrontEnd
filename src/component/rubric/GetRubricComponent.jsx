@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Button, Card, CardGroup, Modal } from 'react-bootstrap';
-import RatingV from '../RatingCards/RatingView';
+import { Row, Col, Button, Form, Card, Modal } from 'react-bootstrap';
+import { Autocomplete } from '@material-ui/lab';
+import { TextField } from '@material-ui/core';
+import EditRubricCard from './RubricCards/EditRubricCard';
+import ViewRubricCard from './RubricCards/ViewRubricCard';
+import EditCriterionCard from './CriterionCards/EditCriterionCard';
+import ViewCriterionCard from './CriterionCards/ViewCriterionCard';
 class GetRubricComponent extends Component {
 
     constructor(props) {
@@ -10,19 +15,44 @@ class GetRubricComponent extends Component {
             id: '',
             name: '',
             description: '',
+            loading: true,//in case we haven't finish loading rubric
             criteria: [],
             message: '',
             published: '',
             publishDate: '',
+            newCriterion: '',//new criterion we add by pressing add btn
+            suggestionCriteria: [],//for autocomplete
+            resetText: true, //will change its value everytime we click import button. this prop will help us to clear the autocomplete field
+            openAutoComplete: false,//open auto complete or not
+            importedCriterion: '',//the certain criterion we just select in the autocomplete box
+            showEditRubricCard: false,//ViewRubricCard or EditRubricCard
+            showEditCriterionCard: false,//ViewCriterionCard or EditCriterion
             showModal: false
         }
+        this.addCriterionBlock = this.addCriterionBlock.bind(this);
+        this.addCriterionToRubric = this.addCriterionToRubric.bind(this);
+        this.finishUpdateCriterion = this.finishUpdateCriterion.bind(this);
+        this.importCriterion = this.importCriterion.bind(this);
+        this.deleteExistedCriterion = this.deleteExistedCriterion.bind(this);
+
         this.loadRubric = this.loadRubric.bind(this);
         this.copyneditRubric = this.copyneditRubric.bind(this);
         this.deleteRubric = this.deleteRubric.bind(this);
+        this.editRubric = this.editRubric.bind(this);
+        this.saveRubric = this.saveRubric.bind(this);
+
+        this.handleOpenAutoComplete = this.handleOpenAutoComplete.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
         this.loadRubric();
+        ApiService.fetchCriteria()
+            .then((res) => {
+                this.setState({
+                    suggestionCriteria: res.data
+                })
+            })
     }
 
     loadRubric() {
@@ -30,36 +60,66 @@ class GetRubricComponent extends Component {
             .then((res) => {
                 let rubric = res.data;
                 this.setState({
+                    loading: false,
                     id: rubric.id,
                     name: rubric.name,
                     description: rubric.description,
                     criteria: rubric.criteria,
                     published: rubric.published,
-                    publishDate: rubric.publishDate
+                    publishDate: new Date(rubric.publishDate).toLocaleDateString('fr-CA')
                 })
             });
     }
-    copyneditRubric(id) {
+    copyneditRubric = (id) => {
         window.localStorage.setItem("rubricId", id);
         //send exactly the same content to add-rubric
-        //we need to separate criteria into "existed" and "imported"
-        let importedCriteria = this.state.criteria.filter(criterion => criterion.reusable === true);
-        let criteria = this.state.criteria.filter(criterion =>criterion.reusable === false);
         this.props.history.push(
             {
                 pathname: '/add-rubric',
                 state: {
                     name: this.state.name + "_copy",
                     description: this.state.description,
-                    criteria: criteria,
-                    importedCriteria: importedCriteria
+                    criteria: this.state.criteria
                 }
             }
         );
     }
-    editRubric(id) {
-        window.localStorage.setItem("rubricId", id);
-        this.props.history.push('/edit-rubric');
+    editRubric = (input_name, input_value) => {
+        this.setState({
+            [input_name]: input_value
+        })
+        if (new Date(this.state.publishDate) < new Date()) {
+            this.setState({ published: true })
+        }
+    }
+    cancelEditRubric = (e) => {
+        ApiService.fetchRubricById(this.state.id).then(res => {
+            let rubric = res.data;
+            this.setState({
+                loading: false,
+                name: rubric.name,
+                description: rubric.description,
+                published: rubric.published,
+                publishDate: new Date(rubric.publishDate).toLocaleDateString('fr-CA'),
+                showEditRubricCard: false
+            })
+        })
+    }
+    saveRubric = (e) => {
+        e.preventDefault();
+        let rubric = {
+            id: this.state.id,
+            name: this.state.name,
+            description: this.state.description,
+            publishDate: this.state.publishDate
+        };
+        ApiService.editRubric(rubric).then(res => {
+            this.setState({
+                message: 'Rubric updated successfully.',
+                showEditRubricCard: false
+            });
+
+        });
     }
     deleteRubric(id) {
         ApiService.deleteRubric(id)
@@ -67,6 +127,120 @@ class GetRubricComponent extends Component {
                 this.setState({ message: 'Rubric deleted successfully.' });
                 this.props.history.push('/rubrics');
             })
+    }
+    addCriterionBlock = () => {
+        if (this.state.newCriterion !== '')
+            return;
+        let newCriterion = {
+            id: 'c0',
+            name: '',
+            description: '',
+            ratingCount: 'r0',
+            ratings: [{ id: 'id-default-1', description: 'Exceed Expectations', value: 5 },
+            { id: 'id-default-2', description: 'Meet Expectations', value: 3 },
+            { id: 'id-default-3', description: 'Does not Meet Expectations', value: 0 }],
+        };
+        this.setState({
+            newCriterion: newCriterion,
+        });
+    }
+    addCriterionToRubric = (criterionId) => {
+        //add criterion to rubric in database
+        ApiService.addExistedCriterionUnderRubric(this.state.id, criterionId);
+        ApiService.fetchCriterionById(criterionId).then(res => {
+            var criteria = this.state.criteria;
+            var criterion = res.data;
+            criteria.push({
+                id: criterion.id,
+                name: criterion.name,
+                description: criterion.description,
+                ratings: criterion.ratings,
+                view: true
+            });
+            this.setState({
+                criteria: criteria,
+                newCriterion: ''
+            })
+        })
+    }
+    finishUpdateCriterion = (criterionId) => {
+        ApiService.fetchCriterionById(criterionId).then(res => {
+            var criteria = this.state.criteria;
+            criteria.map(
+                function (c) {
+                    if (c['id'] === criterionId) {
+                        c['name'] = res.data.name;
+                        c['description'] = res.data.description;
+                        c['ratings'] = res.data.ratings;
+                        c['view'] = true;
+                    }
+                    return c;
+                }
+            )
+            this.setState({ criteria: criteria })
+        })
+    }
+    handleOpenAutoComplete = (event, value, reason) => {
+        //to deal with open autocomplete or not.
+        if (value.length >= 2 && reason === 'input') {
+            this.setState({
+                openAutoComplete: true
+            })
+        }
+        else {
+            this.setState({ openAutoComplete: false })
+        }
+    }
+    handleChange = (e, value) => {
+        //handleChange of autocomplete input box
+        //value is a Criterion object
+        if (value !== null) {
+            this.setState({
+                importedCriterion: value
+            });
+        }
+    }
+    importCriterion = () => {
+        //so far allow one criterion exists only once
+        //import the autocomplete criterion into array
+        if (this.state.importedCriterion === '')
+            alert("You need to select a Criterion to import")
+        else {
+            let criteria = this.state.criteria;
+            if (!criteria.some(c => c.id === this.state.importedCriterion.id)) {
+                ApiService.addExistedCriterionUnderRubric(this.state.id, this.state.importedCriterion.id);
+                criteria.push(this.state.importedCriterion);
+                this.setState({
+                    criteria: criteria,
+                    importedCriterion: '',
+                    resetText: !this.state.resetText
+                });
+            }
+            else {
+                this.setState({
+                    importedCriterion: '',
+                    resetText: !this.state.resetText
+                })
+            }
+        }
+    }
+    deleteExistedCriterion = (criterionId) => {
+        // don't know why this is not working
+        this.setState({
+            criteria: this.state.criteria.filter(c => c.id !== criterionId)
+        })
+        ApiService.removeCriterionUnderRubric(this.state.id, criterionId);
+    }
+    changeToEditCriterion = (criterionId) => {
+        var criteria = this.state.criteria;
+        criteria.map(
+            function (c) {
+                if (c['id'] === criterionId)
+                    c['view'] = false;
+                return c;
+            }
+        )
+        this.setState({ criteria: criteria })
     }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
@@ -89,35 +263,138 @@ class GetRubricComponent extends Component {
             </Modal>,
             <Card className="mx-auto mt-2" style={{ width: '95%' }}>
                 <Card.Body>
-                    <Card.Title as="h3">{this.state.name}
-                        <Button className="float-right" variant="outline-danger ml-1" hidden={this.state.published} onClick={() => { this.setState({ showModal: true }) }}>Delete</Button>
-                        <Button className="float-right" variant="outline-secondary ml-1" hidden={!this.state.published} onClick={() => this.copyneditRubric(this.state.id)}>Copy</Button>
-                        <Button className="float-right" variant="outline-secondary ml-1" hidden={this.state.published} onClick={() => this.editRubric(this.state.id)}>Edit</Button>
-                    </Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">{this.state.description}</Card.Subtitle>
-                    {this.state.criteria.map(
-                        c => <Card className="mb-2">
-                            <Card.Header className="text-primary">
-                                {c.name}
-                            </Card.Header>
-                            <CardGroup>
-                                <Card>
-                                    <Card.Body>
-                                        <Card.Text>{c.description}</Card.Text>
-                                    </Card.Body>
-                                </Card>
-                                <CardGroup>
-                                    {c.ratings.map(
-                                        rating => <RatingV key={rating.id} value={rating.value} index={rating.id}>{rating.description}</RatingV>
-                                    )}
-                                </CardGroup>
-                            </CardGroup>
-                        </Card>
-                    )}
+                    {this.state.loading ? '' :
+                        (!this.state.published && this.state.showEditRubricCard) ?
+                            <EditRubricCard
+                                edit={this.editRubric}
+                                name={this.state.name}
+                                description={this.state.description}
+                                publishDate={this.state.publishDate}
+                                published={this.state.published}
+                                cancel={this.cancelEditRubric}
+                                save={this.saveRubric}
+                            ></EditRubricCard>
+                            :
+                            <ViewRubricCard
+                                name={this.state.name}
+                                description={this.state.description}
+                                publishDate={this.state.publishDate}
+                                published={this.state.published}
+                                preDelete={() => { this.setState({ showModal: true }) }}
+                                editRubric={() => { this.setState({ showEditRubricCard: true }) }}
+                                copyneditRubric={() => this.copyneditRubric(this.state.id)}
+                                type='view'>
+                            </ViewRubricCard>
+                    }
+                    <Card className="mx-auto mt-1">
+                        <Card.Body>
+                            {this.state.published ?//if it's published, just show all criteria
+                                <Form>
+                                    <Form.Group as={Row} controlId="formGridShowExistedCriterion">
+                                        <Col>
+                                            {this.state.criteria.map(
+                                                c => <ViewCriterionCard index={c.id} name={c.name} description={c.description} ratings={c.ratings}
+                                                    reusable={c.reusable} published={this.state.published}
+                                                    deleteExistedCriterion={() => this.deleteExistedCriterion(c.id)}
+                                                    changeToEditCriterion={this.changeToEditCriterion} ></ViewCriterionCard>)}
+                                        </Col>
+                                    </Form.Group>
+                                </Form>
+                                ://if not published yet, allow to add and edit
+                                <Form>
+                                    <Form.Group as={Row}>
+                                        <Col>
+                                            <Button variant="outline-info" className="float-right" onClick={() => { this.setState({ showEditCriterionCard: true }) }}>Add or Import Criterion</Button>
+                                        </Col>
+                                    </Form.Group>
+                                    {this.state.showEditCriterionCard ?//only show import area and editcriterion card when we click addorimport button
+                                        [<Form.Group as={Row} controlId="formGridCriteriaImport">
+                                            <Form.Label column lg={2}>Criteria</Form.Label>
+                                            <Col md={10}>
+                                                <div class="input-group">
+                                                    <Autocomplete
+                                                        key={this.state.resetText}
+                                                        onInputChange={this.handleOpenAutoComplete}
+                                                        open={this.state.openAutoComplete}
+                                                        options={this.state.suggestionCriteria}
+                                                        getOptionLabel={option => option.name}
+                                                        style={{ width: 300 }}
+                                                        onChange={this.handleChange}
+                                                        renderInput={params =>
+                                                            <TextField {...params}
+                                                                variant="outlined"
+                                                                onChange={this.handleChange}
+                                                                onKeyPress={(e) => {
+                                                                    if (e.key === 'Enter') {
+                                                                        e.preventDefault();
+                                                                    }
+                                                                }}
+                                                            />}
+                                                    />
+                                                    <Button variant="outline-info ml-2 mt-2" style={{ height: '80%' }} onClick={this.importCriterion}>Import</Button>
+                                                </div>
+                                            </Col>
+                                            <Button variant="outline-info ml-2" onClick={this.addCriterionBlock}>Add new Criterion</Button>
+                                        </Form.Group>
+                                            ,
+                                        <Form.Group as={Row} controlId="formGridEditCriteria">
+                                            <Col>
+                                                {
+                                                    this.state.newCriterion === '' ? '' :
+                                                        <EditCriterionCard
+                                                            index={this.state.newCriterion.id}
+                                                            name={this.state.newCriterion.name}
+                                                            description={this.state.newCriterion.description}
+                                                            publishDate={this.state.publishDate}
+                                                            ratings={this.state.newCriterion.ratings}
+                                                            ratingCount={this.state.newCriterion.ratingCount}
+                                                            deleteCriterionBlock={() => this.setState({ newCriterion: '' })}
+                                                            addCriterionToRubric={this.addCriterionToRubric}
+                                                            type='new'></EditCriterionCard>
+                                                }
+                                            </Col>
+                                        </Form.Group>
+                                        ] : <div></div>}
+                                    <Form.Group as={Row} controlId="formGridShowExistedCriterion">
+                                        <Col>
+                                            {this.state.criteria.map(
+                                                c => typeof (c.view) === 'undefined' ||
+                                                    c.view ?
+                                                    <ViewCriterionCard
+                                                        key={c.id}
+                                                        index={c.id}
+                                                        name={c.name}
+                                                        description={c.description}
+                                                        ratings={c.ratings}
+                                                        reusable={c.reusable}
+                                                        published={this.state.published}
+                                                        deleteExistedCriterion={() => this.deleteExistedCriterion(c.id)}
+                                                        changeToEditCriterion={this.changeToEditCriterion}
+                                                    ></ViewCriterionCard> :
+                                                    <EditCriterionCard
+                                                        key={c.id}
+                                                        index={c.id}
+                                                        name={c.name}
+                                                        description={c.description}
+                                                        publishDate={this.state.publishDate}
+                                                        ratings={c.ratings}
+                                                        ratingCount='r0'
+                                                        deleteCriterionBlock={() => this.setState({ newCriterion: '' })}
+                                                        finishUpdateCriterion={this.finishUpdateCriterion}
+                                                        type='update'></EditCriterionCard>
+                                            )}
+                                        </Col>
+                                    </Form.Group>
+                                    <div>
+                                        {this.state.showEditCriterionCard?<Button variant="outline-secondary" onClick={() => this.setState({ showEditCriterionCard: false })}>Done</Button>:''}
+                                    </div>
+                                </Form>
+                            }
+                        </Card.Body>
+                    </Card>
                 </Card.Body>
             </Card>
-            ]
-        );
+            ]);
     }
 
 }
