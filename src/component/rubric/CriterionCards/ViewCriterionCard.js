@@ -10,9 +10,10 @@ class ViewCriterionCard extends Component {
             name: props.name,
             description: props.description,
             ratings: props.ratings,
-            reusable:props.reusable,
-            deleteExistedCriterion:props.deleteExistedCriterion,
-            changeToEditCriterion:props.changeToEditCriterion
+            published: props.published,
+            reusable: props.reusable,
+            deleteExistedCriterion: props.deleteExistedCriterion,
+            changeToEditCriterion: props.changeToEditCriterion
         }
     }
     render() {
@@ -20,12 +21,17 @@ class ViewCriterionCard extends Component {
             <Card className="mb-2">
                 <Card.Header className="text-primary">
                     {this.state.name}
-                    {this.state.reusable?
-                    <Button variant="outline-danger float-right" size="sm" onClick={() => this.state.deleteExistedCriterion(this.state.criterionId)}>x</Button>
-                    :[<Button variant="outline-warning float-right" size="sm" onClick={() =>this.state.changeToEditCriterion(this.state.criterionId)}>Edit</Button>,
-                    <Button variant="outline-danger float-right ml-1" size="sm" onClick={() => this.state.deleteExistedCriterion(this.state.criterionId)}>x</Button>]
+                    {//if published: don't show any button 
+                    //if reusable: allow to delete only; else, allow edit and delete
+                        this.state.published?'':
+                        this.state.reusable ?
+                        <Button variant="outline-danger float-right" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
+                        :
+                        <span>
+                            <Button variant="outline-warning float-right" size="sm" onClick={() => this.state.changeToEditCriterion(this.state.criterionId)}>Edit</Button>
+                            <Button variant="outline-danger float-right" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
+                        </span>
                     }
-                    
                 </Card.Header>
                 <CardGroup>
                     <Card>

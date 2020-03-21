@@ -108,7 +108,7 @@ class EditCriterionCard extends Component {
             <Card className="mb-2" border="dark">
                 <Card.Body>
                     <Button className="float-right" variant="outline-danger"
-                        size="sm" onClick={() => this.state.deleteCriterionBlock()}>x</Button>
+                        size="sm" onClick={this.state.deleteCriterionBlock}>x</Button>
                     <Card.Text>
                         <Form.Label column lg={2}>Criterion Name</Form.Label>
                         <Col md={10}>

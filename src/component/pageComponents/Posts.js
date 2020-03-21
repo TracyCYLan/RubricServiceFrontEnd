@@ -53,7 +53,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, category, chooseC }) => {
                         <th style={{ width: '65%' }}>Name</th>
                         <th style={{ width: '15%', textAlign: 'center' }}>Last Updated</th>
                         <th style={{ width: '10%', textAlign: 'center' }}>Publish</th>
-                        <th style={{ width: '10%', textAlign: 'center' }}>Operation</th>
+                        {/* <th style={{ width: '10%', textAlign: 'center' }}>Operation</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -69,13 +69,13 @@ const Posts = ({ posts, loading, get, edit, copynedit, category, chooseC }) => {
                                         </span>
                                     </td>
                                     <td style={{ width: '15%', textAlign: 'center' }}>{new Date(post.lastUpdatedDate).toLocaleDateString()}</td>
-                                    <td style={{ width: '10%', textAlign: 'center' }}><span>{post.published ? "Yes" : "No"}</span></td>
-                                    <td style={{ width: '10%', textAlign: 'center' }}>
+                                    <td class="text-success font-weight-bold" style={{ width: '10%', textAlign: 'center' }}><span>{post.published ? "Yes" : "No"}</span></td>
+                                    {/* <td style={{ width: '10%', textAlign: 'center' }}>
                                         {post.published ?
                                             <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => copynedit(post)}>Copy</Button>
                                             : <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => edit(post.id)}>Edit</Button>
                                         }
-                                    </td>
+                                    </td> */}
                                 </tr>
                         )
                     }

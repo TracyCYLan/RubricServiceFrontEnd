@@ -9,7 +9,8 @@ class EditRubricCard extends Component {
             description: props.description,
             publishDate: props.publishDate,
             editRubric: props.edit,
-            save: props.save
+            save: props.save,
+            cancel:props.cancel
         }
     }
     onChange = (e) => {
@@ -17,34 +18,36 @@ class EditRubricCard extends Component {
         //pass the attribute name,attribute updated value, rating index to edit
         this.state.editRubric(e.target.name, e.target.value);
     }
+
     render() {
         return (
             <Card>
                 <Card.Body >
                     <Form>
-                    <Form.Group as={Row} controlId="formGridName">
-                        <Form.Label column md={2}>Name</Form.Label>
-                        <Col md={10}>
-                            <Form.Control type="text" placeholder="Enter name" name="name" value={this.state.name} onChange={this.onChange} />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="formGridDescription">
-                        <Form.Label column md={2}>Description</Form.Label>
-                        <Col md={10}>
-                            <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="formGridDate">
-                        <Form.Label column md={2}>Publish Date</Form.Label>
-                        <Col md={10}>
-                            <Form.Control type="date" name="publishDate" value={this.state.publishDate} onChange={this.onChange} />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="formGridNextBtn">
-                        <Col>
-                            <Button className="float-right" variant="outline-dark" onClick={this.state.save}>Next</Button>
-                        </Col>
-                    </Form.Group>
+                        <Form.Group as={Row} controlId="formGridName">
+                            <Form.Label column md={2}>Name</Form.Label>
+                            <Col md={10}>
+                                <Form.Control type="text" placeholder="Enter name" name="name" value={this.state.name} onChange={this.onChange} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="formGridDescription">
+                            <Form.Label column md={2}>Description</Form.Label>
+                            <Col md={10}>
+                                <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="formGridDate">
+                            <Form.Label column md={2}>Publish Date</Form.Label>
+                            <Col md={10}>
+                                <Form.Control type="date" name="publishDate" value={this.state.publishDate} onChange={this.onChange} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="formGridNextBtn">
+                            <Col>
+                                <Button className="float-right" variant="outline-dark" onClick={this.state.cancel}>Cancel</Button>
+                                <Button className="float-right" variant="outline-dark" onClick={this.state.save}>Save</Button>
+                            </Col>
+                        </Form.Group>
                     </Form>
                 </Card.Body>
             </Card>)

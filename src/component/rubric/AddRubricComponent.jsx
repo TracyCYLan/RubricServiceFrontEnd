@@ -11,39 +11,55 @@ class AddRubricComponent extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            index: '', //rubric id, (will get this value after we click 'next' button to save the rubric)
-            name: '',
-            description: '',
-            publishDate: '',
-            newCriterion: '',//new criterion we add by pressing add btn
-            suggestionCriteria: [],//for autocomplete
-            resetText: true, //will change its value everytime we click import button. this prop will help us to clear the autocomplete field
-            importedCriterion: '',//the certain criterion we just select in the autocomplete box
-            criteria: [], //criteria which is already existed
-            openAutoComplete: false,//open auto complete or not
-            showEditCriterion: false,// show edit criterion part or not
-            message: null
+        //if we passed default value to this page: (i.e., copy original one to add)
+        if (typeof (this.props.location.state) !== 'undefined') {
+            this.state = {
+                id: '', //rubric id, (will get this value after we click 'next' button to save the rubric)
+                name: this.props.location.state.name,
+                description: this.props.location.state.description,
+                criteria: this.props.location.state.criteria,
+                publishDate: '',
+                newCriterion: '',//new criterion we add by pressing add btn
+                suggestionCriteria: [],//for autocomplete
+                resetText: true, //will change its value everytime we click import button. this prop will help us to clear the autocomplete field
+                importedCriterion: '',//the certain criterion we just select in the autocomplete box
+                openAutoComplete: false,//open auto complete or not
+                showEditCriterion: false,// show edit criterion part or not
+                showEditRubricCard: true,
+                message: null
+            }
+        }
+        else
+        {
+            this.state = {
+                id: '', //rubric id, (will get this value after we click 'next' button to save the rubric)
+                name: '',
+                description: '',
+                publishDate: '',
+                newCriterion: '',//new criterion we add by pressing add btn
+                suggestionCriteria: [],//for autocomplete
+                resetText: true, //will change its value everytime we click import button. this prop will help us to clear the autocomplete field
+                importedCriterion: '',//the certain criterion we just select in the autocomplete box
+                criteria: [], //criteria which is already existed
+                openAutoComplete: false,//open auto complete or not
+                showEditCriterion: false,// show edit criterion part or not
+                showEditRubricCard: true,
+                message: null
+            }
         }
         this.saveRubric = this.saveRubric.bind(this);
+        this.editRubric = this.editRubric.bind(this);
+
         this.addCriterionBlock = this.addCriterionBlock.bind(this);
         this.deleteCriterionBlock = this.deleteCriterionBlock.bind(this);
+        this.addCriterionToRubric = this.addCriterionToRubric.bind(this);
+
         this.importCriterion = this.importCriterion.bind(this);
         this.deleteExistedCriterion = this.deleteExistedCriterion.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleOpenAutoComplete = this.handleOpenAutoComplete.bind(this);
-        this.editRubric = this.editRubric.bind(this);
-        this.backToRubricPage = this.backToRubricPage.bind(this);
     }
     componentDidMount() {
-        //if we passed default value to this page: (i.e., copy original one to add)
-        if (typeof (this.props.location.state) !== 'undefined') {
-            this.setState({
-                name: this.props.location.state.name,
-                description: this.props.location.state.description,
-                criteria: this.props.location.state.criteria
-            })
-        }
         ApiService.fetchCriteria()
             .then((res) => {
                 this.setState({
@@ -53,7 +69,7 @@ class AddRubricComponent extends Component {
     }
     addCriterionToRubric = (criterionId) => {
         //add criterion to rubric in database
-        ApiService.addExistedCriterionUnderRubric(this.state.index, criterionId);
+        ApiService.addExistedCriterionUnderRubric(this.state.id, criterionId);
         ApiService.fetchCriterionById(criterionId).then(res => {
             var criteria = this.state.criteria;
             var criterion = res.data;
@@ -91,27 +107,25 @@ class AddRubricComponent extends Component {
             newCriterion: ''
         })
     }
-    finishUpdateCriterion =(criterionId) =>{
-        ApiService.fetchCriterionById(criterionId).then(res=>{
-            var criteria=this.state.criteria;
+    finishUpdateCriterion = (criterionId) => {
+        ApiService.fetchCriterionById(criterionId).then(res => {
+            var criteria = this.state.criteria;
             criteria.map(
-                function(c)
-                {
-                    if(c['id']===criterionId)
-                    {
-                        c['name']=res.data.name;
-                        c['description']=res.data.description;
-                        c['ratings']=res.data.ratings;
-                        c['view']=true;
+                function (c) {
+                    if (c['id'] === criterionId) {
+                        c['name'] = res.data.name;
+                        c['description'] = res.data.description;
+                        c['ratings'] = res.data.ratings;
+                        c['view'] = true;
                     }
                     return c;
                 }
             )
-            this.setState({criteria:criteria})
+            this.setState({ criteria: criteria })
         })
 
     }
-    handleOpenAutoComplete(event, value, reason) {
+    handleOpenAutoComplete = (event, value, reason) => {
         //to deal with open autocomplete or not.
         if (value.length >= 2 && reason === 'input') {
             this.setState({
@@ -122,7 +136,7 @@ class AddRubricComponent extends Component {
             this.setState({ openAutoComplete: false })
         }
     }
-    handleChange(e, value) {
+    handleChange = (e, value) => {
         //handleChange of autocomplete input box
         //value is a Criterion object
         if (value !== null) {
@@ -138,8 +152,8 @@ class AddRubricComponent extends Component {
             alert("You need to select a Criterion to import")
         else {
             let criteria = this.state.criteria;
-            if (!criteria.includes(this.state.importedCriterion)) {
-                ApiService.addExistedCriterionUnderRubric(this.state.index, this.state.importedCriterion.id);
+            if (!criteria.some(c => c.id === this.state.importedCriterion.id)) {
+                ApiService.addExistedCriterionUnderRubric(this.state.id, this.state.importedCriterion.id);
                 criteria.push(this.state.importedCriterion);
                 this.setState({
                     criteria: criteria,
@@ -159,19 +173,18 @@ class AddRubricComponent extends Component {
         this.setState({
             criteria: this.state.criteria.filter(c => c.id !== criterionId)
         })
-        ApiService.removeCriterionUnderRubric(this.state.index, criterionId);
+        ApiService.removeCriterionUnderRubric(this.state.id, criterionId);
     }
     changeToEditCriterion = (criterionId) => {
-        var criteria=this.state.criteria;
+        var criteria = this.state.criteria;
         criteria.map(
-            function(c)
-            {
-                if(c['id']===criterionId)
-                    c['view']=false;
+            function (c) {
+                if (c['id'] === criterionId)
+                    c['view'] = false;
                 return c;
             }
         )
-        this.setState({criteria:criteria})
+        this.setState({ criteria: criteria })
     }
     editRubric = (input_name, input_value) => {
         this.setState({
@@ -188,14 +201,16 @@ class AddRubricComponent extends Component {
         ApiService.addRubric(rubric).then(res => {
             this.setState({
                 message: 'Rubric added successfully.',
-                showEditCriterion: true,
-                index: res.data
+                showEditRubricCard: false,
+                id: res.data
             });
-
+            this.state.criteria.forEach(
+                (c)=>
+                {
+                    ApiService.addExistedCriterionUnderRubric(res.data, c.id);
+                }
+            )
         });
-    }
-    backToRubricPage = (e) => {
-        this.props.history.push('/rubrics');
     }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
@@ -206,15 +221,22 @@ class AddRubricComponent extends Component {
             <Card className="mx-auto mt-3" style={{ width: '95%' }}>
                 <Card.Body>
                     <Card.Title>Add Rubric</Card.Title>
-                    {!this.state.showEditCriterion ?
+                    {this.state.showEditRubricCard ?
                         <EditRubricCard
                             edit={this.editRubric}
                             name={this.state.name}
                             description={this.state.description}
                             publishDate={this.state.publishDate}
-                            save={this.saveRubric}></EditRubricCard> :
+                            cancel={()=>this.props.history.push('/rubrics')}
+                            save={this.saveRubric}
+                            ></EditRubricCard> :
                         [
-                            <ViewRubricCard name={this.state.name} description={this.state.description} publishDate={this.state.publishDate}></ViewRubricCard>,
+                            <ViewRubricCard
+                                name={this.state.name}
+                                description={this.state.description}
+                                publishDate={this.state.publishDate}
+                                editRubric={() => { this.setState({ showEditRubricCard: true }) }}
+                                type='add'></ViewRubricCard>,
                             <Card className="mx-auto mt-1">
                                 <Card.Body>
                                     <Form>
@@ -251,6 +273,7 @@ class AddRubricComponent extends Component {
                                                 {
                                                     this.state.newCriterion !== '' ?
                                                         <EditCriterionCard
+                                                            key={this.state.newCriterion.id}
                                                             index={this.state.newCriterion.id}
                                                             name={this.state.newCriterion.name}
                                                             description={this.state.newCriterion.description}
@@ -269,15 +292,18 @@ class AddRubricComponent extends Component {
                                                     c => typeof (c.view) === 'undefined' ||
                                                         c.view ?
                                                         <ViewCriterionCard
+                                                            key={c.id}
                                                             index={c.id}
                                                             name={c.name}
                                                             description={c.description}
                                                             ratings={c.ratings}
                                                             reusable={c.reusable}
+                                                            published={false}
                                                             deleteExistedCriterion={this.deleteExistedCriterion}
                                                             changeToEditCriterion={this.changeToEditCriterion}
                                                         ></ViewCriterionCard> :
                                                         <EditCriterionCard
+                                                            key={c.id}
                                                             index={c.id}
                                                             name={c.name}
                                                             description={c.description}
@@ -291,7 +317,7 @@ class AddRubricComponent extends Component {
                                             </Col>
                                         </Form.Group>
                                         <div>
-                                            <Button variant="outline-secondary" onClick={this.backToRubricPage}>Save</Button> </div>
+                                            <Button variant="outline-secondary" onClick={()=>this.props.history.push('/rubrics')}>Save</Button> </div>
                                     </Form>
                                 </Card.Body>
                             </Card>]}
