@@ -41,11 +41,6 @@ class ViewRubricCard extends Component {
                     <Form>
                         {this.state.type === 'add' ?
                             ''
-                            // <Form.Group as={Row} controlId="formGridOperation">
-                            //     <Col>
-                            //         <Button className="float-right" variant="outline-secondary ml-1" onClick={this.state.editRubric}>Edit</Button>
-                            //     </Col>
-                            // </Form.Group> 
                             :
                             <Form.Group as={Row} controlId="formGridOperation">
                                 <Col>

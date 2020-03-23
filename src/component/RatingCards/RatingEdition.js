@@ -44,9 +44,9 @@ class RatingEdition extends Component {
     }
     render() {
         return (
-            <Card>
+            <Card bg="warning">
                 <Form>
-                    <Button className="float-right" variant="light" size="sm" onClick={this.deleteRating}>x</Button>
+                    <Button className="float-right" variant="warning" size="sm" onClick={this.deleteRating}>x</Button>
                     <Card.Text>
                         <textarea placeholder="description"
                             name="description"

@@ -225,7 +225,6 @@ class GetRubricComponent extends Component {
         }
     }
     deleteExistedCriterion = (criterionId) => {
-        // don't know why this is not working
         this.setState({
             criteria: this.state.criteria.filter(c => c.id !== criterionId)
         })
@@ -293,7 +292,7 @@ class GetRubricComponent extends Component {
                                     <Form.Group as={Row} controlId="formGridShowExistedCriterion">
                                         <Col>
                                             {this.state.criteria.map(
-                                                c => <ViewCriterionCard index={c.id} name={c.name} description={c.description} ratings={c.ratings}
+                                                c => <ViewCriterionCard key={c.id} index={c.id} name={c.name} description={c.description} ratings={c.ratings}
                                                     reusable={c.reusable} published={this.state.published}
                                                     deleteExistedCriterion={() => this.deleteExistedCriterion(c.id)}
                                                     changeToEditCriterion={this.changeToEditCriterion} ></ViewCriterionCard>)}
@@ -304,7 +303,7 @@ class GetRubricComponent extends Component {
                                 <Form>
                                     <Form.Group as={Row}>
                                         <Col>
-                                            <Button variant="outline-info" className="float-right" onClick={() => { this.setState({ showEditCriterionCard: true }) }}>Add or Import Criterion</Button>
+                                            <Button variant="info" className="float-right" onClick={() => { this.setState({ showEditCriterionCard: true }) }}>Add or Import Criterion</Button>
                                         </Col>
                                     </Form.Group>
                                     {this.state.showEditCriterionCard ?//only show import area and editcriterion card when we click addorimport button
@@ -379,7 +378,7 @@ class GetRubricComponent extends Component {
                                                         publishDate={this.state.publishDate}
                                                         ratings={c.ratings}
                                                         ratingCount='r0'
-                                                        deleteCriterionBlock={() => this.setState({ newCriterion: '' })}
+                                                        deleteCriterionBlock={() => this.deleteExistedCriterion(c.id)}
                                                         finishUpdateCriterion={this.finishUpdateCriterion}
                                                         type='update'></EditCriterionCard>
                                             )}
