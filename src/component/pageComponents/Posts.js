@@ -2,6 +2,8 @@ import React from 'react';
 import { Table, Button, Badge, Accordion, Card } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 const Posts = ({ posts, loading, get, edit, copynedit, category, chooseC }) => {
     if (loading) {
         return <h2>Loading...</h2>;
@@ -68,6 +70,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, category, chooseC }) => {
                         },
                         sort: true
                     }, {
+                        dataField: 'publishDate',
                         text: 'Publish Date',
                         headerStyle: (colum, colIndex) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
@@ -91,6 +94,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, category, chooseC }) => {
                         dataField: 'lastUpdatedDate',
                         order: 'desc'
                     }]}
+                    pagination={ paginationFactory() }
                     hover
                 />
             </div>
