@@ -7,6 +7,14 @@ import EditRubricCard from './RubricCards/EditRubricCard';
 import ViewRubricCard from './RubricCards/ViewRubricCard';
 import EditCriterionCard from './CriterionCards/EditCriterionCard';
 import ViewCriterionCard from './CriterionCards/ViewCriterionCard';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+};
 class AddRubricComponent extends Component {
 
     constructor(props) {
@@ -29,8 +37,7 @@ class AddRubricComponent extends Component {
                 message: null
             }
         }
-        else
-        {
+        else {
             this.state = {
                 id: '', //rubric id, (will get this value after we click 'next' button to save the rubric)
                 name: '',
@@ -58,6 +65,8 @@ class AddRubricComponent extends Component {
         this.deleteExistedCriterion = this.deleteExistedCriterion.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleOpenAutoComplete = this.handleOpenAutoComplete.bind(this);
+
+        this.onDragEnd = this.onDragEnd.bind(this);
     }
     componentDidMount() {
         ApiService.fetchCriteria()
@@ -205,8 +214,7 @@ class AddRubricComponent extends Component {
                 id: res.data
             });
             this.state.criteria.forEach(
-                (c)=>
-                {
+                (c) => {
                     ApiService.addExistedCriterionUnderRubric(res.data, c.id);
                 }
             )
@@ -215,6 +223,21 @@ class AddRubricComponent extends Component {
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
+    onDragEnd(result) {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+        ApiService.changeCriterionOrderUnderRubric(this.state.id, result.source.index, result.destination.index);
+        const criteria = reorder(
+            this.state.criteria,
+            result.source.index,
+            result.destination.index
+        );
+        this.setState({
+            criteria: criteria
+        });
+    }
 
     render() {
         return (
@@ -227,9 +250,9 @@ class AddRubricComponent extends Component {
                             name={this.state.name}
                             description={this.state.description}
                             publishDate={this.state.publishDate}
-                            cancel={()=>this.props.history.push('/rubrics')}
+                            cancel={() => this.props.history.push('/rubrics')}
                             save={this.saveRubric}
-                            ></EditRubricCard> :
+                        ></EditRubricCard> :
                         [
                             <ViewRubricCard
                                 name={this.state.name}
@@ -288,36 +311,60 @@ class AddRubricComponent extends Component {
                                         </Form.Group>
                                         <Form.Group as={Row} controlId="formGridShowExistedCriterion">
                                             <Col>
-                                                {this.state.criteria.map(
-                                                    c => typeof (c.view) === 'undefined' ||
-                                                        c.view ?
-                                                        <ViewCriterionCard
-                                                            key={c.id}
-                                                            index={c.id}
-                                                            name={c.name}
-                                                            description={c.description}
-                                                            ratings={c.ratings}
-                                                            reusable={c.reusable}
-                                                            published={false}
-                                                            deleteExistedCriterion={this.deleteExistedCriterion}
-                                                            changeToEditCriterion={this.changeToEditCriterion}
-                                                        ></ViewCriterionCard> :
-                                                        <EditCriterionCard
-                                                            key={c.id}
-                                                            index={c.id}
-                                                            name={c.name}
-                                                            description={c.description}
-                                                            publishDate={this.state.publishDate}
-                                                            ratings={c.ratings}
-                                                            ratingCount='r0'
-                                                            deleteCriterionBlock={this.deleteCriterionBlock}
-                                                            finishUpdateCriterion={this.finishUpdateCriterion}
-                                                            type='update'></EditCriterionCard>
-                                                )}
+                                                <DragDropContext onDragEnd={this.onDragEnd}>
+                                                    <Droppable droppableId="droppable">
+                                                        {(provided, snapshot) => (
+                                                            <div
+                                                                {...provided.droppableProps}
+                                                                ref={provided.innerRef}
+                                                            >
+                                                                {this.state.criteria.map((c, index) => (
+                                                                    <Draggable key={c.id + ''} draggableId={c.id + ''} index={index}>
+                                                                        {(provided, snapshot) => (
+                                                                            <div
+                                                                                ref={provided.innerRef}
+                                                                                {...provided.draggableProps}
+                                                                                {...provided.dragHandleProps}
+                                                                            >
+                                                                                {
+                                                                                    typeof (c.view) === 'undefined' ||
+                                                                                        c.view ?
+                                                                                        <ViewCriterionCard
+                                                                                            key={c.id}
+                                                                                            index={c.id}
+                                                                                            name={c.name}
+                                                                                            description={c.description}
+                                                                                            ratings={c.ratings}
+                                                                                            reusable={c.reusable}
+                                                                                            published={false}
+                                                                                            deleteExistedCriterion={this.deleteExistedCriterion}
+                                                                                            changeToEditCriterion={this.changeToEditCriterion}
+                                                                                        ></ViewCriterionCard> :
+                                                                                        <EditCriterionCard
+                                                                                            key={c.id}
+                                                                                            index={c.id}
+                                                                                            name={c.name}
+                                                                                            description={c.description}
+                                                                                            publishDate={this.state.publishDate}
+                                                                                            ratings={c.ratings}
+                                                                                            ratingCount='r0'
+                                                                                            deleteCriterionBlock={this.deleteCriterionBlock}
+                                                                                            finishUpdateCriterion={this.finishUpdateCriterion}
+                                                                                            type='update'></EditCriterionCard>
+                                                                                }
+                                                                            </div>
+                                                                        )}
+                                                                    </Draggable>
+                                                                ))}
+                                                                {provided.placeholder}
+                                                            </div>
+                                                        )}
+                                                    </Droppable>
+                                                </DragDropContext>
                                             </Col>
                                         </Form.Group>
                                         <div>
-                                            <Button variant="outline-secondary" onClick={()=>this.props.history.push('/rubrics')}>Save</Button> </div>
+                                            <Button variant="outline-secondary" onClick={() => this.props.history.push('/rubrics')}>Save</Button> </div>
                                     </Form>
                                 </Card.Body>
                             </Card>]}

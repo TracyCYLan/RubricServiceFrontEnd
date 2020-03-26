@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import { Button, InputGroup, FormControl, Row, Col } from 'react-bootstrap';
-import PaginationComponent from "../pageComponents/Pagination";
 import Posts from "../pageComponents/Posts";
 class ListRubricComponent extends Component {
 
@@ -10,14 +9,11 @@ class ListRubricComponent extends Component {
         this.state = {
             rubrics: [],
             message: null,
-            postsPerPage: 10,
-            currentPage: 1,
             loading: false,
             searchingText: ''
         }
         this.addRubric = this.addRubric.bind(this);
         this.reloadRubricList = this.reloadRubricList.bind(this);
-        this.paginate = this.paginate.bind(this);
         this.editRubric = this.editRubric.bind(this);
         this.copyneditRubric = this.copyneditRubric.bind(this);
         this.getRubric = this.getRubric.bind(this);
@@ -32,10 +28,10 @@ class ListRubricComponent extends Component {
         // this.setState({ loading: true }); //if this line is not commented. the whole page will refresh somehow
         ApiService.fetchRubrics()
             .then((res) => {
-                this.setState({ 
+                this.setState({
                     rubrics: res.data,
-                    loading:false
-                     })
+                    loading: false
+                })
             });
     }
     onChange = (e) => {
@@ -72,9 +68,6 @@ class ListRubricComponent extends Component {
         this.props.history.push('/add-rubric');
     }
 
-    paginate(pageNumber) {
-        this.setState({ currentPage: pageNumber })
-    }
     search = (e) => {
         this.setState({ searchingText: this.state.searchingText.trim() })
         if (this.state.searchingText.length === 0) {
@@ -93,7 +86,6 @@ class ListRubricComponent extends Component {
     }
 
     render() {
-        const currentPosts = this.state.rubrics.slice(this.state.currentPage * this.state.postsPerPage - this.state.postsPerPage, this.state.currentPage * this.state.postsPerPage);
         return (<div>
             {
                 !this.state.loading ?
@@ -122,18 +114,13 @@ class ListRubricComponent extends Component {
                         </Col>
                     </Row>,
                     <Posts
-                        posts={typeof (currentPosts) === 'string' ? [] : currentPosts}
+                        posts={this.state.rubrics}
                         loading={this.state.loading}
                         edit={this.editRubric}
                         copynedit={this.copyneditRubric}
                         get={this.getRubric}
-                        category='rubric' />,
-                    <PaginationComponent
-                        postsPerPage={this.state.postsPerPage}
-                        totalPosts={this.state.rubrics.length}
-                        paginate={this.paginate}
-                        currentPage={this.state.currentPage}
-                    />] : <h2>Loading...</h2>
+                        category='rubric' />
+                    ] : <h2>Loading...</h2>
             }</div>);
     }
 

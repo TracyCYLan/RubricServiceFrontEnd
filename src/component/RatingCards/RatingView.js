@@ -21,7 +21,7 @@ class RatingView extends Component {
 
     render() {
         return (
-                <Card border="dark">
+                <Card bg="warning">
                     <Card.Body>
                     <Card.Text>{this.state.description}</Card.Text>
                     </Card.Body>

@@ -18,32 +18,28 @@ class ViewCriterionCard extends Component {
     }
     render() {
         return (
-            <Card className="mb-2">
+            <Card className="mb-2" border="dark">
                 <Card.Header className="text-primary">
                     {this.state.name}
                     {//if published: don't show any button 
-                    //if reusable: allow to delete only; else, allow edit and delete
-                        this.state.published?'':
-                        this.state.reusable ?
-                        <Button variant="outline-danger float-right" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
-                        :
-                        <span>
-                            <Button variant="outline-warning float-right" size="sm" onClick={() => this.state.changeToEditCriterion(this.state.criterionId)}>Edit</Button>
-                            <Button variant="outline-danger float-right" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
-                        </span>
+                        //if reusable: allow to delete only; else, allow edit and delete
+                        this.state.published ? '' :
+                            this.state.reusable ?
+                                <Button variant="danger float-right" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
+                                :
+                                <span class="float-right">
+                                    <Button variant="secondary" size="sm" onClick={() => this.state.changeToEditCriterion(this.state.criterionId)}>Edit</Button>
+                                    <Button variant="danger ml-1" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
+                                </span>
                     }
                 </Card.Header>
+                    <Card.Body>
+                        <Card.Text>{this.state.description}</Card.Text>
+                    </Card.Body>
                 <CardGroup>
-                    <Card>
-                        <Card.Body>
-                            <Card.Text>{this.state.description}</Card.Text>
-                        </Card.Body>
-                    </Card>
-                    <CardGroup>
-                        {this.state.ratings.map(
-                            rating => <RatingV key={rating.id} value={rating.value} index={rating.id}>{rating.description}</RatingV>
-                        )}
-                    </CardGroup>
+                    {this.state.ratings.map(
+                        rating => <RatingV key={rating.id} value={rating.value} index={rating.id}>{rating.description}</RatingV>
+                    )}
                 </CardGroup>
             </Card>
         )
