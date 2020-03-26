@@ -7,6 +7,14 @@ import EditRubricCard from './RubricCards/EditRubricCard';
 import ViewRubricCard from './RubricCards/ViewRubricCard';
 import EditCriterionCard from './CriterionCards/EditCriterionCard';
 import ViewCriterionCard from './CriterionCards/ViewCriterionCard';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+};
 class GetRubricComponent extends Component {
 
     constructor(props) {
@@ -43,6 +51,8 @@ class GetRubricComponent extends Component {
 
         this.handleOpenAutoComplete = this.handleOpenAutoComplete.bind(this);
         this.handleChange = this.handleChange.bind(this);
+
+        this.onDragEnd = this.onDragEnd.bind(this);
     }
 
     componentDidMount() {
@@ -244,6 +254,21 @@ class GetRubricComponent extends Component {
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
+    onDragEnd(result) {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+        ApiService.changeCriterionOrderUnderRubric(this.state.id,result.source.index,result.destination.index);
+        const criteria = reorder(
+            this.state.criteria,
+            result.source.index,
+            result.destination.index
+        );
+        this.setState({
+            criteria: criteria
+        });
+    }
     render() {
         return (
             [<Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
@@ -303,7 +328,7 @@ class GetRubricComponent extends Component {
                                 <Form>
                                     <Form.Group as={Row}>
                                         <Col>
-                                            <Button variant="info" className="float-right" onClick={() => { this.setState({ showEditCriterionCard: true }) }}>Add or Import Criterion</Button>
+                                            <Button variant="info" className="float-right" onClick={() => { this.setState({ showEditCriterionCard: !this.state.showEditCriterionCard }) }}>Add or Import Criterion</Button>
                                         </Col>
                                     </Form.Group>
                                     {this.state.showEditCriterionCard ?//only show import area and editcriterion card when we click addorimport button
@@ -356,36 +381,59 @@ class GetRubricComponent extends Component {
                                         ] : <div></div>}
                                     <Form.Group as={Row} controlId="formGridShowExistedCriterion">
                                         <Col>
-                                            {this.state.criteria.map(
-                                                c => typeof (c.view) === 'undefined' ||
-                                                    c.view ?
-                                                    <ViewCriterionCard
-                                                        key={c.id}
-                                                        index={c.id}
-                                                        name={c.name}
-                                                        description={c.description}
-                                                        ratings={c.ratings}
-                                                        reusable={c.reusable}
-                                                        published={this.state.published}
-                                                        deleteExistedCriterion={() => this.deleteExistedCriterion(c.id)}
-                                                        changeToEditCriterion={this.changeToEditCriterion}
-                                                    ></ViewCriterionCard> :
-                                                    <EditCriterionCard
-                                                        key={c.id}
-                                                        index={c.id}
-                                                        name={c.name}
-                                                        description={c.description}
-                                                        publishDate={this.state.publishDate}
-                                                        ratings={c.ratings}
-                                                        ratingCount='r0'
-                                                        deleteCriterionBlock={() => this.deleteExistedCriterion(c.id)}
-                                                        finishUpdateCriterion={this.finishUpdateCriterion}
-                                                        type='update'></EditCriterionCard>
-                                            )}
+                                            <DragDropContext onDragEnd={this.onDragEnd}>
+                                                <Droppable droppableId="droppable">
+                                                    {(provided, snapshot) => (
+                                                        <div
+                                                            {...provided.droppableProps}
+                                                            ref={provided.innerRef}
+                                                        >
+                                                            {this.state.criteria.map((c, index) => (
+                                                                <Draggable key={c.id + ''} draggableId={c.id + ''} index={index}>
+                                                                    {(provided, snapshot) => (
+                                                                        <div
+                                                                            ref={provided.innerRef}
+                                                                            {...provided.draggableProps}
+                                                                            {...provided.dragHandleProps}
+                                                                        >
+                                                                            {typeof (c.view) === 'undefined' ||
+                                                                                c.view ?
+                                                                                <ViewCriterionCard
+                                                                                    key={c.id}
+                                                                                    index={c.id}
+                                                                                    name={c.name}
+                                                                                    description={c.description}
+                                                                                    ratings={c.ratings}
+                                                                                    reusable={c.reusable}
+                                                                                    published={this.state.published}
+                                                                                    deleteExistedCriterion={() => this.deleteExistedCriterion(c.id)}
+                                                                                    changeToEditCriterion={this.changeToEditCriterion}
+                                                                                ></ViewCriterionCard> :
+                                                                                <EditCriterionCard
+                                                                                    key={c.id}
+                                                                                    index={c.id}
+                                                                                    name={c.name}
+                                                                                    description={c.description}
+                                                                                    publishDate={this.state.publishDate}
+                                                                                    ratings={c.ratings}
+                                                                                    ratingCount='r0'
+                                                                                    deleteCriterionBlock={() => this.deleteExistedCriterion(c.id)}
+                                                                                    finishUpdateCriterion={this.finishUpdateCriterion}
+                                                                                    type='update'></EditCriterionCard>
+                                                                            }
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            ))}
+                                                            {provided.placeholder}
+                                                        </div>
+                                                    )}
+                                                </Droppable>
+                                            </DragDropContext>
                                         </Col>
                                     </Form.Group>
                                     <div>
-                                        {this.state.showEditCriterionCard?<Button variant="outline-secondary" onClick={() => this.setState({ showEditCriterionCard: false })}>Done</Button>:''}
+                                        {this.state.showEditCriterionCard ? <Button variant="outline-secondary" onClick={() => this.setState({ showEditCriterionCard: false })}>Done</Button> : ''}
                                     </div>
                                 </Form>
                             }

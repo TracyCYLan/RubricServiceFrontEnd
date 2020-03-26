@@ -26,15 +26,17 @@ class ApiService {
     addRubric(rubric) {
         return axios.post(API_BASE_URL, rubric);
     }
-    
+
     addExistedCriterionUnderRubric(rubricId, criterionId) {
         return axios.post(API_BASE_URL + "/" + rubricId + "/criterion/" + criterionId);
     }
-    
+
     removeCriterionUnderRubric(rubricId, criterionId) {
         return axios.delete(API_BASE_URL + "/" + rubricId + "/criterion/" + criterionId);
     }
-
+    changeCriterionOrderUnderRubric(rubricId, order1, order2) {
+        return axios.patch(API_BASE_URL + "/" + rubricId + "/criteria/" + order1 + "/" + order2);
+    }
     editRubric(rubric) {
         return axios.patch(API_BASE_URL + '/' + rubric.id, rubric);
     }
