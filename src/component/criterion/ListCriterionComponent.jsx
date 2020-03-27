@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import { Button, InputGroup, FormControl, Row, Col } from 'react-bootstrap';
-import PaginationComponent from "../pageComponents/Pagination";
 import Posts from "../pageComponents/Posts";
 class ListCriterionComponent extends Component {
     constructor(props) {
@@ -9,18 +8,17 @@ class ListCriterionComponent extends Component {
         this.state = {
             criteria: [],
             message: null,
-            postsPerPage: 10,
-            currentPage: 1,
             loading: false,
             searchingText: ''
         }
         this.addCriterion = this.addCriterion.bind(this);
         this.reloadCriterionList = this.reloadCriterionList.bind(this);
-        this.paginate = this.paginate.bind(this);
         this.editCriterion = this.editCriterion.bind(this);
         this.copyneditCriterion = this.copyneditCriterion.bind(this);
         this.getCriterion = this.getCriterion.bind(this);
         this.search = this.search.bind(this);
+
+        this.getTag = this.getTag.bind(this);
     }
 
     componentDidMount() {
@@ -39,7 +37,7 @@ class ListCriterionComponent extends Component {
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
         if (e.target.value.length === 0) {
-            this.setState({loading:true});
+            this.setState({ loading: true });
             this.reloadCriterionList();
         }
     }
@@ -71,15 +69,12 @@ class ListCriterionComponent extends Component {
         window.localStorage.setItem("criterionId", id);
         this.props.history.push('/edit-criterion');
     }
-    paginate(pageNumber) {
-        this.setState({ currentPage: pageNumber })
-    }
     search = (e) => {
         this.setState({ searchingText: this.state.searchingText.trim() })
         if (this.state.searchingText.length === 0) {
-            this.setState({loading:true});
+            this.setState({ loading: true });
             this.reloadCriterionList();
-            this.setState({loading:false});
+            this.setState({ loading: false });
         }
         else {
             ApiService.searchCriterion(this.state.searchingText)
@@ -92,8 +87,11 @@ class ListCriterionComponent extends Component {
         this.setState({ searchingText: "" });
         this.reloadCriterionList();
     }
+    getTag = (id) => {
+        window.localStorage.setItem("tagId", id);
+        this.props.history.push('/tag');
+    }
     render() {
-        const currentPosts = this.state.criteria.slice(this.state.currentPage * this.state.postsPerPage - this.state.postsPerPage, this.state.currentPage * this.state.postsPerPage);
         return (<div>
             {
                 !this.state.loading ?
@@ -122,18 +120,14 @@ class ListCriterionComponent extends Component {
                         </Col>
                     </Row>,
                     <Posts
-                        posts={typeof (currentPosts) === 'string' ? [] : currentPosts}
+                        posts={this.state.criteria}
                         loading={this.state.loading}
                         edit={this.editCriterion}
                         copynedit={this.copyneditCriterion}
                         get={this.getCriterion}
-                        category='criterion' />,
-                    <PaginationComponent
-                        postsPerPage={this.state.postsPerPage}
-                        totalPosts={this.state.criteria.length}
-                        paginate={this.paginate}
-                        currentPage={this.state.currentPage}
-                    />] : <h2>Loading...</h2>
+                        getTag={this.getTag}
+                        category='criterion' />
+                    ] : <h2>Loading...</h2>
             }</div>);
     }
 

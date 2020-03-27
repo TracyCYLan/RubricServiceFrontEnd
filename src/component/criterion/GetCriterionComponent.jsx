@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Button, Card, Badge, CardGroup, Modal } from 'react-bootstrap';
+import { Button, Card, Badge, CardGroup, Modal,Breadcrumb } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingView';
 class GetCriterionComponent extends Component {
 
@@ -88,7 +88,11 @@ class GetCriterionComponent extends Component {
                     </Button>
                 </Modal.Footer>
             </Modal>,
-            <Card className="mx-auto mt-2" style={{ width: '95%' }}>
+            <Breadcrumb className="mx-auto mt-2">
+            <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
+            <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
+          </Breadcrumb>,
+            <Card className="mx-auto mt-2">
                 <Card.Body>
                     <Card.Title as="h3">{this.state.name}
                         <Button className="float-right" variant="outline-danger ml-1" hidden={this.state.published} onClick={() => { this.setState({ showModal: true }) }}>Delete</Button>
@@ -100,7 +104,7 @@ class GetCriterionComponent extends Component {
                         {
                             this.state.tags.map(
                                 function (tag) {
-                                    return ([' ', <Badge variant="info">{tag.value}</Badge>])
+                                    return ([' ', <Badge variant="secondary">{tag.value}</Badge>])
                                 }
                             )
                         }

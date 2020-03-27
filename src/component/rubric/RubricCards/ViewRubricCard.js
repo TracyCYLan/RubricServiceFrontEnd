@@ -44,12 +44,14 @@ class ViewRubricCard extends Component {
                             :
                             <Form.Group as={Row} controlId="formGridOperation">
                                 <Col>
-                                    <h3>{this.state.name}
-                                        <Button className="float-right" variant="outline-danger ml-1" hidden={this.state.published} onClick={this.state.preDelete}>Delete</Button>
-                                        <Button className="float-right" variant="outline-secondary ml-1" hidden={!this.state.published} onClick={this.state.copyneditRubric}>Copy</Button>
-                                        <Button className="float-right" variant="outline-secondary ml-1" hidden={this.state.published} onClick={() => this.state.editRubric(this.state.id)}>Edit</Button>
-                                    </h3>
+                                    <h3>{this.state.name}</h3>
                                 </Col>
+                                <Col>
+                                    <Button className="float-right" variant="outline-danger ml-1" hidden={this.state.published} onClick={this.state.preDelete}>Delete</Button>
+                                    <Button className="float-right" variant="outline-secondary ml-1" hidden={!this.state.published} onClick={this.state.copyneditRubric}>Copy</Button>
+                                    <Button className="float-right" variant="outline-secondary ml-1" hidden={this.state.published} onClick={() => this.state.editRubric(this.state.id)}>Edit</Button>
+                                </Col>
+
                             </Form.Group>
                         }
                         <Form.Group as={Row} controlId="formGridName">

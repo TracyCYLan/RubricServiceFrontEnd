@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, CardGroup, Form, Card } from 'react-bootstrap';
+import { Row, Col, Button, CardGroup, Form, Card, Breadcrumb } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingEdition';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
@@ -129,8 +129,12 @@ class AddCriterionComponent extends Component {
                 />
             )
         }
-        return (
-            <Card className="mx-auto mt-3" style={{ width: '95%' }}>
+        return [
+            <Breadcrumb className="mx-auto mt-2">
+            <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
+            <Breadcrumb.Item active>Add Criterion</Breadcrumb.Item>
+          </Breadcrumb>,
+            <Card className="mx-auto mt-3">
                 <Card.Body>
                     <Card.Title>Add Criterion</Card.Title>
                     <Form>
@@ -143,7 +147,7 @@ class AddCriterionComponent extends Component {
                         <Form.Group as={Row} controlId="formGridDescription">
                             <Form.Label column md={2}>Description</Form.Label>
                             <Col md={10}>
-                                <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                                <Form.Control as="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="formGridDate">
@@ -171,7 +175,7 @@ class AddCriterionComponent extends Component {
                                             <Rating key={rating.id} value={rating.value} index={rating.id} delete={this.deleteRating} edit={this.editRating}>{rating.description}</Rating>
                                     )
                                 }
-                                <Button variant="outline-secondary" onClick={this.addRating}>+</Button>
+                                <Button variant="secondary" onClick={this.addRating}>+</Button>
                             </CardGroup>
                         </Form.Group>
                         <div>
@@ -179,7 +183,7 @@ class AddCriterionComponent extends Component {
                     </Form>
                 </Card.Body>
             </Card>
-        );
+        ];
     }
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, CardGroup, Form, Card, Modal } from 'react-bootstrap';
+import { Row, Col, Button, CardGroup, Form, Card, Modal,Breadcrumb } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingEdition';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
@@ -26,7 +26,7 @@ class EditCriterionComponent extends Component {
         this.addRating = this.addRating.bind(this);
         this.editRating = this.editRating.bind(this);
         this.handleTag = this.handleTag.bind(this);
-        this.backToListPage = this.backToListPage.bind(this);
+        this.getCriterion = this.getCriterion.bind(this);
     }
 
     componentDidMount() {
@@ -89,7 +89,6 @@ class EditCriterionComponent extends Component {
     handleTag(value) {
         this.setState({ tags: value });
     }
-    backToListPage = (e) => this.props.history.push('/criteria');
     saveCriterion = (e) => {
         e.preventDefault();
         let criterion = {
@@ -104,6 +103,10 @@ class EditCriterionComponent extends Component {
                 this.setState({ message: 'Criterion updated successfully.' });
                 this.props.history.push('/criteria');
             });
+    }
+    getCriterion() {
+        window.localStorage.setItem("criterionId", this.state.id);
+        this.props.history.push('/criterion');
     }
     render() {
         const getHintTags = this.state.hintTags;
@@ -143,7 +146,7 @@ class EditCriterionComponent extends Component {
                     </Modal.Header>
                     <Modal.Body>The modification will not be saved</Modal.Body>
                     <Modal.Footer>
-                        <Button variant="outline-danger" onClick={() => this.backToListPage()}>
+                        <Button variant="outline-danger" onClick={this.getCriterion}>
                             Leave
                     </Button>
                         <Button variant="outline-secondary" onClick={() => this.setState({ showModal: false })}>
@@ -151,7 +154,12 @@ class EditCriterionComponent extends Component {
                     </Button>
                     </Modal.Footer>
                 </Modal>,
-                <Card className="mx-auto mt-3" style={{ width: '95%' }}>
+                <Breadcrumb className="mx-auto mt-2">
+                <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={this.getCriterion}>View Criterion</Breadcrumb.Item>
+                <Breadcrumb.Item active>Edit Criterion</Breadcrumb.Item>
+              </Breadcrumb>,
+                <Card className="mx-auto mt-3">
                     <Card.Body>
                         <Card.Title>Edit Criterion</Card.Title>
                         <Form>
@@ -164,7 +172,7 @@ class EditCriterionComponent extends Component {
                             <Form.Group as={Row} controlId="formGridDescription">
                                 <Form.Label column md={2}>Description</Form.Label>
                                 <Col md={10}>
-                                    <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                                    <Form.Control as="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
                                 </Col>
                             </Form.Group>
                             <Form.Group as={Row} controlId="formGridDate">
