@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, Form, Card } from 'react-bootstrap';
+import { Row, Col, Button, Form, Card, Breadcrumb } from 'react-bootstrap';
 import { Autocomplete } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
 import EditRubricCard from './RubricCards/EditRubricCard';
@@ -240,8 +240,12 @@ class AddRubricComponent extends Component {
     }
 
     render() {
-        return (
-            <Card className="mx-auto mt-3" style={{ width: '95%' }}>
+        return [
+            <Breadcrumb className="mx-auto mt-2">
+                <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
+                <Breadcrumb.Item active>Add Rubric</Breadcrumb.Item>
+            </Breadcrumb>,
+            <Card className="mx-auto mt-3">
                 <Card.Body>
                     <Card.Title>Add Rubric</Card.Title>
                     {this.state.showEditRubricCard ?
@@ -252,6 +256,7 @@ class AddRubricComponent extends Component {
                             publishDate={this.state.publishDate}
                             cancel={() => this.props.history.push('/rubrics')}
                             save={this.saveRubric}
+                            type='add'
                         ></EditRubricCard> :
                         [
                             <ViewRubricCard
@@ -370,7 +375,7 @@ class AddRubricComponent extends Component {
                             </Card>]}
                 </Card.Body>
             </Card>
-        );
+        ];
     }
 }
 

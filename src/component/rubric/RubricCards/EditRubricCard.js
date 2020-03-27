@@ -10,7 +10,8 @@ class EditRubricCard extends Component {
             publishDate: props.publishDate,
             editRubric: props.edit,
             save: props.save,
-            cancel:props.cancel
+            cancel: props.cancel,
+            type: props.type
         }
     }
     onChange = (e) => {
@@ -33,7 +34,7 @@ class EditRubricCard extends Component {
                         <Form.Group as={Row} controlId="formGridDescription">
                             <Form.Label column md={2}>Description</Form.Label>
                             <Col md={10}>
-                                <Form.Control type="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                                <Form.Control as="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="formGridDate">
@@ -44,8 +45,11 @@ class EditRubricCard extends Component {
                         </Form.Group>
                         <Form.Group as={Row} controlId="formGridNextBtn">
                             <Col>
-                                <Button className="float-right" variant="outline-dark" onClick={this.state.cancel}>Cancel</Button>
-                                <Button className="float-right" variant="outline-dark" onClick={this.state.save}>Save</Button>
+                                <Button variant="outline-danger float-right ml-1" onClick={this.state.cancel}>Cancel</Button>
+                                <Button
+                                    variant="outline-dark float-right"
+                                    onClick={this.state.save}>{this.state.type === 'add' ? 'Next' : 'Save'}
+                                </Button>
                             </Col>
                         </Form.Group>
                     </Form>

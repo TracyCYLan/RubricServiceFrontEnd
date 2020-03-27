@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, Form, Card, Modal } from 'react-bootstrap';
+import { Row, Col, Button, Form, Card, Modal,Breadcrumb } from 'react-bootstrap';
 import { Autocomplete } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
 import EditRubricCard from './RubricCards/EditRubricCard';
@@ -76,7 +76,7 @@ class GetRubricComponent extends Component {
                     description: rubric.description,
                     criteria: rubric.criteria,
                     published: rubric.published,
-                    publishDate: new Date(rubric.publishDate).toLocaleDateString('fr-CA')
+                    publishDate: rubric.publishDate === null ? '' : new Date(rubric.publishDate).toLocaleDateString('fr-CA')
                 })
             });
     }
@@ -98,9 +98,6 @@ class GetRubricComponent extends Component {
         this.setState({
             [input_name]: input_value
         })
-        if (new Date(this.state.publishDate) < new Date()) {
-            this.setState({ published: true })
-        }
     }
     cancelEditRubric = (e) => {
         ApiService.fetchRubricById(this.state.id).then(res => {
@@ -110,7 +107,7 @@ class GetRubricComponent extends Component {
                 name: rubric.name,
                 description: rubric.description,
                 published: rubric.published,
-                publishDate: new Date(rubric.publishDate).toLocaleDateString('fr-CA'),
+                publishDate: rubric.publishDate === null ? '' : new Date(rubric.publishDate).toLocaleDateString('fr-CA'),
                 showEditRubricCard: false
             })
         })
@@ -121,7 +118,7 @@ class GetRubricComponent extends Component {
             id: this.state.id,
             name: this.state.name,
             description: this.state.description,
-            publishDate: this.state.publishDate
+            publishDate: this.state.publishDate ===''?null:this.state.publishDate
         };
         ApiService.editRubric(rubric).then(res => {
             this.setState({
@@ -259,7 +256,7 @@ class GetRubricComponent extends Component {
         if (!result.destination) {
             return;
         }
-        ApiService.changeCriterionOrderUnderRubric(this.state.id,result.source.index,result.destination.index);
+        ApiService.changeCriterionOrderUnderRubric(this.state.id, result.source.index, result.destination.index);
         const criteria = reorder(
             this.state.criteria,
             result.source.index,
@@ -285,7 +282,11 @@ class GetRubricComponent extends Component {
                     </Button>
                 </Modal.Footer>
             </Modal>,
-            <Card className="mx-auto mt-2" style={{ width: '95%' }}>
+            <Breadcrumb className="mx-auto mt-2">
+            <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
+            <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
+          </Breadcrumb>,
+            <Card className="mx-auto mt-2">
                 <Card.Body>
                     {this.state.loading ? '' :
                         (!this.state.published && this.state.showEditRubricCard) ?
@@ -297,6 +298,7 @@ class GetRubricComponent extends Component {
                                 published={this.state.published}
                                 cancel={this.cancelEditRubric}
                                 save={this.saveRubric}
+                                type='edit'
                             ></EditRubricCard>
                             :
                             <ViewRubricCard
