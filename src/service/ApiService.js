@@ -40,7 +40,9 @@ class ApiService {
     editRubric(rubric) {
         return axios.patch(API_BASE_URL + '/' + rubric.id, rubric);
     }
-
+    publishRubric(id){
+        return axios.put(API_BASE_URL+'/publish/'+id);
+    }
     fetchCriteria() {
         return axios.get(API_BASE_URL + '/criterion');
     }
@@ -67,7 +69,9 @@ class ApiService {
         };
         return axios.post("" + API_BASE_URL + '/criterion', newCriterion);
     }
-
+    publishCriterion(id){
+        return axios.put(API_BASE_URL+'/criterion/publish/'+id);
+    }
     editCriterion(criterion, ratings, tags) {
         const newCriterion = {
             id: criterion.id,

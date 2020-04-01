@@ -23,6 +23,7 @@ class ViewRubricCard extends Component {
                 preDelete: props.preDelete,//method will be called if clicked delete btn
                 editRubric: props.editRubric,
                 copyneditRubric: props.copyneditRubric,
+                publishRubric: props.publishRubric,
                 type: props.type
             }
         }
@@ -32,7 +33,15 @@ class ViewRubricCard extends Component {
         //pass the attribute name,attribute updated value, rating index to edit
         this.state.edit(e.target.name, e.target.value, this.state.index);
     }
-
+    publishRubric = () => {
+        if (this.state.type === 'view') {
+            this.setState({
+                publishDate: new Date().toLocaleDateString('fr-CA'),
+                published: true
+            })
+            this.state.publishRubric();
+        }
+    }
 
     render() {
         return (
@@ -75,7 +84,11 @@ class ViewRubricCard extends Component {
                                 <Form.Label>Publish Date</Form.Label>
                             </Col>
                             <Col md={10}>
-                                <Form.Label className="text-primary">{this.state.publishDate}</Form.Label>
+                                <Form.Label className="text-primary">
+                                    {this.state.type === 'view' && this.state.publishDate === '' ?
+                                        <Button variant="info" size="sm" onClick={this.publishRubric}>publish</Button>
+                                        : this.state.publishDate
+                                    }</Form.Label>
                             </Col>
                         </Form.Group>
                     </Form>

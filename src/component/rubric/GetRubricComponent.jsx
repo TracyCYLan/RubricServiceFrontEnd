@@ -48,6 +48,7 @@ class GetRubricComponent extends Component {
         this.deleteRubric = this.deleteRubric.bind(this);
         this.editRubric = this.editRubric.bind(this);
         this.saveRubric = this.saveRubric.bind(this);
+        this.publishRubric=this.publishRubric.bind(this);
 
         this.handleOpenAutoComplete = this.handleOpenAutoComplete.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -111,6 +112,14 @@ class GetRubricComponent extends Component {
                 showEditRubricCard: false
             })
         })
+    }
+    publishRubric = (id)=>{
+        ApiService.publishRubric(id).then(res=>
+            this.setState({
+                publishDate:new Date().toLocaleDateString('fr-CA'),
+                published:true
+            })
+        );  
     }
     saveRubric = (e) => {
         e.preventDefault();
@@ -309,6 +318,7 @@ class GetRubricComponent extends Component {
                                 preDelete={() => { this.setState({ showModal: true }) }}
                                 editRubric={() => { this.setState({ showEditRubricCard: true }) }}
                                 copyneditRubric={() => this.copyneditRubric(this.state.id)}
+                                publishRubric={()=>this.publishRubric(this.state.id)}
                                 type='view'>
                             </ViewRubricCard>
                     }

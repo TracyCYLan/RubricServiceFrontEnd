@@ -16,8 +16,8 @@ class ListCriterionComponent extends Component {
         this.editCriterion = this.editCriterion.bind(this);
         this.copyneditCriterion = this.copyneditCriterion.bind(this);
         this.getCriterion = this.getCriterion.bind(this);
+        this.publishCriterion = this.publishCriterion.bind(this);
         this.search = this.search.bind(this);
-
         this.getTag = this.getTag.bind(this);
     }
 
@@ -29,21 +29,30 @@ class ListCriterionComponent extends Component {
         ApiService.fetchCriteria()
             .then((res) => {
                 this.setState({
-                    criteria: res.data,
-                    loading: false
+                    criteria: res.data
                 })
             });
     }
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
         if (e.target.value.length === 0) {
-            this.setState({ loading: true });
             this.reloadCriterionList();
         }
     }
     getCriterion(id) {
         window.localStorage.setItem("criterionId", id);
         this.props.history.push('/criterion');
+    }
+    publishCriterion = (id) => {
+        ApiService.publishCriterion(id).then(res =>
+            this.setState({
+                criteria: this.state.criteria.map(c => {
+                    if (c.id === id)
+                        return {...c,publishDate:new Date(),published:true}
+                    return c
+                })
+            })
+        );
     }
     addCriterion() {
         window.localStorage.removeItem("criterionId");
@@ -72,9 +81,7 @@ class ListCriterionComponent extends Component {
     search = (e) => {
         this.setState({ searchingText: this.state.searchingText.trim() })
         if (this.state.searchingText.length === 0) {
-            this.setState({ loading: true });
             this.reloadCriterionList();
-            this.setState({ loading: false });
         }
         else {
             ApiService.searchCriterion(this.state.searchingText)
@@ -94,7 +101,6 @@ class ListCriterionComponent extends Component {
     render() {
         return (<div>
             {
-                !this.state.loading ?
                     [<h2 className="text-center mt-3">All Criteria</h2>,
                     <Row>
                         <Col lg={8} md={10}>
@@ -126,8 +132,9 @@ class ListCriterionComponent extends Component {
                         copynedit={this.copyneditCriterion}
                         get={this.getCriterion}
                         getTag={this.getTag}
+                        publishPost={this.publishCriterion}
                         category='criterion' />
-                    ] : <h2>Loading...</h2>
+                    ] 
             }</div>);
     }
 

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Table, Button, Badge,Col } from 'react-bootstrap';
+import { Table, Button, Badge, Col } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-const Posts = ({ posts, loading, get, edit, copynedit, getTag, category }) => {
+const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publishPost,test }) => {
     if (loading) {
         return <h2>Loading...</h2>;
     }
@@ -26,13 +26,13 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category }) => {
                                 style={{ cursor: "pointer", fontSize: "22px", fontFamily: "sans-serif" }}
                                 onClick={() => get(row.id)}>
                                 {row.name}</Col>,
-                                <Col class="ml-2">
-                                    {row.tags.map(
-                                        function (tag) {
-                                            return ([' ', <Button variant="secondary" size="sm" onClick={()=>getTag(tag.id)}>{tag.value}</Button>])
-                                        }
-                                    )}
-                                </Col>]
+                            <Col class="ml-2">
+                                {row.tags.map(
+                                    function (tag) {
+                                        return ([' ', <Button className="mt-1" variant="secondary" size="sm" onClick={() => getTag(tag.id)}>{tag.value}</Button>])
+                                    }
+                                )}
+                            </Col>]
                         },
                         sort: false
                     }, {
@@ -42,12 +42,15 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category }) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
                         formatter: (cellContent, row) => {
-                            return <span class="text-info"
+                            return <span class="text-info d-none d-lg-block"
                                 style={{ fontSize: "20px", fontFamily: "sans-serif" }}>
-                                {row.publishDate === null ? '--/--/----' : new Date(row.publishDate).toLocaleDateString()}
+                                {row.publishDate === null ? 
+                                <Button variant="info" style={{ width: '80%', height: '50%' }}
+                                onClick={() => publishPost(row.id)}>publish</Button> :
+                                new Date(row.publishDate).toLocaleDateString()}
                             </span>
                         },
-                        sort: true
+                        sort: false
                     },
                     {
                         text: 'Operation',
@@ -69,6 +72,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category }) => {
         );
     }
     else if (category === 'rubric') {
+
         return (
             <div class="mx-auto mt-2">
                 <BootstrapTable
@@ -95,7 +99,12 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category }) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
                         formatter: (cellContent, row) => {
-                            return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>{row.publishDate === null ? '--/--/----' : new Date(row.publishDate).toLocaleDateString()}</span>
+                            return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>
+                                {row.publishDate === null  ?
+                                    <Button variant="info" style={{ width: '80%', height: '50%' }}
+                                        onClick={() => publishPost(row.id)}>publish</Button> :
+                                    new Date(row.publishDate).toLocaleDateString()}
+                            </span>
                         },
                         sort: true
                     }, {
