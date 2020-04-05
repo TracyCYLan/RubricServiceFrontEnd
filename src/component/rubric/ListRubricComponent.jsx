@@ -40,7 +40,6 @@ class ListRubricComponent extends Component {
             this.reloadRubricList();
         }
     }
-
     getRubric(id) {
         window.localStorage.setItem("rubricId", id);
         this.props.history.push('/rubric');
@@ -51,6 +50,15 @@ class ListRubricComponent extends Component {
         this.props.history.push('/edit-rubric');
     }
 
+    publishRubric = (id)=>{
+        ApiService.publishRubric(id).then(res=>
+            this.setState({rubrics: this.state.rubrics.map(r=>{
+                    if(r.id===id)
+                        return {...r,publishDate:new Date()}
+                    return r
+            })})
+        );  
+    }
     copyneditRubric(rubric) {
         //send exactly the same content to add-rubric
         this.props.history.push(
@@ -119,6 +127,7 @@ class ListRubricComponent extends Component {
                         edit={this.editRubric}
                         copynedit={this.copyneditRubric}
                         get={this.getRubric}
+                        publishPost={this.publishRubric}
                         category='rubric' />
                     ] : <h2>Loading...</h2>
             }</div>);
