@@ -41,6 +41,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         headerStyle: (colum, colIndex) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
+                        // hidden: window.matchMedia("(max-width: 768px)"),
                         formatter: (cellContent, row) => {
                             return <span class="text-info d-none d-lg-block"
                                 style={{ fontSize: "20px", fontFamily: "sans-serif" }}>

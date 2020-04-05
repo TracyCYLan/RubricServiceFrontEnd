@@ -15,6 +15,7 @@ import ListTagComponent from "./component/tag/ListTagComponent";
 import GetTagComponent from "./component/tag/GetTagComponent";
 import NavBar from "./component/NavigationBar";
 import TestComponent from "./component/TestComponent";
+import AddTaskComponent from "./component/task/AddTaskComponent";
 function App() {
     return (
         <React.Fragment>
@@ -34,6 +35,8 @@ function App() {
                         <Route path="/tags" exact component={ListTagComponent} />
                         <Route path="/tag"  component={GetTagComponent} />
                         <Route path="/test" exact component={TestComponent} />
+                        <Route path="/add-task" exact component={AddTaskComponent} />
+                        
                     </Switch>
                 </Layout>
             </Router>
