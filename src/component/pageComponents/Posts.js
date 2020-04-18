@@ -43,7 +43,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         },
                         // hidden: window.matchMedia("(max-width: 768px)"),
                         formatter: (cellContent, row) => {
-                            return <span class="text-info d-none d-lg-block"
+                            return <span class="text-info"
                                 style={{ fontSize: "20px", fontFamily: "sans-serif" }}>
                                 {row.publishDate === null ? 
                                 <Button variant="info" style={{ width: '80%', height: '50%' }}
