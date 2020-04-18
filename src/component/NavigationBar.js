@@ -21,6 +21,11 @@ const NavigationBar = (props) => (
                     <NavDropdown.Item href="/tags">See All Tags</NavDropdown.Item>
                     <NavDropdown.Divider />
                 </NavDropdown>
+                <NavDropdown title="Import from Canvas" id="collasible-nav-dropdown">
+                    <NavDropdown.Item href="/import-rubric">Import Rubric</NavDropdown.Item>
+                    <NavDropdown.Item href="/import-criterion">Import Criterion</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                </NavDropdown>
             </Nav>
             <Nav>
                 <Nav.Link href="/login">Login</Nav.Link>

@@ -14,8 +14,11 @@ import EditCriteriaComponent from "./component/criterion/EditCriterionComponent"
 import ListTagComponent from "./component/tag/ListTagComponent";
 import GetTagComponent from "./component/tag/GetTagComponent";
 import NavBar from "./component/NavigationBar";
-import TestComponent from "./component/TestComponent";
+
 import AddTaskComponent from "./component/task/AddTaskComponent";
+import TestComponent from "./Canvas/component/TestComponent";
+import ImportRubricComponent from "./Canvas/component/ImportRubricComponent";
+import ImportCriterionComponent from "./Canvas/component/ImportCriterionComponent";
 function App() {
     return (
         <React.Fragment>
@@ -36,7 +39,8 @@ function App() {
                         <Route path="/tag"  component={GetTagComponent} />
                         <Route path="/test" exact component={TestComponent} />
                         <Route path="/add-task" exact component={AddTaskComponent} />
-                        
+                        <Route path="/import-rubric" exact component={ImportRubricComponent}></Route>
+                        <Route path="/import-criterion" exact component={ImportCriterionComponent}></Route>
                     </Switch>
                 </Layout>
             </Router>
