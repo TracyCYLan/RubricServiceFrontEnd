@@ -16,7 +16,7 @@ import GetTagComponent from "./component/tag/GetTagComponent";
 import NavBar from "./component/NavigationBar";
 
 import AddTaskComponent from "./component/task/AddTaskComponent";
-import TestComponent from "./Canvas/component/TestComponent";
+// import TestComponent from "./Canvas/component/TestComponent";
 import ImportRubricComponent from "./Canvas/component/ImportRubricComponent";
 import ImportCriterionComponent from "./Canvas/component/ImportCriterionComponent";
 function App() {
@@ -37,7 +37,7 @@ function App() {
                         {/* <Route path="/criterion/search" component={SearchCriterionComponent} /> */}
                         <Route path="/tags" exact component={ListTagComponent} />
                         <Route path="/tag"  component={GetTagComponent} />
-                        <Route path="/test" exact component={TestComponent} />
+                        {/* <Route path="/test" exact component={TestComponent} /> */}
                         <Route path="/add-task" exact component={AddTaskComponent} />
                         <Route path="/import-rubric" exact component={ImportRubricComponent}></Route>
                         <Route path="/import-criterion" exact component={ImportCriterionComponent}></Route>
