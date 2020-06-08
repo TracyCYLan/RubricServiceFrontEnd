@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const API_BASE_URL = 'https://jsonplaceholder.typicode.com/comments';
-const API_BASE_URL = 'http://ecst-csproj2.calstatela.edu:6358/';
+const API_BASE_URL = 'http://ecst-csproj2.calstatela.edu:6350/alice-rubrics/';
 class ApiService {
 
     // fetchTest(){
