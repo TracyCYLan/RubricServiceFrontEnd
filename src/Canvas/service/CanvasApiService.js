@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/canvas/';
+const API_BASE_URL = 'http://ecst-csproj2.calstatela.edu:6358/canvas/';
 
 class CanvasApiService {
     fetchCourses() {
