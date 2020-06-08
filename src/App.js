@@ -10,7 +10,7 @@ import ListCriteriaComponent from "./component/criterion/ListCriterionComponent"
 import GetCriterionComponent from "./component/criterion/GetCriterionComponent";
 // import SearchCriterionComponent from "./component/criterion/SearchCriterionComponent";
 import AddCriteriaComponent from "./component/criterion/AddCriterionComponent";
-import EditCriteriaComponent from "./component/criterion/EditCriterionComponent";
+import EditCriterionComponent from "./component/criterion/EditCriterionComponent";
 import ListTagComponent from "./component/tag/ListTagComponent";
 import GetTagComponent from "./component/tag/GetTagComponent";
 import NavBar from "./component/NavigationBar";
@@ -32,9 +32,8 @@ function App() {
                         <Route path="/add-rubric" component={AddRubricComponent} />
                         <Route path="/criteria" exact component={ListCriteriaComponent} />
                         <Route path="/add-criterion" component={AddCriteriaComponent} />
-                        <Route path="/edit-criterion" component={EditCriteriaComponent} />
+                        <Route path="/edit-criterion" component={EditCriterionComponent} />
                         <Route path="/criterion" exact component={GetCriterionComponent} />
-                        {/* <Route path="/criterion/search" component={SearchCriterionComponent} /> */}
                         <Route path="/tags" exact component={ListTagComponent} />
                         <Route path="/tag"  component={GetTagComponent} />
                         {/* <Route path="/test" exact component={TestComponent} /> */}

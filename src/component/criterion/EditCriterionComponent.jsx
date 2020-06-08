@@ -37,12 +37,13 @@ class EditCriterionComponent extends Component {
         ApiService.fetchCriterionById(window.localStorage.getItem("criterionId"))
             .then((res) => {
                 let criterion = res.data;
+                console.log(JSON.stringify(criterion));
                 this.setState({
                     id: criterion.id,
                     name: criterion.name,
                     description: criterion.description,
                     // publishDate: criterion.publishDate,
-                    publishDate: new Date(criterion.publishDate).toLocaleDateString('fr-CA'),
+                    publishDate: criterion.publishDate===null?'':new Date(criterion.publishDate).toLocaleDateString('fr-CA'),
                     ratings: criterion.ratings,
                     tags: criterion.tags.map(t => t.value)
                 })
