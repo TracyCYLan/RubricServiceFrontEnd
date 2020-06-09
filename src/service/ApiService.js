@@ -16,7 +16,7 @@ class ApiService {
     }
 
     searchRubric(text) {
-        return axios.get(API_BASE_URL + 'rubric/search/{text}?text=' + text);
+        return axios.get(API_BASE_URL + 'rubric/search/text?text=' + text);
     }
 
     deleteRubric(rubricId) {
@@ -52,7 +52,7 @@ class ApiService {
     }
 
     searchCriterion(text) {
-        return axios.get(API_BASE_URL + 'rubric/criterion/search/{text}?text=' + text);
+        return axios.get(API_BASE_URL + 'rubric/criterion/search/text?text=' + text);
     }
     deleteCriterion(criterionId) {
         return axios.delete(API_BASE_URL + 'rubric/criterion/delete/' + criterionId);
@@ -105,7 +105,7 @@ class ApiService {
     }
 
     searchTag(text) {
-        return axios.get(API_BASE_URL + 'rubric/tag/search/{text}?text=' + text);
+        return axios.get(API_BASE_URL + 'rubric/tag/search/text?text=' + text);
     }
 
     fetchUsers() {
