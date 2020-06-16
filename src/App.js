@@ -19,6 +19,9 @@ import AddTaskComponent from "./component/task/AddTaskComponent";
 // import TestComponent from "./Canvas/component/TestComponent";
 import ImportRubricComponent from "./Canvas/component/ImportRubricComponent";
 import ImportCriterionComponent from "./Canvas/component/ImportCriterionComponent";
+
+import LoginComponent from "./component/logins/LoginComponent";
+import RegisterComponent from "./component/logins/RegisterComponent";
 function App() {
     return (
         <React.Fragment>
@@ -40,6 +43,8 @@ function App() {
                         <Route path="/add-task" exact component={AddTaskComponent} />
                         <Route path="/import-rubric" exact component={ImportRubricComponent}></Route>
                         <Route path="/import-criterion" exact component={ImportCriterionComponent}></Route>
+                        <Route path="/login" exact component={LoginComponent}></Route>
+                        <Route path="/register" exact component={RegisterComponent}></Route>
                     </Switch>
                 </Layout>
             </Router>

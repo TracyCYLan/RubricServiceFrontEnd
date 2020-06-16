@@ -1,7 +1,10 @@
 import axios from 'axios';
-
 // const API_BASE_URL = 'https://jsonplaceholder.typicode.com/comments';
-const API_BASE_URL = 'http://ecst-csproj2.calstatela.edu:6350/alice-rubrics/';
+// const API_BASE_URL = 'http://alice.cysun.org/alice-rubrics/';
+const API_BASE_URL = 'http://localhost:8080/';
+
+const crypto = require('crypto');
+
 class ApiService {
 
     // fetchTest(){
@@ -119,6 +122,28 @@ class ApiService {
     }
     addTask(task, assessorId, associationId) {
         return axios.post(API_BASE_URL+'task/assessor/'+assessorId+'/association/'+associationId,task);
+    }
+    registerUser(username,password){
+        const hash = crypto.createHash('sha256').update(password).digest('base64');
+        let user = 
+        { 
+            username: username,
+            password: hash,
+            cin: '123410',
+            firstName:'Apple',
+            lastName:'Loo'
+        }
+        return axios.post(API_BASE_URL+'user/register',user);
+    }
+
+    login(username,password){
+        const hash = crypto.createHash('sha256').update(password).digest('base64');
+        let user = 
+        { 
+            username: username,
+            password: hash
+        }
+        return axios.post(API_BASE_URL+'user/login',user);
     }
 }
 
