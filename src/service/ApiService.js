@@ -128,11 +128,9 @@ class ApiService {
         let user = 
         { 
             username: username,
-            password: hash,
-            cin: '123410',
-            firstName:'Apple',
-            lastName:'Loo'
+            password: hash
         }
+        console.log(JSON.stringify(user));
         return axios.post(API_BASE_URL+'user/register',user);
     }
 

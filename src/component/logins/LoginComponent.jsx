@@ -23,14 +23,14 @@ class LoginComponent extends Component {
         e.preventDefault();
         alert("before");
         ApiService.login(this.state.username, this.state.pwd).then((res) => {
-            if(res.data === -1)
+            if(res.data === "")
             {
                 //failed
                 alert("no such user or password is wrong")
             }         
             else
             {
-                alert("success")
+                alert(res.data)
             }
         });
     }
