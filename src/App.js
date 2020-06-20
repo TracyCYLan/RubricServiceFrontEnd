@@ -31,7 +31,7 @@ function App() {
         <React.Fragment>
             <Router>
                 <NavBar />
-                <Layout>
+                <Layout key="layout">
                     <Switch>
                         <Route path="/" exact component={ListCriteriaComponent} />
                         <Route path="/rubrics" component={ListRubricComponent} />

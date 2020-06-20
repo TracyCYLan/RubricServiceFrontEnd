@@ -94,11 +94,11 @@ class ListRubricComponent extends Component {
     }
 
     render() {
-        return (<div>
+        return (<div key="divKey">
             {
                 !this.state.loading ?
-                    [<h2 className="text-center mt-3">All Rubrics</h2>,
-                    <Row>
+                    [<h2 key="h2Key" className="text-center mt-3">All Rubrics</h2>,
+                    <Row key="row">
                         <Col lg={8} md={10}>
                             <Button variant="outline-secondary" onClick={() => this.addRubric()}>Add Rubric</Button>
                         </Col>
@@ -122,6 +122,7 @@ class ListRubricComponent extends Component {
                         </Col>
                     </Row>,
                     <Posts
+                        key="posts"
                         posts={this.state.rubrics}
                         loading={this.state.loading}
                         edit={this.editRubric}

@@ -99,10 +99,10 @@ class ListCriterionComponent extends Component {
         this.props.history.push('/tag');
     }
     render() {
-        return (<div>
+        return (<div key="listcriterionDiv">
             {
-                    [<h2 className="text-center mt-3">All Criteria</h2>,
-                    <Row>
+                    [<h2 key="header" className="text-center mt-3">All Criteria</h2>,
+                    <Row key="row">
                         <Col lg={8} md={10}>
                             <Button variant="outline-secondary" onClick={() => this.addCriterion()}>Add Criterion</Button>
                         </Col>
@@ -125,7 +125,7 @@ class ListCriterionComponent extends Component {
                             </InputGroup>
                         </Col>
                     </Row>,
-                    <Posts
+                    <Posts key="posts"
                         posts={this.state.criteria}
                         loading={this.state.loading}
                         edit={this.editCriterion}

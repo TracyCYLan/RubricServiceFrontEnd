@@ -27,12 +27,22 @@ const NavigationBar = (props) => (
                     <NavDropdown.Divider />
                 </NavDropdown>
             </Nav>
-            <Nav>
-                <Nav.Link href="/test">Login to Canvas</Nav.Link>
-            </Nav>
-            <Nav>
-                <Nav.Link href="/login">Login</Nav.Link>
-            </Nav>
+            {window.localStorage.getItem("userToken") ?
+                [
+                    <Nav>
+                        <Nav.Link href="/test">Login to Canvas</Nav.Link>
+                    </Nav>,
+                    <Nav>
+                        <Nav.Link onClick={()=>window.localStorage.removeItem("userToken")}>Logout</Nav.Link>
+                    </Nav>
+                ]
+                :
+                <Nav>
+                    <Nav.Link href="/login">Login</Nav.Link>
+                </Nav>
+            }
+
+
         </Navbar.Collapse>
     </Navbar>
 )

@@ -55,14 +55,14 @@ class SearchCriterionComponent extends Component {
                 </Container>
                 {this.state.criteria.length > 0 ?
                     <div>
-                        <h6 class="text-primary mt-2">{'Found ' + this.state.criteria.length + ' results.'}</h6>
+                        <h6 className="text-primary mt-2">{'Found ' + this.state.criteria.length + ' results.'}</h6>
                         <ol>
                         {
                             this.state.criteria.map(
                                 criterion =>
                                     <div>
                                         <li>
-                                            <span class="text-success" size="lg"
+                                            <span className="text-success" size="lg"
                                                 onClick={() => this.getCriterion(criterion.id)}
                                                 style={{ cursor: "pointer",fontSize:"20px",fontFamily: "sans-serif" }}>{criterion.name}</span>
                                         </li>
@@ -71,7 +71,7 @@ class SearchCriterionComponent extends Component {
                         }
                         </ol>
                     </div>
-                    : <h6 class="text-primary mt-2">No Criterion Found.</h6>
+                    : <h6 className="text-primary mt-2">No Criterion Found.</h6>
                 }
             </div>
         );

@@ -33,6 +33,7 @@ class LoginComponent extends Component {
             }
             else
             {
+                window.localStorage.setItem("userToken", res.data);
                 this.props.history.push('/');
             }
         });

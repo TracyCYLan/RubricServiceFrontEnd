@@ -10,10 +10,11 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
     }
     if (category === 'criterion') {
         return (
-            <div class="mx-auto mt-2">
+            <div key="tableDiv" className="mx-auto mt-2">
                 <BootstrapTable
                     bootstrap4
                     keyField="id"
+                    key="table"
                     data={posts}
                     columns={[{
                         dataField: 'name',
@@ -22,11 +23,11 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             return { width: '65%', textAlign: 'center', verticalAlign: 'middle' };
                         },
                         formatter: (cellContent, row) => {
-                            return [<Col className="text-primary"
+                            return [<Col key="col1" className="text-primary"
                                 style={{ cursor: "pointer", fontSize: "22px", fontFamily: "sans-serif" }}
                                 onClick={() => get(row.id)}>
                                 {row.name}</Col>,
-                            <Col class="ml-2">
+                            <Col key="col2" className="ml-2">
                                 {row.tags.map(
                                     function (tag) {
                                         return ([' ', <Button className="mt-1" variant="secondary" size="sm" onClick={() => getTag(tag.id)}>{tag.value}</Button>])
@@ -43,7 +44,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         },
                         // hidden: window.matchMedia("(max-width: 768px)"),
                         formatter: (cellContent, row) => {
-                            return <span class="text-info"
+                            return <span className="text-info"
                                 style={{ fontSize: "20px", fontFamily: "sans-serif" }}>
                                 {row.publishDate === null ? 
                                 <Button variant="info" style={{ width: '80%', height: '50%' }}
@@ -54,6 +55,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         sort: false
                     },
                     {
+                        dataField:'',
                         text: 'Operation',
                         formatter: (cellContent, row) => {
                             return row.published ?
@@ -75,7 +77,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
     else if (category === 'rubric') {
 
         return (
-            <div class="mx-auto mt-2">
+            <div className="mx-auto mt-2">
                 <BootstrapTable
                     bootstrap4
                     keyField="id"
@@ -87,7 +89,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             return { width: '65%', textAlign: 'center', verticalAlign: 'middle' };
                         },
                         formatter: (cellContent, row) => {
-                            return <span class="text-primary"
+                            return <span className="text-primary"
                                 style={{ cursor: "pointer", fontSize: "22px", fontFamily: "sans-serif" }}
                                 onClick={() => get(row.id)}>
                                 {row.name}</span>
@@ -145,7 +147,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             post =>
                                 <tr key={post.id}>
                                     <td style={{ width: '80%' }}>
-                                        <span class="text-primary"
+                                        <span className="text-primary"
                                             style={{ cursor: "pointer", fontSize: "20px", fontFamily: "sans-serif" }}
                                             onClick={() => get(post.id)}>
                                             {post.name}

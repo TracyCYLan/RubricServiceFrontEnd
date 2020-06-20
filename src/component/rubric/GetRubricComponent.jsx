@@ -347,7 +347,7 @@ class GetRubricComponent extends Component {
                                         [<Form.Group as={Row} controlId="formGridCriteriaImport">
                                             <Form.Label column lg={2}>Criteria</Form.Label>
                                             <Col md={10}>
-                                                <div class="input-group">
+                                                <div className="input-group">
                                                     <Autocomplete
                                                         key={this.state.resetText}
                                                         onInputChange={this.handleOpenAutoComplete}

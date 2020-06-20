@@ -27,7 +27,7 @@ class ViewCriterionCard extends Component {
                             this.state.reusable ?
                                 <Button variant="danger float-right" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
                                 :
-                                <span class="float-right">
+                                <span className="float-right">
                                     <Button variant="secondary" size="sm" onClick={() => this.state.changeToEditCriterion(this.state.criterionId)}>Edit</Button>
                                     <Button variant="danger ml-1" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
                                 </span>
