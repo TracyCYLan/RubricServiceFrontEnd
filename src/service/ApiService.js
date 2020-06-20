@@ -143,6 +143,10 @@ class ApiService {
         }
         return axios.post(API_BASE_URL+'user/login',user);
     }
+
+    checkCookie(){
+        return axios.get(API_BASE_URL+'user/loginStatus');
+    }
 }
 
 export default new ApiService();

@@ -28,6 +28,9 @@ const NavigationBar = (props) => (
                 </NavDropdown>
             </Nav>
             <Nav>
+                <Nav.Link href="/test">Login to Canvas</Nav.Link>
+            </Nav>
+            <Nav>
                 <Nav.Link href="/login">Login</Nav.Link>
             </Nav>
         </Navbar.Collapse>

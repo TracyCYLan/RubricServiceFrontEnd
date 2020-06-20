@@ -20,6 +20,7 @@ class CanvasApiService {
         //get outcome from canvas then post it into db
         return axios.post(API_BASE_URL + 'criterion/'+criterionId);
     }
+
 }
 
 export default new CanvasApiService();
