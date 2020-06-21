@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Card, Form} from 'react-bootstrap';
+import { Button, Card} from 'react-bootstrap';
 class RatingEdition extends Component {
 
     constructor(props) {

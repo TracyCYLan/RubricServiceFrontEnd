@@ -30,7 +30,7 @@ function App() {
     return (
         <React.Fragment>
             <Router>
-                <NavBar />
+                <NavBar key="navbar"/>
                 <Layout key="layout">
                     <Switch>
                         <Route path="/" exact component={ListCriteriaComponent} />

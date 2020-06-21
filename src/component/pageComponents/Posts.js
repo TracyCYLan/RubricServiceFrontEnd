@@ -10,11 +10,11 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
     }
     if (category === 'criterion') {
         return (
-            <div key="tableDiv" className="mx-auto mt-2">
+            <div key="criteriontableDiv" className="mx-auto mt-2">
                 <BootstrapTable
                     bootstrap4
                     keyField="id"
-                    key="table"
+                    key="criteriontable"
                     data={posts}
                     columns={[{
                         dataField: 'name',
@@ -23,14 +23,14 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             return { width: '65%', textAlign: 'center', verticalAlign: 'middle' };
                         },
                         formatter: (cellContent, row) => {
-                            return [<Col key="col1" className="text-primary"
+                            return [<Col key="1" className="text-primary"
                                 style={{ cursor: "pointer", fontSize: "22px", fontFamily: "sans-serif" }}
                                 onClick={() => get(row.id)}>
                                 {row.name}</Col>,
-                            <Col key="col2" className="ml-2">
+                            <Col key="2" className="ml-2">
                                 {row.tags.map(
                                     function (tag) {
-                                        return ([' ', <Button className="mt-1" variant="secondary" size="sm" onClick={() => getTag(tag.id)}>{tag.value}</Button>])
+                                        return ([' ', <Button key={tag.id}className="mt-1" variant="secondary" size="sm" onClick={() => getTag(tag.id)}>{tag.value}</Button>])
                                     }
                                 )}
                             </Col>]
@@ -77,9 +77,10 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
     else if (category === 'rubric') {
 
         return (
-            <div className="mx-auto mt-2">
+            <div key="rubrictableDiv" className="mx-auto mt-2">
                 <BootstrapTable
                     bootstrap4
+                    key="rubrictable"
                     keyField="id"
                     data={posts}
                     columns={[{

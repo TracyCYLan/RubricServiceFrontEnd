@@ -1,6 +1,8 @@
-import React, { Component } from 'react'
+import 
+// React,
+ { Component } from 'react'
 import ApiService from "../service/ApiService";
-import { Button, Card, Form, Row, Col } from 'react-bootstrap'; //,Row, Col, Button, CardGroup, Form, Card
+// import { Button, Card, Form, Row, Col } from 'react-bootstrap'; //,Row, Col, Button, CardGroup, Form, Card
 
 class TestComponent extends Component {
     constructor(props) {
