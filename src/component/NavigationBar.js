@@ -30,10 +30,16 @@ const NavigationBar = (props) => (
             {window.localStorage.getItem("userToken") ?
                 [
                     <Nav>
-                        <Nav.Link href="/test">Login to Canvas</Nav.Link>
+                        <Nav.Link href="/redirect">
+                                Login to Canvas
+                        </Nav.Link>
                     </Nav>,
                     <Nav>
-                        <Nav.Link onClick={()=>window.localStorage.removeItem("userToken")}>Logout</Nav.Link>
+                        <Nav.Link onClick={()=>{
+                            window.localStorage.removeItem("userToken");
+                            window.location.reload(false);
+                        }
+                            }>Logout</Nav.Link>
                     </Nav>
                 ]
                 :

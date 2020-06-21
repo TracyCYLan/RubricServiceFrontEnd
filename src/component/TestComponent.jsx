@@ -8,24 +8,19 @@ class TestComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            message: null
+            message: null,
+            token: window.localStorage.getItem("userToken")
         }
     }
     
     //if contains cookie, then we do callback, if not, we head to /login
     componentDidMount() {
-        ApiService.checkCookie().then((res) => {
-            alert(res.data)
-            if(res.data===-1)
-            {
-                this.props.history.push('/login');
-            }
-            else
-            {
-                // window.localStorage.setItem("userId", res.data);
-                //should I 
-            }
-        })
+        if(!window.localStorage.getItem("userToken"))
+            this.props.history.push('/login');
+        else
+        {
+            ApiService.checkCookie(this.state.token);
+        }
     }
     
     render() {

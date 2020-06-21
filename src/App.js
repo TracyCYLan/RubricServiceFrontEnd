@@ -16,6 +16,7 @@ import ListTagComponent from "./component/tag/ListTagComponent";
 import GetTagComponent from "./component/tag/GetTagComponent";
 
 import NavBar from "./component/NavigationBar";
+import RedirectPage from "./component/RedirectPage";
 
 import AddTaskComponent from "./component/task/AddTaskComponent";
 
@@ -49,6 +50,7 @@ function App() {
                         <Route path="/import-criterion" exact component={ImportCriterionComponent}></Route>
                         <Route path="/login" exact component={LoginComponent}></Route>
                         <Route path="/register" exact component={RegisterComponent}></Route>
+                        <Route path="/redirect" exact component={RedirectPage}></Route>
                     </Switch>
                 </Layout>
             </Router>
