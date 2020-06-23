@@ -15,11 +15,11 @@ class GetTagComponent extends Component {
     }
 
     getCriterion(id) {
-        window.localStorage.setItem("criterionId", id);
+        window.sessionStorage.setItem("criterionId", id);
         this.props.history.push('/criterion');
     }
     componentDidMount() {
-        this.loadTag(window.localStorage.getItem("tagId"));
+        this.loadTag(window.sessionStorage.getItem("tagId"));
     }
 
     loadTag(id) {

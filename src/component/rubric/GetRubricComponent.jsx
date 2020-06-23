@@ -67,7 +67,7 @@ class GetRubricComponent extends Component {
     }
 
     loadRubric() {
-        ApiService.fetchRubricById(window.localStorage.getItem("rubricId"))
+        ApiService.fetchRubricById(window.sessionStorage.getItem("rubricId"))
             .then((res) => {
                 let rubric = res.data;
                 this.setState({
@@ -82,7 +82,7 @@ class GetRubricComponent extends Component {
             });
     }
     copyneditRubric = (id) => {
-        window.localStorage.setItem("rubricId", id);
+        window.sessionStorage.setItem("rubricId", id);
         //send exactly the same content to add-rubric
         this.props.history.push(
             {

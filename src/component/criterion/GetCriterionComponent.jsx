@@ -27,7 +27,7 @@ class GetCriterionComponent extends Component {
     }
 
     loadCriterion() {
-        ApiService.fetchCriterionById(window.localStorage.getItem("criterionId"))
+        ApiService.fetchCriterionById(window.sessionStorage.getItem("criterionId"))
             .then((res) => {
                 let criterion = res.data;
                 this.setState({
@@ -42,7 +42,7 @@ class GetCriterionComponent extends Component {
             });
     }
     copyneditCriterion(id) {
-        window.localStorage.setItem("criterionId", id);
+        window.sessionStorage.setItem("criterionId", id);
         //send exactly the same content to add-criterion
         this.props.history.push(
             {
@@ -59,7 +59,7 @@ class GetCriterionComponent extends Component {
         );
     }
     editCriterion(id) {
-        window.localStorage.setItem("criterionId", id);
+        window.sessionStorage.setItem("criterionId", id);
         this.props.history.push('/edit-criterion');
     }
     deleteCriterion(id) {

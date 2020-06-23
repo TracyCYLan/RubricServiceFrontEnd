@@ -22,7 +22,7 @@ class SearchCriterionComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
 
     getCriterion(id) {
-        window.localStorage.setItem("criterionId", id);
+        window.sessionStorage.setItem("criterionId", id);
         this.props.history.push('/criterion');
     }
     search = (e) => {

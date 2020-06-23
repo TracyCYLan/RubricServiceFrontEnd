@@ -40,7 +40,7 @@ class ListCriterionComponent extends Component {
         }
     }
     getCriterion(id) {
-        window.localStorage.setItem("criterionId", id);
+        window.sessionStorage.setItem("criterionId", id);
         this.props.history.push('/criterion');
     }
     publishCriterion = (id) => {
@@ -55,7 +55,7 @@ class ListCriterionComponent extends Component {
         );
     }
     addCriterion() {
-        window.localStorage.removeItem("criterionId");
+        window.sessionStorage.removeItem("criterionId");
         this.props.history.push('add-criterion');
     }
     copyneditCriterion(criterion) {
@@ -75,7 +75,7 @@ class ListCriterionComponent extends Component {
         );
     }
     editCriterion(id) {
-        window.localStorage.setItem("criterionId", id);
+        window.sessionStorage.setItem("criterionId", id);
         this.props.history.push('/edit-criterion');
     }
     search = (e) => {
@@ -95,7 +95,7 @@ class ListCriterionComponent extends Component {
         this.reloadCriterionList();
     }
     getTag = (id) => {
-        window.localStorage.setItem("tagId", id);
+        window.sessionStorage.setItem("tagId", id);
         this.props.history.push('/tag');
     }
     render() {

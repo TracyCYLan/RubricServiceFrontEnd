@@ -33,9 +33,9 @@ class LoginComponent extends Component {
             }
             else
             {
-                window.localStorage.setItem("userToken", res.data);
+                window.sessionStorage.setItem("userToken", res.data);
                 
-                while(!window.localStorage.getItem("userToken"));
+                while(!window.sessionStorage.getItem("userToken"));
                 this.props.history.push('/');
                 window.location.reload(false);
             }

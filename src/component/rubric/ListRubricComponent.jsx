@@ -41,12 +41,12 @@ class ListRubricComponent extends Component {
         }
     }
     getRubric(id) {
-        window.localStorage.setItem("rubricId", id);
+        window.sessionStorage.setItem("rubricId", id);
         this.props.history.push('/rubric');
     }
 
     editRubric(id) {
-        window.localStorage.setItem("rubricId", id);
+        window.sessionStorage.setItem("rubricId", id);
         this.props.history.push('/edit-rubric');
     }
 
@@ -72,7 +72,7 @@ class ListRubricComponent extends Component {
         );
     }
     addRubric() {
-        window.localStorage.removeItem("rubricId");
+        window.sessionStorage.removeItem("rubricId");
         this.props.history.push('/add-rubric');
     }
 

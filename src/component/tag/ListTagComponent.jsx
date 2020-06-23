@@ -41,7 +41,7 @@ class ListTagComponent extends Component {
     }
 
     getTag(id) {
-        window.localStorage.setItem("tagId", id);
+        window.sessionStorage.setItem("tagId", id);
         this.props.history.push('/tag');
     }
     search = (e) => {

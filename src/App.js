@@ -31,7 +31,7 @@ function App() {
     return (
         <React.Fragment>
             <Router>
-                <NavBar key="navbar"/>
+                <NavBar key="navbar" />
                 <Layout key="layout">
                     <Switch>
                         <Route path="/" exact component={ListCriteriaComponent} />
@@ -43,8 +43,11 @@ function App() {
                         <Route path="/edit-criterion" component={EditCriterionComponent} />
                         <Route path="/criterion" exact component={GetCriterionComponent} />
                         <Route path="/tags" exact component={ListTagComponent} />
-                        <Route path="/tag"  component={GetTagComponent} />
-                        <Route path="/test" exact component={TestComponent} />
+                        <Route path="/tag" component={GetTagComponent} />
+                        <Route path="/test/:hello" exact render={(props) => {
+                            return (
+                                <TestComponent hello={props.match.params.hello} />)
+                        }} />
                         <Route path="/add-task" exact component={AddTaskComponent} />
                         <Route path="/import-rubric" exact component={ImportRubricComponent}></Route>
                         <Route path="/import-criterion" exact component={ImportCriterionComponent}></Route>

@@ -34,7 +34,7 @@ class EditCriterionComponent extends Component {
     }
 
     loadCriterion() {
-        ApiService.fetchCriterionById(window.localStorage.getItem("criterionId"))
+        ApiService.fetchCriterionById(window.sessionStorage.getItem("criterionId"))
             .then((res) => {
                 let criterion = res.data;
                 console.log(JSON.stringify(criterion));
@@ -106,7 +106,7 @@ class EditCriterionComponent extends Component {
             });
     }
     getCriterion() {
-        window.localStorage.setItem("criterionId", this.state.id);
+        window.sessionStorage.setItem("criterionId", this.state.id);
         this.props.history.push('/criterion');
     }
     render() {

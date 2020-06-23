@@ -27,7 +27,7 @@ const NavigationBar = (props) => (
                     <NavDropdown.Divider />
                 </NavDropdown>
             </Nav>
-            {window.localStorage.getItem("userToken") ?
+            {window.sessionStorage.getItem("userToken") ?
                 [
                     <Nav>
                         <Nav.Link href="/redirect">
@@ -36,7 +36,7 @@ const NavigationBar = (props) => (
                     </Nav>,
                     <Nav>
                         <Nav.Link onClick={()=>{
-                            window.localStorage.removeItem("userToken");
+                            window.sessionStorage.removeItem("userToken");
                             window.location.reload(false);
                         }
                             }>Logout</Nav.Link>
