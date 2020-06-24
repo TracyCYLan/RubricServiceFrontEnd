@@ -37,6 +37,7 @@ const NavigationBar = (props) => (
                     <Nav>
                         <Nav.Link onClick={()=>{
                             window.sessionStorage.removeItem("userToken");
+                            window.sessionStorage.removeItem("canvasToken");
                             window.location.reload(false);
                         }
                             }>Logout</Nav.Link>
