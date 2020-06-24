@@ -34,7 +34,7 @@ function App() {
                 <NavBar key="navbar" />
                 <Layout key="layout">
                     <Switch>
-                        <Route path="/" exact component={ListCriteriaComponent} />
+                        <Route path="/" exact component={ListCriteriaComponent}/>
                         <Route path="/rubrics" component={ListRubricComponent} />
                         <Route path="/rubric" exact component={GetRubricComponent} />
                         <Route path="/add-rubric" component={AddRubricComponent} />
@@ -44,9 +44,9 @@ function App() {
                         <Route path="/criterion" exact component={GetCriterionComponent} />
                         <Route path="/tags" exact component={ListTagComponent} />
                         <Route path="/tag" component={GetTagComponent} />
-                        <Route path="/test/:hello" exact render={(props) => {
+                        <Route path="/canvas/getCode/:code" exact render={(props) => {
                             return (
-                                <TestComponent hello={props.match.params.hello} />)
+                                <TestComponent code={props.match.params.code} />)
                         }} />
                         <Route path="/add-task" exact component={AddTaskComponent} />
                         <Route path="/import-rubric" exact component={ImportRubricComponent}></Route>

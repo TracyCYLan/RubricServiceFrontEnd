@@ -11,9 +11,7 @@ class TestCanvasComponent extends Component {
     }
 
     componentDidMount() {
-        ApiService.checkCookie().then((res) => {
-            alert(res.data)
-        })
+
     }
     
     render() {

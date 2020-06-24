@@ -144,9 +144,10 @@ class ApiService {
         return axios.post(API_BASE_URL+'user/login',user);
     }
 
-    checkCookie(token){
-        return axios.get(API_BASE_URL+'canvas/hello?name='+token);
+    getCanvasToken(code){
+        return axios.get(API_BASE_URL+'canvasRest/access_token?code='+code);
     }
+    
 
 }
 
