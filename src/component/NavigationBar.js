@@ -29,12 +29,12 @@ const NavigationBar = (props) => (
             </Nav>
             {window.sessionStorage.getItem("userToken") ?
                 [
-                    <Nav>
+                    <Nav key="canvaslogin">
                         <Nav.Link href="/redirect">
                                 Login to Canvas
                         </Nav.Link>
                     </Nav>,
-                    <Nav>
+                    <Nav key="rslogout">
                         <Nav.Link onClick={()=>{
                             window.sessionStorage.removeItem("userToken");
                             window.sessionStorage.removeItem("canvasToken");
