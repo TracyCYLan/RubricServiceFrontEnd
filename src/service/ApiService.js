@@ -1,6 +1,6 @@
 import axios from 'axios';
 // const API_BASE_URL = 'https://jsonplaceholder.typicode.com/comments';
-// const API_BASE_URL = 'http://alice.cysun.org/alice-rubrics/';
+// const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
 const API_BASE_URL = 'http://localhost:8080/';
 
 const crypto = require('crypto');
