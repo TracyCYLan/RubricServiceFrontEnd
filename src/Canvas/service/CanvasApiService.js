@@ -4,22 +4,22 @@ const API_BASE_URL = 'http://localhost:8080/canvas/';
 // const API_BASE_URL = 'http://alice.cysun.org/alice-rubrics/canvas/';
 
 class CanvasApiService {
-    fetchCourses() {
-        return axios.get(API_BASE_URL + 'courses');
+    fetchCourses(token) {
+        return axios.get(API_BASE_URL + 'courses/token?token='+token);
     }
-    fetchRubrics(courseId) {
-        return axios.get(API_BASE_URL + 'courses/' + courseId + '/rubrics');
+    fetchRubrics(courseId,token) {
+        return axios.get(API_BASE_URL + 'courses/' + courseId + '/rubrics/token?token='+token);
     }
-    importRubric(courseId,rubricId){
+    importRubric(courseId,rubricId,token){
         //get rubric from canvas then post it into db
-        return axios.post(API_BASE_URL + 'courses/' + courseId + '/rubrics/'+rubricId);
+        return axios.post(API_BASE_URL + 'courses/' + courseId + '/rubrics/'+rubricId+'/token?token='+token);
     }
-    fetchCriteria(courseId){
-        return axios.get(API_BASE_URL + 'courses/' + courseId + '/criteria');
+    fetchCriteria(courseId,token){
+        return axios.get(API_BASE_URL + 'courses/' + courseId + '/criteria/token?token='+token);
     }
-    importCriterion(criterionId){
+    importCriterion(criterionId,token){
         //get outcome from canvas then post it into db
-        return axios.post(API_BASE_URL + 'criterion/'+criterionId);
+        return axios.post(API_BASE_URL + 'criterion/'+criterionId+'/token?token='+token);
     }
 
 }

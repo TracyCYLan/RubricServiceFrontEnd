@@ -20,7 +20,7 @@ class ImportCriterionComponent extends Component {
         this.loadCourses();
     }
     loadCourses() {
-        ApiService.fetchCourses().then(res => {
+        ApiService.fetchCourses(window.sessionStorage.getItem("canvasToken")).then(res => {
             this.setState({
                 courses: JSON.parse(res.data)
             })
@@ -28,13 +28,13 @@ class ImportCriterionComponent extends Component {
     }
     importCriterion= (e) => {
         e.preventDefault();
-        ApiService.importCriterion(this.state.criterionId).then(res=>{
+        ApiService.importCriterion(this.state.criterionId,window.sessionStorage.getItem("canvasToken")).then(res=>{
             this.props.history.push('/criteria')
         }
         )
     }
     reloadCriteria() {
-        ApiService.fetchCriteria(this.state.courseId).then(res => {
+        ApiService.fetchCriteria(this.state.courseId,window.sessionStorage.getItem("canvasToken")).then(res => {
             this.setState({
                 criteria: JSON.parse(res.data)
             })

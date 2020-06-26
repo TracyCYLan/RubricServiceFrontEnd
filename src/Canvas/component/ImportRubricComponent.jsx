@@ -20,7 +20,7 @@ class ImportRubricComponent extends Component {
         this.loadCourses();
     }
     loadCourses() {
-        ApiService.fetchCourses().then(res => {
+        ApiService.fetchCourses(window.sessionStorage.getItem("canvasToken")).then(res => {
             this.setState({
                 courses: JSON.parse(res.data)
             })
@@ -28,13 +28,13 @@ class ImportRubricComponent extends Component {
     }
     importRubric= (e) => {
         e.preventDefault();
-        ApiService.importRubric(this.state.courseId, this.state.rubricId).then(res=>{
+        ApiService.importRubric(this.state.courseId, this.state.rubricId,window.sessionStorage.getItem("canvasToken")).then(res=>{
             this.props.history.push('/rubrics')
         }
         )
     }
     reloadRubrics() {
-        ApiService.fetchRubrics(this.state.courseId).then(res => {
+        ApiService.fetchRubrics(this.state.courseId.window.sessionStorage.getItem("canvasToken")).then(res => {
             this.setState({
                 rubrics: JSON.parse(res.data)
             })

@@ -144,11 +144,6 @@ class ApiService {
         return axios.post(API_BASE_URL+'user/login',user);
     }
 
-    getCanvasToken(code){
-        return axios.get(API_BASE_URL+'canvasRest/access_token?code='+code);
-    }
-    
-
 }
 
 export default new ApiService();
