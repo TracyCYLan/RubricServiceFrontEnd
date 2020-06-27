@@ -34,7 +34,7 @@ class ImportRubricComponent extends Component {
         )
     }
     reloadRubrics() {
-        ApiService.fetchRubrics(this.state.courseId.window.sessionStorage.getItem("canvasToken")).then(res => {
+        ApiService.fetchRubrics(this.state.courseId,window.sessionStorage.getItem("canvasToken")).then(res => {
             this.setState({
                 rubrics: JSON.parse(res.data)
             })
