@@ -17,7 +17,15 @@ class ImportCriterionComponent extends Component {
     }
 
     componentDidMount() {
-        this.loadCourses();
+        if(window.sessionStorage.getItem("canvasToken")===null)
+        {
+            alert("Need to login on Canvas to import");
+            this.props.history.push('/');
+        }
+        else
+        {
+            this.loadCourses();
+        }
     }
     loadCourses() {
         ApiService.fetchCourses(window.sessionStorage.getItem("canvasToken")).then(res => {
@@ -67,7 +75,7 @@ class ImportCriterionComponent extends Component {
                             <Col md={10}>
                                 <Form.Control as="select"
                                     onChange={(e) => { this.setState({ criterionId: e.target.value }) }} >
-                                    <option value="" disabled selected>Select a rubric</option>
+                                    <option value="" disabled selected>Select an outcome</option>
                                     {
                                         this.state.criteria.map(
                                             c => <option value={c.outcome.id}>{c.outcome.title}</option>)

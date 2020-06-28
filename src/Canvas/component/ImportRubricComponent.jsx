@@ -17,7 +17,15 @@ class ImportRubricComponent extends Component {
     }
 
     componentDidMount() {
-        this.loadCourses();
+        if(window.sessionStorage.getItem("canvasToken")===null)
+        {
+            alert("Need to login on Canvas to import");
+            this.props.history.push('/');
+        }
+        else
+        {
+            this.loadCourses();
+        }
     }
     loadCourses() {
         ApiService.fetchCourses(window.sessionStorage.getItem("canvasToken")).then(res => {

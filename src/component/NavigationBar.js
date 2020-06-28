@@ -21,26 +21,29 @@ const NavigationBar = (props) => (
                     <NavDropdown.Item href="/tags">See All Tags</NavDropdown.Item>
                     <NavDropdown.Divider />
                 </NavDropdown>
-                <NavDropdown title="Import from Canvas" id="collasible-nav-dropdown">
-                    <NavDropdown.Item href="/import-rubric">Import Rubric</NavDropdown.Item>
-                    <NavDropdown.Item href="/import-criterion">Import Criterion</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                </NavDropdown>
+                {window.sessionStorage.getItem("canvasToken") ?
+                    [
+                        <NavDropdown title="Import from Canvas" id="collasible-nav-dropdown">
+                            <NavDropdown.Item href="/import-rubric">Import Rubric</NavDropdown.Item>
+                            <NavDropdown.Item href="/import-criterion">Import Criterion</NavDropdown.Item>
+                            <NavDropdown.Divider /></NavDropdown>] :
+                    ""
+                }
             </Nav>
             {window.sessionStorage.getItem("userToken") ?
                 [
                     <Nav key="canvaslogin">
                         <Nav.Link href="/redirect">
-                                Login to Canvas
+                            Login to Canvas
                         </Nav.Link>
                     </Nav>,
                     <Nav key="rslogout">
-                        <Nav.Link onClick={()=>{
+                        <Nav.Link onClick={() => {
                             window.sessionStorage.removeItem("userToken");
                             window.sessionStorage.removeItem("canvasToken");
                             window.location.reload(false);
                         }
-                            }>Logout</Nav.Link>
+                        }>Logout</Nav.Link>
                     </Nav>
                 ]
                 :
