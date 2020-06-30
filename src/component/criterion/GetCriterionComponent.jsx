@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import { Button, Card, Badge, CardGroup, Modal,Breadcrumb } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingView';
+import ReactHtmlParser from 'react-html-parser';
 class GetCriterionComponent extends Component {
 
     constructor(props) {
@@ -100,7 +101,9 @@ class GetCriterionComponent extends Component {
                         <Button className="float-right" variant="outline-secondary ml-1" hidden={!this.state.published} onClick={() => this.copyneditCriterion(this.state.id)}>Copy</Button>
                         <Button className="float-right" variant="outline-secondary ml-1" hidden={this.state.published} onClick={() => this.editCriterion(this.state.id)}>Edit</Button>
                     </Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">{this.state.description}</Card.Subtitle>
+                    <Card.Subtitle className="mb-2 text-muted">
+                        { ReactHtmlParser(this.state.description) }
+                    </Card.Subtitle>
                     <Card.Text>
                         {
                             this.state.tags.map(

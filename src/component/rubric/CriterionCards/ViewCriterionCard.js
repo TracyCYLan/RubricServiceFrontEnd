@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Card, CardGroup } from 'react-bootstrap';
 import RatingV from '../../RatingCards/RatingView';
+import ReactHtmlParser from 'react-html-parser';
 class ViewCriterionCard extends Component {
 
     constructor(props) {
@@ -34,7 +35,7 @@ class ViewCriterionCard extends Component {
                     }
                 </Card.Header>
                     <Card.Body>
-                        <Card.Text>{this.state.description}</Card.Text>
+                        <Card.Text>{ ReactHtmlParser(this.state.description) }</Card.Text>
                     </Card.Body>
                 <CardGroup>
                     {this.state.ratings.map(
