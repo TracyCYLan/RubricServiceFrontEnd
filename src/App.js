@@ -44,10 +44,7 @@ function App() {
                         <Route path="/criterion" exact component={GetCriterionComponent} />
                         <Route path="/tags" exact component={ListTagComponent} />
                         <Route path="/tag" component={GetTagComponent} />
-                        <Route path="/canvas/getCode/:code" exact render={(props) => {
-                            return (
-                                <TestComponent code={props.match.params.code} />)
-                        }} />
+                        <Route path="/test" component={TestComponent}/>
                         <Route path="/add-task" exact component={AddTaskComponent} />
                         <Route path="/import-rubric" exact component={ImportRubricComponent}></Route>
                         <Route path="/import-criterion" exact component={ImportCriterionComponent}></Route>
