@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Button, Card, Form, Col, CardGroup } from 'react-bootstrap';
 import RatingE from '../../RatingCards/RatingEdition';
 import ApiService from '../../../service/ApiService';
+import RichTextEditor from 'react-rte';
 class EditCriterionCard extends Component {
 
     constructor(props) {
@@ -10,7 +11,7 @@ class EditCriterionCard extends Component {
             this.state = {
                 criterionId: props.index,
                 name: props.name,
-                description: props.description,
+                description: RichTextEditor.createValueFromString(props.description,'html'),
                 publishDate: props.publishDate,
                 ratings: props.ratings,
                 ratingCount: props.ratingCount,
@@ -23,7 +24,7 @@ class EditCriterionCard extends Component {
             this.state = {
                 criterionId: props.index,
                 name: props.name,
-                description: props.description,
+                description: RichTextEditor.createValueFromString(props.description,'html'),
                 publishDate:props.publishDate,
                 ratings: props.ratings,
                 ratingCount: props.ratingCount,
@@ -36,12 +37,21 @@ class EditCriterionCard extends Component {
         this.editRating = this.editRating.bind(this);
         this.deleteRating = this.deleteRating.bind(this);
         this.saveCriterion = this.saveCriterion.bind(this);
+        this.richTextonChange = this.richTextonChange.bind(this);
     }
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
         //pass the attribute name,attribute updated value, criterionId
     }
 
+    richTextonChange = (description) => {
+        this.setState({description});
+        if (this.props.onChange) {
+            this.props.onChange(
+                description.toString('html')
+            );
+        }
+    };
     addRating = () => {
         var ratings = this.state.ratings;
         //assume maximum rating num till 21
@@ -78,7 +88,7 @@ class EditCriterionCard extends Component {
             //save this to backend and send the id back to the page calling EditCriteironCard
             let criterion = {
                 name: this.state.name,
-                description: this.state.description,
+                description: this.state.description.toString('html'),
                 publishDate: this.state.publishDate,
                 reusable: false
             }
@@ -92,7 +102,7 @@ class EditCriterionCard extends Component {
             let criterion = {
                 id:this.state.criterionId,
                 name: this.state.name,
-                description: this.state.description,
+                description: this.state.description.toString('html'),
                 publishDate: this.state.publishDate,
                 reusable: false
             }
@@ -122,12 +132,10 @@ class EditCriterionCard extends Component {
                     <Card.Text>
                         <Form.Label column lg={2}>Description</Form.Label>
                         <Col sm={10}>
-                            <Form.Control
-                                type="text"
-                                placeholder="description of this criterion"
-                                name="description"
-                                value={this.state.description}
-                                onChange={this.onChange} />
+                            <RichTextEditor
+                                    value={this.state.description}
+                                    onChange={this.richTextonChange}
+                                />
                         </Col>
                     </Card.Text>
                     <Card.Text>

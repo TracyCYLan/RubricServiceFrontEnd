@@ -4,13 +4,14 @@ import { Row, Col, Button, CardGroup, Form, Card, Breadcrumb } from 'react-boots
 import Rating from '../RatingCards/RatingEdition';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
+import RichTextEditor from 'react-rte';
 class AddCriterionComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             name: '',
-            description: '',
+            description: RichTextEditor.createEmptyValue(),
             ratingCount: 'r0', //counting for ratingId
             ratings: [{ id: 'default-id-1', description: 'Exceed Expectations', value: 5 },
             { id: 'default-id-2', description: 'Meet Expectations', value: 3 },
@@ -26,13 +27,14 @@ class AddCriterionComponent extends Component {
         this.addRating = this.addRating.bind(this);
         this.editRating = this.editRating.bind(this);
         this.handleTag = this.handleTag.bind(this);
+        this.richTextonChange = this.richTextonChange.bind(this);
     }
     componentDidMount() {
         //if we passed default value to this page: (i.e., copy original one to add)
         if (typeof (this.props.location.state) !== 'undefined') {
             this.setState({
                 name: this.props.location.state.name,
-                description: this.props.location.state.description,
+                description: RichTextEditor.createValueFromString(this.props.location.state.description,'html'),
                 ratings: this.props.location.state.ratings,
                 tags: this.props.location.state.tags
             })
@@ -52,7 +54,7 @@ class AddCriterionComponent extends Component {
         e.preventDefault();
         let criterion = {
             name: this.state.name,
-            description: this.state.description,
+            description: this.state.description.toString('html'),
             publishDate: this.state.publishDate,
             reusable: true
         };
@@ -67,6 +69,15 @@ class AddCriterionComponent extends Component {
 
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
+
+    richTextonChange = (description) => {
+        this.setState({description});
+        if (this.props.onChange) {
+            this.props.onChange(
+                description.toString('html')
+            );
+        }
+        };
     addRating = () => {
         var ratings = this.state.ratings;
         //assume maximum rating num till 21
@@ -74,7 +85,7 @@ class AddCriterionComponent extends Component {
             return;
         ratings.push({ id: this.state.ratingCount, description: '', value: '' });
         let num = this.state.ratingCount.substr(1);
-        this.setState({ ratingCount: 'r'+(+num+1)});
+        this.setState({ ratingCount: 'r' + (+num + 1) });
         this.setState({
             ratings: ratings
         });
@@ -131,9 +142,9 @@ class AddCriterionComponent extends Component {
         }
         return [
             <Breadcrumb className="mx-auto mt-2">
-            <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
-            <Breadcrumb.Item active>Add Criterion</Breadcrumb.Item>
-          </Breadcrumb>,
+                <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
+                <Breadcrumb.Item active>Add Criterion</Breadcrumb.Item>
+            </Breadcrumb>,
             <Card className="mx-auto mt-3">
                 <Card.Body>
                     <Card.Title>Add Criterion</Card.Title>
@@ -147,7 +158,11 @@ class AddCriterionComponent extends Component {
                         <Form.Group as={Row} controlId="formGridDescription">
                             <Form.Label column md={2}>Description</Form.Label>
                             <Col md={10}>
-                                <Form.Control as="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                                <RichTextEditor
+                                    value={this.state.description}
+                                    onChange={this.richTextonChange}
+                                />
+                                {/* <Form.Control as="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} /> */}
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="formGridDate">
