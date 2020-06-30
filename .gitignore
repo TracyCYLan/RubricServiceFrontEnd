@@ -1,4 +1,4 @@
 node_modules/
-TestComponent.jsx
-TestCanvasComponent.jsx
+src/component/TestComponent.jsx
+src/Canvas/component/TestCanvasComponent.jsx
 .vs/
