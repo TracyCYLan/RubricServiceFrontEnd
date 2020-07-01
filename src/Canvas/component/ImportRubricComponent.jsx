@@ -48,10 +48,14 @@ class ImportRubricComponent extends Component {
             })
         })
     }
-    render() {
-        if (this.state.courseId !== '') {
+    changeCourse = (e) =>{
+        this.setState({
+            courseId: e.target.value
+        }, () => {
             this.reloadRubrics();
-        }
+        });
+    }
+    render() {
         return <Card className="mx-auto mt-3">
             <Card.Body>
                 <Card.Title>Import Rubric</Card.Title>
@@ -60,7 +64,7 @@ class ImportRubricComponent extends Component {
                         <Form.Label column md={2}>Select Course</Form.Label>
                         <Col md={10}>
                             <Form.Control as="select"
-                                onChange={(e) => { this.setState({ courseId: e.target.value }) }} >
+                                onChange={(e) => this.changeCourse(e)} >
                                 <option value="" disabled selected>Select a course</option>
                                 {
                                     this.state.courses.map(
