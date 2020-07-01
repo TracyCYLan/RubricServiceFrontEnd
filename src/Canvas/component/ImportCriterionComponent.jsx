@@ -83,7 +83,7 @@ class ImportCriterionComponent extends Component {
                                 </Form.Control>
                             </Col>
                         </Form.Group>}
-                    {this.state.rubricId === '' ? '' : <Button onClick={this.importCriterion}>Import</Button>}
+                    {this.state.criterionId === '' ? '' : <Button onClick={this.importCriterion}>Import</Button>}
                 </Form>
             </Card.Body>
         </Card>
