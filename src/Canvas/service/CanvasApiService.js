@@ -25,7 +25,7 @@ class CanvasApiService {
         return axios.get(API_BASE_URL+'courses/'+courseId+'/outcome_groups/token?token='+token);
     }
     exportCriterion(criterionId,courseId,outcome_group_id,token){
-        return axios.post(API_BASE_URL+'/criterion/'+criterionId+
+        return axios.post(API_BASE_URL+'criterion/'+criterionId+
                             '/export/course/'+courseId+'/outcome_groups/'+
                             outcome_group_id+'/token?token='+token);
     }
