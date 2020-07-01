@@ -19,6 +19,7 @@ class ListCriterionComponent extends Component {
         this.publishCriterion = this.publishCriterion.bind(this);
         this.search = this.search.bind(this);
         this.getTag = this.getTag.bind(this);
+        this.exportPage = this.exportPage.bind(this);
     }
 
     componentDidMount() {
@@ -54,6 +55,12 @@ class ListCriterionComponent extends Component {
             })
         );
     }
+    //direct to export page along with criterion Id
+    exportPage = (id) => {
+        window.sessionStorage.setItem("criterionId",id);
+        this.props.history.push('/export-criterion');
+    }
+
     addCriterion() {
         window.sessionStorage.removeItem("criterionId");
         this.props.history.push('add-criterion');
@@ -133,6 +140,7 @@ class ListCriterionComponent extends Component {
                         get={this.getCriterion}
                         getTag={this.getTag}
                         publishPost={this.publishCriterion}
+                        exportPage={this.exportPage}
                         category='criterion' />
                     ] 
             }</div>);

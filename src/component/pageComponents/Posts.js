@@ -4,7 +4,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publishPost,test }) => {
+const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publishPost, exportPage }) => {
     if (loading) {
         return <h2>Loading...</h2>;
     }
@@ -68,10 +68,10 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         text: 'Export to Canvas',
                         formatter: (cellContent, row) => {
                             return <div>
-                                <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => alert("export")}>Export</Button>
+                                <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => exportPage(row.id)}>Export</Button>
                                 </div>
                         },
-                        hidden: !window.sessionStorage.getItem("userToken")
+                        hidden: !window.sessionStorage.getItem("canvasToken")
                     }
                     ]}
                     defaultSorted={[{
@@ -141,7 +141,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                                 <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => alert("export")}>Export</Button>
                                 </div>
                         },
-                        hidden: !window.sessionStorage.getItem("userToken")
+                        hidden: !window.sessionStorage.getItem("canvasToken")
                     }
                     
                 ]}

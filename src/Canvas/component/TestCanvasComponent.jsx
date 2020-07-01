@@ -1,6 +1,4 @@
-import React, { Component } from 'react'
-import ApiService from "../service/ApiService";
-import { Button, Card, Form, Row, Col } from 'react-bootstrap'; //,Row, Col, Button, CardGroup, Form, Card
+import { Component } from 'react'
 
 class TestCanvasComponent extends Component {
     constructor(props) {
@@ -11,7 +9,7 @@ class TestCanvasComponent extends Component {
     }
 
     componentDidMount() {
-
+        window.sessionStorage.setItem("canvasToken",'11590~VWZMtWiJtlWmE8St8vW8UBmQOoLpX0nhjSUMXZhbPC8eXNE5Pk63FuvNLzVRNYbh');
     }
     
     render() {

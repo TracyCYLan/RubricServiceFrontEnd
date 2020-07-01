@@ -22,11 +22,13 @@ import AddTaskComponent from "./component/task/AddTaskComponent";
 
 import ImportRubricComponent from "./Canvas/component/ImportRubricComponent";
 import ImportCriterionComponent from "./Canvas/component/ImportCriterionComponent";
+import ExportCriterionComponent from "./Canvas/component/ExportCriterionComponent";
 
 import LoginComponent from "./component/logins/LoginComponent";
 import RegisterComponent from "./component/logins/RegisterComponent";
 
 import TestComponent from "./component/TestComponent";
+import TestCanvasComponent from "./Canvas/component/TestCanvasComponent";
 function App() {
     return (
         <React.Fragment>
@@ -45,9 +47,11 @@ function App() {
                         <Route path="/tags" exact component={ListTagComponent} />
                         <Route path="/tag" component={GetTagComponent} />
                         <Route path="/test" component={TestComponent}/>
+                        <Route path="/test-canvas" component={TestCanvasComponent}/>
                         <Route path="/add-task" exact component={AddTaskComponent} />
                         <Route path="/import-rubric" exact component={ImportRubricComponent}></Route>
                         <Route path="/import-criterion" exact component={ImportCriterionComponent}></Route>
+                        <Route path="/export-criterion" exact component={ExportCriterionComponent}></Route>
                         <Route path="/login" exact component={LoginComponent}></Route>
                         <Route path="/register" exact component={RegisterComponent}></Route>
                         <Route path="/redirect" exact component={RedirectPage}></Route>

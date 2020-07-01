@@ -21,7 +21,14 @@ class CanvasApiService {
         //get outcome from canvas then post it into db
         return axios.post(API_BASE_URL + 'criterion/'+criterionId+'/token?token='+token);
     }
-
+    fetchOutcomeGroups(courseId,token){
+        return axios.get(API_BASE_URL+'courses/'+courseId+'/outcome_groups/token?token='+token);
+    }
+    exportCriterion(criterionId,courseId,outcome_group_id,token){
+        return axios.post(API_BASE_URL+'/criterion/'+criterionId+
+                            '/export/course/'+courseId+'/outcome_groups/'+
+                            outcome_group_id+'/token?token='+token);
+    }
 }
 
 export default new CanvasApiService();
