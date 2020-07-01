@@ -62,6 +62,16 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                                 <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => copynedit(row)}>Copy</Button>
                                 : <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => edit(row.id)}>Edit</Button>
                         }
+                    },
+                    {
+                        dataField:'',
+                        text: 'Export to Canvas',
+                        formatter: (cellContent, row) => {
+                            return <div>
+                                <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => alert("export")}>Export</Button>
+                                </div>
+                        },
+                        hidden: !window.sessionStorage.getItem("userToken")
                     }
                     ]}
                     defaultSorted={[{
@@ -87,7 +97,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         dataField: 'name',
                         text: 'Name',
                         headerStyle: (colum, colIndex) => {
-                            return { width: '65%', textAlign: 'center', verticalAlign: 'middle' };
+                            return { width: '60%', textAlign: 'center', verticalAlign: 'middle' };
                         },
                         formatter: (cellContent, row) => {
                             return <span className="text-primary"
@@ -111,7 +121,8 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             </span>
                         },
                         sort: true
-                    }, {
+                    }, 
+                    {
                         dataField: 'lastUpdatedDate',
                         text: 'Last Update Date',
                         headerStyle: (colum, colIndex) => {
@@ -121,7 +132,19 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>{new Date(row.lastUpdatedDate).toLocaleDateString()}</span>
                         },
                         sort: true
-                    }]}
+                    },
+                    {
+                        dataField:'',
+                        text: 'Export to Canvas',
+                        formatter: (cellContent, row) => {
+                            return <div>
+                                <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => alert("export")}>Export</Button>
+                                </div>
+                        },
+                        hidden: !window.sessionStorage.getItem("userToken")
+                    }
+                    
+                ]}
                     defaultSorted={[{
                         dataField: 'lastUpdatedDate',
                         order: 'desc'
