@@ -39,7 +39,8 @@ class ExportCriterionComponent extends Component {
         ApiService.exportCriterion(this.state.criterionId, this.state.courseId,
             this.state.outcome_group_id,
             window.sessionStorage.getItem("canvasToken")).then(res => {
-                this.props.history.push('/')
+                window.sessionStorage.removeItem('criterionId');
+                this.props.history.push('/');
             })
 
     }
