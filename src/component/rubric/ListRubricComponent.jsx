@@ -18,6 +18,7 @@ class ListRubricComponent extends Component {
         this.copyneditRubric = this.copyneditRubric.bind(this);
         this.getRubric = this.getRubric.bind(this);
         this.search = this.search.bind(this);
+        this.exportPage = this.exportPage.bind(this);
     }
 
     componentDidMount() {
@@ -50,14 +51,16 @@ class ListRubricComponent extends Component {
         this.props.history.push('/edit-rubric');
     }
 
-    publishRubric = (id)=>{
-        ApiService.publishRubric(id).then(res=>
-            this.setState({rubrics: this.state.rubrics.map(r=>{
-                    if(r.id===id)
-                        return {...r,publishDate:new Date()}
+    publishRubric = (id) => {
+        ApiService.publishRubric(id).then(res =>
+            this.setState({
+                rubrics: this.state.rubrics.map(r => {
+                    if (r.id === id)
+                        return { ...r, publishDate: new Date() }
                     return r
-            })})
-        );  
+                })
+            })
+        );
     }
     copyneditRubric(rubric) {
         //send exactly the same content to add-rubric
@@ -74,6 +77,12 @@ class ListRubricComponent extends Component {
     addRubric() {
         window.sessionStorage.removeItem("rubricId");
         this.props.history.push('/add-rubric');
+    }
+
+    //direct to export page along with rubric Id
+    exportPage = (id) => {
+        window.sessionStorage.setItem("rubricId", id);
+        this.props.history.push('/export-rubric');
     }
 
     search = (e) => {
@@ -129,6 +138,7 @@ class ListRubricComponent extends Component {
                         copynedit={this.copyneditRubric}
                         get={this.getRubric}
                         publishPost={this.publishRubric}
+                        exportPage={this.exportPage}
                         category='rubric' />
                     ] : <h2>Loading...</h2>
             }</div>);

@@ -29,6 +29,10 @@ class CanvasApiService {
                             '/export/course/'+courseId+'/outcome_groups/'+
                             outcome_group_id+'/token?token='+token);
     }
+    exportRubric(rubricId,courseId,token){
+        return axios.post(API_BASE_URL+'rubric/'+rubricId+
+                            '/export/course/'+courseId+'/token?token='+token);
+    }
 }
 
 export default new CanvasApiService();
