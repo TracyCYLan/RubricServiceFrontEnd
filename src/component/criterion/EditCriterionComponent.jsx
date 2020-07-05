@@ -151,7 +151,7 @@ class EditCriterionComponent extends Component {
         }
         return (
             [
-                <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
+                <Modal key="modal" show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
                     <Modal.Header closeButton>
                         <Modal.Title>Are you sure you want to leave this page?</Modal.Title>
                     </Modal.Header>
@@ -165,12 +165,12 @@ class EditCriterionComponent extends Component {
                     </Button>
                     </Modal.Footer>
                 </Modal>,
-                <Breadcrumb className="mx-auto mt-2">
+                <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                     <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
                     <Breadcrumb.Item onClick={this.getCriterion}>View Criterion</Breadcrumb.Item>
                     <Breadcrumb.Item active>Edit Criterion</Breadcrumb.Item>
                 </Breadcrumb>,
-                <Card className="mx-auto mt-3">
+                <Card key="card" className="mx-auto mt-3">
                     <Card.Body>
                         <Card.Title>Edit Criterion</Card.Title>
                         <Form>

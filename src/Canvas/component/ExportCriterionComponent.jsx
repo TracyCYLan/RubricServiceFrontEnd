@@ -66,12 +66,12 @@ class ExportCriterionComponent extends Component {
                     <Form.Group as={Row} controlId="selectCourseForm">
                         <Form.Label column md={2}>Select Course</Form.Label>
                         <Col md={10}>
-                            <Form.Control as="select"
+                            <Form.Control as="select" defaultValue="DEFAULT"
                                 onChange={(e) => this.changeCourse(e)} >
-                                <option value="" disabled selected>Select a course</option>
+                                <option value="DEFAULT" disabled>Select a course</option>
                                 {
                                     this.state.courses.map(
-                                        c => <option value={c.id}>{c.name}</option>)
+                                        c => <option key={c.id} value={c.id}>{c.name}</option>)
                                 }
                             </Form.Control>
                         </Col>
@@ -80,12 +80,12 @@ class ExportCriterionComponent extends Component {
                         <Form.Group as={Row} controlId="selectOutcomeGroupForm">
                             <Form.Label column md={2}>Select Folders</Form.Label>
                             <Col md={10}>
-                                <Form.Control as="select"
+                                <Form.Control as="select" defaultValue="DEFAULT"
                                     onChange={(e) => { this.setState({ outcome_group_id: e.target.value }) }} >
-                                    <option value="" disabled selected>Select an outcome group</option>
+                                    <option value="DEFAULT" disabled>Select an outcome group</option>
                                     {
                                         this.state.outcome_groups.map(
-                                            ogroup => <option value={ogroup.id}>{ogroup.title}</option>)
+                                            ogroup => <option key={ogroup.id} value={ogroup.id}>{ogroup.title}</option>)
                                     }
                                 </Form.Control>
                             </Col>

@@ -36,9 +36,9 @@ function App() {
             <Router>
                 <NavBar key="navbar" />
                 <Layout key="layout">
-                    <Switch>
+                    <Switch key>
                         <Route path="/" exact component={ListCriteriaComponent}/>
-                        <Route path="/rubrics" component={ListRubricComponent} />
+                        <Route path="/rubrics" component={ListRubricComponent}/>
                         <Route path="/rubric" exact component={GetRubricComponent} />
                         <Route path="/add-rubric" component={AddRubricComponent} />
                         <Route path="/criteria" exact component={ListCriteriaComponent} />

@@ -55,7 +55,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         sort: false
                     },
                     {
-                        dataField:'',
+                        dataField:'operation',
                         text: 'Operation',
                         formatter: (cellContent, row) => {
                             return row.published ?
@@ -64,7 +64,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         }
                     },
                     {
-                        dataField:'',
+                        dataField:'export',
                         text: 'Export to Canvas',
                         formatter: (cellContent, row) => {
                             return <div>
@@ -134,7 +134,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         sort: true
                     },
                     {
-                        dataField:'',
+                        dataField:'export',
                         text: 'Export to Canvas',
                         formatter: (cellContent, row) => {
                             return <div>

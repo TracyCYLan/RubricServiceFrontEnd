@@ -241,11 +241,11 @@ class AddRubricComponent extends Component {
 
     render() {
         return [
-            <Breadcrumb className="mx-auto mt-2">
+            <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                 <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
                 <Breadcrumb.Item active>Add Rubric</Breadcrumb.Item>
             </Breadcrumb>,
-            <Card className="mx-auto mt-3">
+            <Card key="card" className="mx-auto mt-3">
                 <Card.Body>
                     <Card.Title>Add Rubric</Card.Title>
                     {this.state.showEditRubricCard ?
@@ -260,12 +260,13 @@ class AddRubricComponent extends Component {
                         ></EditRubricCard> :
                         [
                             <ViewRubricCard
+                                key="viewcard"
                                 name={this.state.name}
                                 description={this.state.description}
                                 publishDate={this.state.publishDate}
                                 editRubric={() => { this.setState({ showEditRubricCard: true }) }}
                                 type='add'></ViewRubricCard>,
-                            <Card className="mx-auto mt-1">
+                            <Card key="criteriaCard" className="mx-auto mt-1">
                                 <Card.Body>
                                     <Form>
                                         <Form.Group as={Row} controlId="formGridCriteriaImport">

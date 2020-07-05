@@ -42,17 +42,18 @@ class GetTagComponent extends Component {
     render() {
         return (
             [
-                <Breadcrumb className="mx-auto mt-2">
+                <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                     <Breadcrumb.Item href="tags">All Tags</Breadcrumb.Item>
                     <Breadcrumb.Item active>{this.state.tag.value}</Breadcrumb.Item>
                 </Breadcrumb>,
-                <Card.Title as="h3" className="text-info mt-3 mb-3">Criteria using {this.state.tag.value}:
+                <Card.Title key="cardTitle" as="h3" className="text-info mt-3 mb-3">Criteria using {this.state.tag.value}:
                 </Card.Title>,
-                <Card.Subtitle>
+                <Card.Subtitle key="cardSubtitle">
                     Total {this.state.tag.count} criteria match
                 </Card.Subtitle>
                 ,
                 <Posts
+                    key="posts"
                     posts={this.state.criteria}
                     loading={this.state.loading}
                     edit={this.editCriterion}

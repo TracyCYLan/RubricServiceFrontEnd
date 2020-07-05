@@ -277,7 +277,7 @@ class GetRubricComponent extends Component {
     }
     render() {
         return (
-            [<Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
+            [<Modal key="modal" show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
                 <Modal.Header closeButton>
                     <Modal.Title>Are you sure you want to delete?</Modal.Title>
                 </Modal.Header>
@@ -291,11 +291,11 @@ class GetRubricComponent extends Component {
                     </Button>
                 </Modal.Footer>
             </Modal>,
-            <Breadcrumb className="mx-auto mt-2">
+            <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
             <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
             <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
           </Breadcrumb>,
-            <Card className="mx-auto mt-2">
+            <Card key="card" className="mx-auto mt-2">
                 <Card.Body>
                     {this.state.loading ? '' :
                         (!this.state.published && this.state.showEditRubricCard) ?
@@ -344,7 +344,7 @@ class GetRubricComponent extends Component {
                                         </Col>
                                     </Form.Group>
                                     {this.state.showEditCriterionCard ?//only show import area and editcriterion card when we click addorimport button
-                                        [<Form.Group as={Row} controlId="formGridCriteriaImport">
+                                        [<Form.Group as={Row} controlId="formGridCriteriaImport" key="importCriterion">
                                             <Form.Label column lg={2}>Criteria</Form.Label>
                                             <Col md={10}>
                                                 <div className="input-group">
@@ -373,7 +373,7 @@ class GetRubricComponent extends Component {
                                             <Button variant="outline-info ml-2" onClick={this.addCriterionBlock}>Add new Criterion</Button>
                                         </Form.Group>
                                             ,
-                                        <Form.Group as={Row} controlId="formGridEditCriteria">
+                                        <Form.Group as={Row} controlId="formGridEditCriteria" key="editCriteria">
                                             <Col>
                                                 {
                                                     this.state.newCriterion === '' ? '' :

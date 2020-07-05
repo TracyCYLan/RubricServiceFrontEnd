@@ -52,12 +52,12 @@ class ExportRubricComponent extends Component {
                     <Form.Group as={Row} controlId="selectCourseForm">
                         <Form.Label column md={2}>Select Course</Form.Label>
                         <Col md={10}>
-                            <Form.Control as="select"
+                            <Form.Control as="select" defaultValue="DEFAULT"
                                 onChange={(e) => this.changeCourse(e)} >
-                                <option value="" disabled selected>Select a course</option>
+                                <option value="DEFAULT" disabled>Select a course</option>
                                 {
                                     this.state.courses.map(
-                                        c => <option value={c.id}>{c.name}</option>)
+                                        c => <option value={c.id} key={c.id}>{c.name}</option>)
                                 }
                             </Form.Control>
                         </Col>

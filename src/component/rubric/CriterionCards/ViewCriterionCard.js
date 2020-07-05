@@ -35,7 +35,7 @@ class ViewCriterionCard extends Component {
                     }
                 </Card.Header>
                     <Card.Body>
-                        <Card.Text>{ ReactHtmlParser(this.state.description) }</Card.Text>
+                        { ReactHtmlParser(this.state.description) }
                     </Card.Body>
                 <CardGroup>
                     {this.state.ratings.map(
