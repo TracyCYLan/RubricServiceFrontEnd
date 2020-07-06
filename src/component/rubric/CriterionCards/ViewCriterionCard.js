@@ -9,7 +9,7 @@ class ViewCriterionCard extends Component {
         this.state = {
             criterionId: props.index,
             name: props.name,
-            description: props.description,
+            description: props.description.toString('html'),
             ratings: props.ratings,
             published: props.published,
             reusable: props.reusable,
