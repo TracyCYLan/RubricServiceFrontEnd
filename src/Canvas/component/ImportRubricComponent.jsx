@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import ApiService from "../service/CanvasApiService";
 import { Button, Card, Form, Row, Col } from 'react-bootstrap'; //,Row, Col, Button, CardGroup, Form, Card
-
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 class ImportRubricComponent extends Component {
     constructor(props) {
         super(props)
@@ -10,20 +11,18 @@ class ImportRubricComponent extends Component {
             courseId: '',
             courses: [],
             rubrics: [],
-            rubricId: ''
+            rubric: ''
         }
         this.loadCourses = this.loadCourses.bind(this);
         this.importRubric = this.importRubric.bind(this);
     }
 
     componentDidMount() {
-        if(window.sessionStorage.getItem("canvasToken")===null)
-        {
+        if (window.sessionStorage.getItem("canvasToken") === null) {
             alert("Need to login on Canvas to import");
             this.props.history.push('/');
         }
-        else
-        {
+        else {
             this.loadCourses();
         }
     }
@@ -34,21 +33,28 @@ class ImportRubricComponent extends Component {
             })
         })
     }
-    importRubric= (e) => {
-        e.preventDefault();
-        ApiService.importRubric(this.state.courseId, this.state.rubricId,window.sessionStorage.getItem("canvasToken")).then(res=>{
-            this.props.history.push('/rubrics')
+    importRubric = (e) => {
+        if(this.state.rubric[0]===undefined)
+        {
+            alert("you need to select one rubric to import!");
         }
-        )
+        else
+        {
+            e.preventDefault();
+            ApiService.importRubric(this.state.courseId, this.state.rubric[0].id, window.sessionStorage.getItem("canvasToken")).then(res => {
+                this.props.history.push('/rubrics')
+            })
+        }
+        
     }
     reloadRubrics() {
-        ApiService.fetchRubrics(this.state.courseId,window.sessionStorage.getItem("canvasToken")).then(res => {
+        ApiService.fetchRubrics(this.state.courseId, window.sessionStorage.getItem("canvasToken")).then(res => {
             this.setState({
                 rubrics: JSON.parse(res.data)
             })
         })
     }
-    changeCourse = (e) =>{
+    changeCourse = (e) => {
         this.setState({
             courseId: e.target.value
         }, () => {
@@ -63,12 +69,12 @@ class ImportRubricComponent extends Component {
                     <Form.Group as={Row} controlId="selectCourseForm">
                         <Form.Label column md={2}>Select Course</Form.Label>
                         <Col md={10}>
-                            <Form.Control as="select"
+                            <Form.Control as="select" defaultValue="DEFAULT"
                                 onChange={(e) => this.changeCourse(e)} >
-                                <option value="" disabled selected>Select a course</option>
+                                <option value="DEFAULT" disabled>Select a course</option>
                                 {
                                     this.state.courses.map(
-                                        c => <option value={c.id}>{c.name}</option>)
+                                        c => <option key={c.id} value={c.id}>{c.name}</option>)
                                 }
                             </Form.Control>
                         </Col>
@@ -77,17 +83,17 @@ class ImportRubricComponent extends Component {
                         <Form.Group as={Row} controlId="selectRubricForm">
                             <Form.Label column md={2}>Select Rubric</Form.Label>
                             <Col md={10}>
-                                <Form.Control as="select"
-                                    onChange={(e) => { this.setState({ rubricId: e.target.value }) }} >
-                                    <option value="" disabled selected>Select a rubric</option>
-                                    {
-                                        this.state.rubrics.map(
-                                            r => <option value={r.id}>{r.title}</option>)
-                                    }
-                                </Form.Control>
+                                <Typeahead
+                                    {...this.state.rubrics}
+                                    id="import-rubric-box"
+                                    onChange={rubric => this.setState({ rubric })}
+                                    options={this.state.rubrics}
+                                    labelKey={(option) => option.title}
+                                    placeholder="Select a rubric"
+                                />
                             </Col>
                         </Form.Group>}
-                    {this.state.rubricId === '' ? '' : <Button onClick={this.importRubric}>Import</Button>}
+                    {this.state.rubric === '' ? '' : <Button onClick={this.importRubric}>Import</Button>}
                 </Form>
             </Card.Body>
         </Card>
