@@ -13,6 +13,7 @@
     "react-bootstrap": "^1.0.1",
     "react-bootstrap-table-next": "^4.0.3",
     "react-bootstrap-table2-paginator": "^2.1.2",
+    "react-bootstrap-typeahead": "^5.1.0",
     "react-dom": "^16.13.1",
     "react-html-id": "^0.1.5",
     "react-html-parser": "^2.0.2",
