@@ -42,7 +42,8 @@ class ImportRubricComponent extends Component {
         {
             e.preventDefault();
             ApiService.importRubric(this.state.courseId, this.state.rubric[0].id, window.sessionStorage.getItem("canvasToken")).then(res => {
-                this.props.history.push('/rubrics')
+                window.sessionStorage.setItem("rubricId", res.data);
+                this.props.history.push('/rubric');
             })
         }
         

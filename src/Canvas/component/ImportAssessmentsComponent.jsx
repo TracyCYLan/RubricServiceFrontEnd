@@ -3,18 +3,18 @@ import ApiService from "../service/CanvasApiService";
 import { Button, Card, Form, Row, Col } from 'react-bootstrap'; //,Row, Col, Button, CardGroup, Form, Card
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-class ImportCriterionComponent extends Component {
+class ImportAssessmentsComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
             message: null,
             courseId: '',
             courses: [],
-            criteria: [],
-            criterion: ''
+            assignments: [],
+            assignment: ''
         }
         this.loadCourses = this.loadCourses.bind(this);
-        this.importCriterion = this.importCriterion.bind(this);
+        this.importAssessments = this.importAssessments.bind(this);
     }
 
     componentDidMount() {
@@ -33,22 +33,28 @@ class ImportCriterionComponent extends Component {
             })
         })
     }
-    importCriterion = (e) => {
-        if (this.state.criterion[0] === undefined) {
-            alert("you need to select one criterion to import!");
+    importAssessments = (e) => {
+        if (this.state.assignment[0] === undefined) {
+            alert("you need to select an assignment!");
         }
         else {
             e.preventDefault();
-            ApiService.importCriterion(this.state.criterion[0].outcome.id, window.sessionStorage.getItem("canvasToken")).then(res => {
-                window.sessionStorage.setItem("criterionId", res.data);
-                this.props.history.push('/criterion');
-            })
+            if (this.state.assignment[0].rubric_settings === undefined) {
+                alert('selected assignment hasnt select a rubric to grade');
+            }
+            else {
+                alert(this.state.courseId + " " + this.state.assignment[0].id + " " + this.state.assignment[0].rubric_settings.id);
+                ApiService.importAssessments(this.state.courseId, this.state.assignment[0].id, this.state.assignment[0].rubric_settings.id, window.sessionStorage.getItem("canvasToken")).then(res => {
+                    this.props.history.push('/')
+                })
+            }
+
         }
     }
-    reloadCriteria() {
-        ApiService.fetchCriteria(this.state.courseId, window.sessionStorage.getItem("canvasToken")).then(res => {
+    reloadAssignments() {
+        ApiService.fetchAssignments(this.state.courseId, window.sessionStorage.getItem("canvasToken")).then(res => {
             this.setState({
-                criteria: JSON.parse(res.data)
+                assignments: JSON.parse(res.data)
             })
         })
     }
@@ -56,13 +62,13 @@ class ImportCriterionComponent extends Component {
         this.setState({
             courseId: e.target.value
         }, () => {
-            this.reloadCriteria();
+            this.reloadAssignments();
         });
     }
     render() {
         return <Card className="mx-auto mt-3">
             <Card.Body>
-                <Card.Title>Import Criterion</Card.Title>
+                <Card.Title>Import Assessments</Card.Title>
                 <Form>
                     <Form.Group as={Row} controlId="selectCourseForm">
                         <Form.Label column md={2}>Select Course</Form.Label>
@@ -78,20 +84,20 @@ class ImportCriterionComponent extends Component {
                         </Col>
                     </Form.Group>
                     {this.state.courseId === '' ? '' :
-                        <Form.Group as={Row} controlId="selectOutcomeForm">
-                            <Form.Label column md={2}>Select Outcome</Form.Label>
+                        <Form.Group as={Row} controlId="selectAssignmentForm">
+                            <Form.Label column md={2}>Select Assignment</Form.Label>
                             <Col md={10}>
                                 <Typeahead
-                                    {...this.state.criteria}
+                                    {...this.state.assignments}
                                     id="import-outcome-box"
-                                    onChange={criterion => this.setState({ criterion })}
-                                    options={this.state.criteria}
-                                    labelKey={(option) => option.outcome.title}
-                                    placeholder="Select an outcome"
+                                    onChange={assignment => this.setState({ assignment })}
+                                    options={this.state.assignments}
+                                    labelKey={(option) => option.name}
+                                    placeholder="Select an assignment"
                                 />
                             </Col>
                         </Form.Group>}
-                    {this.state.criterion === '' ? '' : <Button onClick={this.importCriterion}>Import</Button>}
+                    {this.state.assignment === '' ? '' : <Button onClick={this.importAssessments}>Import</Button>}
                 </Form>
             </Card.Body>
         </Card>
@@ -99,4 +105,4 @@ class ImportCriterionComponent extends Component {
 
 }
 
-export default ImportCriterionComponent;
+export default ImportAssessmentsComponent;

@@ -57,6 +57,9 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                     {
                         dataField:'operation',
                         text: 'Operation',
+                        headerStyle: (colum, colIndex) => {
+                            return { width: '10%', textAlign: 'center', verticalAlign: 'middle' };
+                        },
                         formatter: (cellContent, row) => {
                             return row.published ?
                                 <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => copynedit(row)}>Copy</Button>
@@ -66,6 +69,9 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                     {
                         dataField:'export',
                         text: 'Export to Canvas',
+                        headerStyle: (colum, colIndex) => {
+                            return { width: '10%', textAlign: 'center', verticalAlign: 'middle' };
+                        },
                         formatter: (cellContent, row) => {
                             return <div>
                                 <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => exportPage(row.id)}>Export</Button>

@@ -5,33 +5,53 @@ const API_BASE_URL = 'http://localhost:8080/canvas/';
 
 class CanvasApiService {
     fetchCourses(token) {
-        return axios.get(API_BASE_URL + 'courses/token?token='+token);
+        return axios.get(API_BASE_URL + 'courses/token?token=' + token);
     }
-    fetchRubrics(courseId,token) {
-        return axios.get(API_BASE_URL + 'courses/' + courseId + '/rubrics/token?token='+token);
+    fetchRubrics(courseId, token) {
+        return axios.get(API_BASE_URL + 'courses/' + courseId +
+            '/rubrics/token?token=' + token);
     }
-    importRubric(courseId,rubricId,token){
+
+    importRubric(courseId, rubricId, token) {
         //get rubric from canvas then post it into db
-        return axios.post(API_BASE_URL + 'courses/' + courseId + '/rubrics/'+rubricId+'/token?token='+token);
+        return axios.post(API_BASE_URL + 'courses/' + courseId +
+            '/rubrics/' + rubricId + '/token?token=' + token);
     }
-    fetchCriteria(courseId,token){
-        return axios.get(API_BASE_URL + 'courses/' + courseId + '/criteria/token?token='+token);
+
+    fetchCriteria(courseId, token) {
+        return axios.get(API_BASE_URL + 'courses/' + courseId +
+            '/criteria/token?token=' + token);
     }
-    importCriterion(criterionId,token){
+
+    importCriterion(criterionId, token) {
         //get outcome from canvas then post it into db
-        return axios.post(API_BASE_URL + 'criterion/'+criterionId+'/token?token='+token);
+        return axios.post(API_BASE_URL + 'criterion/' + criterionId + '/token?token=' + token);
     }
-    fetchOutcomeGroups(courseId,token){
-        return axios.get(API_BASE_URL+'courses/'+courseId+'/outcome_groups/token?token='+token);
+
+    fetchOutcomeGroups(courseId, token) {
+        return axios.get(API_BASE_URL + 'courses/' + courseId +
+            '/outcome_groups/token?token=' + token);
     }
-    exportCriterion(criterionId,courseId,outcome_group_id,token){
-        return axios.post(API_BASE_URL+'criterion/'+criterionId+
-                            '/export/course/'+courseId+'/outcome_groups/'+
-                            outcome_group_id+'/token?token='+token);
+
+    exportCriterion(criterionId, courseId, outcome_group_id, token) {
+        return axios.post(API_BASE_URL + 'criterion/' + criterionId +
+            '/export/course/' + courseId + '/outcome_groups/' +
+            outcome_group_id + '/token?token=' + token);
     }
-    exportRubric(rubricId,courseId,token){
-        return axios.post(API_BASE_URL+'rubric/'+rubricId+
-                            '/export/course/'+courseId+'/token?token='+token);
+
+    exportRubric(rubricId, courseId, token) {
+        return axios.post(API_BASE_URL + 'rubric/' + rubricId +
+            '/export/course/' + courseId + '/token?token=' + token);
+    }
+
+    fetchAssignments(courseId, token) {
+        return axios.get(API_BASE_URL + 'courses/' + courseId +
+            '/assignments/token?token=' + token);
+    }
+
+    importAssessments(courseId, assignmentId, rubricId, token) {
+        return axios.post(API_BASE_URL + 'courses/' + courseId +
+            '/assignments/' + assignmentId + '/rubrics/' + rubricId + '/token?token=' + token);
     }
 }
 
