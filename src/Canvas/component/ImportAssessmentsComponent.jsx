@@ -11,7 +11,11 @@ class ImportAssessmentsComponent extends Component {
             courseId: '',
             courses: [],
             assignments: [],
-            assignment: ''
+            assignment: '',
+            //for assessmentGroup
+            name: '',
+            description: '',
+            publishDate: ''
         }
         this.loadCourses = this.loadCourses.bind(this);
         this.importAssessments = this.importAssessments.bind(this);
@@ -33,6 +37,8 @@ class ImportAssessmentsComponent extends Component {
             })
         })
     }
+    onChange = (e) =>
+        this.setState({ [e.target.name]: e.target.value });
     importAssessments = (e) => {
         if (this.state.assignment[0] === undefined) {
             alert("you need to select an assignment!");
@@ -43,8 +49,12 @@ class ImportAssessmentsComponent extends Component {
                 alert('selected assignment hasnt select a rubric to grade');
             }
             else {
-                alert(this.state.courseId + " " + this.state.assignment[0].id + " " + this.state.assignment[0].rubric_settings.id);
-                ApiService.importAssessments(this.state.courseId, this.state.assignment[0].id, this.state.assignment[0].rubric_settings.id, window.sessionStorage.getItem("canvasToken")).then(res => {
+                let assessmentGroupInfo = {
+                    name: this.state.name,
+                    description: this.state.description,
+                    publishDate: this.state.publishDate
+                }
+                ApiService.importAssessments(this.state.courseId, this.state.assignment[0].id, this.state.assignment[0].rubric_settings.id, window.sessionStorage.getItem("canvasToken"), assessmentGroupInfo).then(res => {
                     this.props.history.push('/')
                 })
             }
@@ -97,6 +107,24 @@ class ImportAssessmentsComponent extends Component {
                                 />
                             </Col>
                         </Form.Group>}
+                    <Form.Group as={Row} controlId="formGridName">
+                        <Form.Label column md={2}>Name</Form.Label>
+                        <Col md={10}>
+                            <Form.Control type="text" placeholder="Enter name" name="name" value={this.state.name} onChange={this.onChange} />
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} controlId="formGridDescription">
+                        <Form.Label column md={2}>Description</Form.Label>
+                        <Col md={10}>
+                            <Form.Control as="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} controlId="formGridDate">
+                        <Form.Label column md={2}>Publish Date</Form.Label>
+                        <Col md={10}>
+                            <Form.Control type="date" name="publishDate" value={this.state.publishDate} onChange={this.onChange} />
+                        </Col>
+                    </Form.Group>
                     {this.state.assignment === '' ? '' : <Button onClick={this.importAssessments}>Import</Button>}
                 </Form>
             </Card.Body>

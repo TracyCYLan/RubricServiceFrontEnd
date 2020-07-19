@@ -49,9 +49,9 @@ class CanvasApiService {
             '/assignments/token?token=' + token);
     }
 
-    importAssessments(courseId, assignmentId, rubricId, token) {
+    importAssessments(courseId, assignmentId, rubricId, token, assessmentGroupInfo) {
         return axios.post(API_BASE_URL + 'courses/' + courseId +
-            '/assignments/' + assignmentId + '/rubrics/' + rubricId + '/token?token=' + token);
+            '/assignments/' + assignmentId + '/rubrics/' + rubricId + '/token?token=' + token, assessmentGroupInfo);
     }
 }
 
