@@ -29,6 +29,8 @@ import ImportAssessmentsComponent from "./Canvas/component/ImportAssessmentsComp
 import LoginComponent from "./component/logins/LoginComponent";
 import RegisterComponent from "./component/logins/RegisterComponent";
 
+import ListAssessmentGroupsComponent from "./component/assessmentGroup/ListAssessmentGroupsComponent";
+import GetAssessmentGroupComponent from "./component/assessmentGroup/GetAssessmentGroupComponent";
 import TestComponent from "./component/TestComponent";
 import TestCanvasComponent from "./Canvas/component/TestCanvasComponent";
 function App() {
@@ -56,6 +58,8 @@ function App() {
                         <Route path="/export-criterion" exact component={ExportCriterionComponent}></Route>
                         <Route path="/export-rubric" exact component={ExportRubricComponent}></Route>
                         <Route path="/import-assessments" exact component={ImportAssessmentsComponent}></Route>
+                        <Route path="/assessmentGroups" exact component={ListAssessmentGroupsComponent}></Route>
+                        <Route path="/assessmentGroup" exact component={GetAssessmentGroupComponent}></Route>
                         <Route path="/login" exact component={LoginComponent}></Route>
                         <Route path="/register" exact component={RegisterComponent}></Route>
                         <Route path="/redirect" exact component={RedirectPage}></Route>

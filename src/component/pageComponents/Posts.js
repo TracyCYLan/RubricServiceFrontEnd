@@ -161,6 +161,56 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
             </div>
         );
     }
+    else if (category === 'assessmentGroup') {
+
+        return (
+            <div key="rubrictableDiv" className="mx-auto mt-2">
+                <BootstrapTable
+                    bootstrap4
+                    key="rubrictable"
+                    keyField="id"
+                    data={posts}
+                    columns={[{
+                        dataField: 'name',
+                        text: 'Name',
+                        headerStyle: (colum, colIndex) => {
+                            return { width: '60%', textAlign: 'center', verticalAlign: 'middle' };
+                        },
+                        formatter: (cellContent, row) => {
+                            return <span className="text-primary"
+                                style={{ cursor: "pointer", fontSize: "22px", fontFamily: "sans-serif" }}
+                                onClick={() => get(row.id)}>
+                                {row.name}</span>
+                        },
+                        sort: true
+                    }, 
+                    {
+                        dataField: 'publishDate',
+                        text: 'Publish Date',
+                        headerStyle: (colum, colIndex) => {
+                            return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
+                        },
+                        formatter: (cellContent, row) => {
+                            return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>
+                                {row.publishDate === null  ?
+                                    <Button variant="info" style={{ width: '80%', height: '50%' }}
+                                        onClick={() => publishPost(row.id)}>publish</Button> :
+                                    new Date(row.publishDate).toLocaleDateString()}
+                            </span>
+                        },
+                        sort: true
+                    }
+                ]}
+                    defaultSorted={[{
+                        dataField: 'publishDate',
+                        order: 'desc'
+                    }]}
+                    pagination={paginationFactory()}
+                    hover
+                />
+            </div>
+        );
+    }
     else if (category === 'tempcriterion') {//temp no one using this
         return (
             <Table className="mx-auto mt-2" responsive="lg" hover="true" bordered="true">

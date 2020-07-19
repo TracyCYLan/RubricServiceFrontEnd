@@ -143,7 +143,12 @@ class ApiService {
         }
         return axios.post(API_BASE_URL+'user/login',user);
     }
-
+    fetchAssessmentGroups(){
+        return axios.get(API_BASE_URL + 'assessment/assessmentgroup');
+    }
+    fetchAssessmentGroupById(id){
+        return axios.get(API_BASE_URL + 'assessment/assessmentgroup/'+id);
+    }
 }
 
 export default new ApiService();
