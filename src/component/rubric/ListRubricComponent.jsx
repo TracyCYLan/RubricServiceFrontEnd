@@ -56,7 +56,7 @@ class ListRubricComponent extends Component {
             this.setState({
                 rubrics: this.state.rubrics.map(r => {
                     if (r.id === id)
-                        return { ...r, publishDate: new Date() }
+                        return { ...r, publishDate: new Date(), published:true }
                     return r
                 })
             })

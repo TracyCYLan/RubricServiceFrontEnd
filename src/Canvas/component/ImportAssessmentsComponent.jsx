@@ -55,7 +55,7 @@ class ImportAssessmentsComponent extends Component {
                     publishDate: this.state.publishDate
                 }
                 ApiService.importAssessments(this.state.courseId, this.state.assignment[0].id, this.state.assignment[0].rubric_settings.id, window.sessionStorage.getItem("canvasToken"), assessmentGroupInfo).then(res => {
-                    this.props.history.push('/')
+                    this.props.history.push('/assessmentGroups')
                 })
             }
 

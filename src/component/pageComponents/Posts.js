@@ -74,7 +74,17 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         },
                         formatter: (cellContent, row) => {
                             return <div>
-                                <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => exportPage(row.id)}>Export</Button>
+                                <Button variant="info" style={{ width: '80%', height: '50%' }} 
+                                onClick={function(){
+                                    if(row.published)
+                                    {
+                                        exportPage(row.id)
+                                    }
+                                    else
+                                    {
+                                        alert("You need to publish the rubric before export it");
+                                    }
+                                }}>Export</Button>
                                 </div>
                         },
                         hidden: !window.sessionStorage.getItem("canvasToken")
@@ -144,7 +154,18 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         text: 'Export to Canvas',
                         formatter: (cellContent, row) => {
                             return <div>
-                                <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => exportPage(row.id)}>Export</Button>
+                                <Button variant="info" style={{ width: '80%', height: '50%' }} 
+                                onClick={function(){
+                                    if(row.published)
+                                    {
+                                        exportPage(row.id)
+                                    }
+                                    else
+                                    {
+                                        alert("You need to publish the rubric before export it");
+                                    }
+                                }}
+                                >Export</Button>
                                 </div>
                         },
                         hidden: !window.sessionStorage.getItem("canvasToken")
