@@ -15,7 +15,7 @@ class ImportAssessmentsComponent extends Component {
             //for assessmentGroup
             name: '',
             description: '',
-            publishDate: ''
+            assessDate: ''
         }
         this.loadCourses = this.loadCourses.bind(this);
         this.importAssessments = this.importAssessments.bind(this);
@@ -52,7 +52,7 @@ class ImportAssessmentsComponent extends Component {
                 let assessmentGroupInfo = {
                     name: this.state.name,
                     description: this.state.description,
-                    publishDate: this.state.publishDate
+                    assessDate: this.state.assessDate
                 }
                 ApiService.importAssessments(this.state.courseId, this.state.assignment[0].id, this.state.assignment[0].rubric_settings.id, window.sessionStorage.getItem("canvasToken"), assessmentGroupInfo).then(res => {
                     this.props.history.push('/assessmentGroups')
@@ -120,9 +120,9 @@ class ImportAssessmentsComponent extends Component {
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formGridDate">
-                        <Form.Label column md={2}>Publish Date</Form.Label>
+                        <Form.Label column md={2}>Assess Date</Form.Label>
                         <Col md={10}>
-                            <Form.Control type="date" name="publishDate" value={this.state.publishDate} onChange={this.onChange} />
+                            <Form.Control type="date" name="assessDate" value={this.state.assessDate} onChange={this.onChange} />
                         </Col>
                     </Form.Group>
                     {this.state.assignment === '' ? '' : <Button onClick={this.importAssessments}>Import</Button>}

@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import ApiService from "../../service/ApiService";
-import { Button, Card, CardGroup, Breadcrumb } from 'react-bootstrap';
+import { Card, Breadcrumb } from 'react-bootstrap';
 import ReactHtmlParser from 'react-html-parser';
 class GetAssessmentGroupComponent extends Component {
 
@@ -12,9 +12,9 @@ class GetAssessmentGroupComponent extends Component {
             description: '',
             assessments: [],
             message: '',
-            publishDate: '',
+            assessDate: '',
             showModal: false,
-            rubric: '123'
+            rubric: ''
         }
         this.loadAssessmentGroup = this.loadAssessmentGroup.bind(this);
     }
@@ -32,7 +32,8 @@ class GetAssessmentGroupComponent extends Component {
                     name: assessmentGroup.name,
                     description: assessmentGroup.description,
                     assessments: assessmentGroup.assessments,
-                    publishDate: assessmentGroup.publishDate
+                    assessDate: assessmentGroup.assessDate,
+                    rubric: assessmentGroup.rubric
                 })
             });
     }
@@ -55,22 +56,11 @@ class GetAssessmentGroupComponent extends Component {
                     <Card.Text as="h6">
                         Total {this.state.assessments.length} assessments.
                     </Card.Text>
-                    <Card.Text as="h6">
-                        Using {this.state.rubric} rubric
-                    </Card.Text>
-                    <Card.Text>
-                        {
-                            this.state.assessments.map(
-                                a => <div key={a.id} value={a.id}>
-                                    {
-                                        // a.rubric.criteria.map((c,index) => (
-                                        //     c.name +": "+a.ratings[index].value +", "
-                                        //     )
-                                        // )
-                                    }
-                                </div>)
-                        }
-                    </Card.Text>
+                    <Card.Text class="text-primary" onClick={() => {
+                        window.sessionStorage.setItem("rubricId", this.state.rubric.id);
+                        this.props.history.push('/rubric');
+                    }}>Using {this.state.rubric.name}</Card.Text>
+
                 </Card.Body>
             </Card>
             ]

@@ -201,29 +201,28 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             return <span className="text-primary"
                                 style={{ cursor: "pointer", fontSize: "22px", fontFamily: "sans-serif" }}
                                 onClick={() => get(row.id)}>
-                                {row.name}</span>
+                                {row.rubric.name+" - "+row.name}</span>
                         },
                         sort: true
                     }, 
                     {
-                        dataField: 'publishDate',
-                        text: 'Publish Date',
+                        dataField: 'assessDate',
+                        text: 'Assess Date',
                         headerStyle: (colum, colIndex) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
                         formatter: (cellContent, row) => {
                             return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>
-                                {row.publishDate === null  ?
-                                    <Button variant="info" style={{ width: '80%', height: '50%' }}
-                                        onClick={() => publishPost(row.id)}>publish</Button> :
-                                    new Date(row.publishDate).toLocaleDateString()}
+                                {row.assessDate === null  ?
+                                    '' :
+                                    new Date(row.assessDate).toLocaleDateString()}
                             </span>
                         },
                         sort: true
                     }
                 ]}
                     defaultSorted={[{
-                        dataField: 'publishDate',
+                        dataField: 'assessDate',
                         order: 'desc'
                     }]}
                     pagination={paginationFactory()}
