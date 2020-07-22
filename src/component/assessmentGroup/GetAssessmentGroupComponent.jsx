@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ApiService from "../../service/ApiService";
-import { Card, Breadcrumb } from 'react-bootstrap';
+import { Card, Breadcrumb, Table } from 'react-bootstrap';
 import ReactHtmlParser from 'react-html-parser';
 class GetAssessmentGroupComponent extends Component {
 
@@ -14,9 +14,11 @@ class GetAssessmentGroupComponent extends Component {
             message: '',
             assessDate: '',
             showModal: false,
-            rubric: ''
+            rubric: '',
+            criteria: []
         }
         this.loadAssessmentGroup = this.loadAssessmentGroup.bind(this);
+        this.countRating = this.countRating.bind(this);
     }
 
     componentDidMount() {
@@ -33,15 +35,42 @@ class GetAssessmentGroupComponent extends Component {
                     description: assessmentGroup.description,
                     assessments: assessmentGroup.assessments,
                     assessDate: assessmentGroup.assessDate,
-                    rubric: assessmentGroup.rubric
-                })
-            });
+                    rubric: assessmentGroup.rubric,
+                    criteria: assessmentGroup.rubric.criteria
+                }, () => {
+                    this.countRating();
+                });
+            })
     }
-
+    countRating() {
+        this.state.criteria.map(
+            c => c.ratings.map(r => r['count'] = 0)
+        )
+        this.state.assessments.map(
+            (a) => {
+                a.ratings.map((r, index) => {
+                    let ratings = this.state.criteria[index].ratings;
+                    for (let i in ratings) {
+                        if (ratings[i].value === r.value) {
+                            ratings[i].count++;
+                            break;
+                        }
+                    }
+                    return null;
+                })
+                return null;
+            }
+        )
+        this.setState({
+            criteria: this.state.criteria
+        })
+        console.log(JSON.stringify(this.state.criteria))
+    }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
     render() {
+        alert(JSON.stringify(this.state.criteria))
         return (
             [<Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                 <Breadcrumb.Item href="assessmentgroups">AssessmentGroups</Breadcrumb.Item>
@@ -56,11 +85,33 @@ class GetAssessmentGroupComponent extends Component {
                     <Card.Text as="h6">
                         Total {this.state.assessments.length} assessments.
                     </Card.Text>
-                    <Card.Text class="text-primary" onClick={() => {
+                    <Card.Text className="text-primary" onClick={() => {
                         window.sessionStorage.setItem("rubricId", this.state.rubric.id);
                         this.props.history.push('/rubric');
                     }}>Using {this.state.rubric.name}</Card.Text>
-
+                    {
+                        <Table border="1">
+                            <thead>
+                                <th>Criterion</th>
+                                <th>Ratings and Counts</th>
+                            </thead>
+                            <tbody>
+                            {
+                                this.state.criteria.map(c =>
+                                    <tr>
+                                        <td>{c.name}</td>
+                                        {
+                                            c.ratings.map(r=>
+                                                [<tr>{r.description}</tr>,
+                                                <td>{r.count}</td>]
+                                                )
+                                        }
+                                    </tr>
+                                )
+                            }
+                            </tbody>
+                        </Table>
+                    }
                 </Card.Body>
             </Card>
             ]
