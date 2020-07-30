@@ -7,6 +7,8 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
+    "highcharts": "^8.1.2",
+    "highcharts-react-official": "^3.0.0",
     "react": "^16.13.1",
     "react-autosuggest": "^9.4.3",
     "react-beautiful-dnd": "^13.0.0",
