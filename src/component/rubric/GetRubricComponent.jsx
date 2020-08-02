@@ -54,6 +54,8 @@ class GetRubricComponent extends Component {
         this.handleChange = this.handleChange.bind(this);
 
         this.onDragEnd = this.onDragEnd.bind(this);
+
+        this.showResults = this.showResults.bind(this);
     }
 
     componentDidMount() {
@@ -275,6 +277,12 @@ class GetRubricComponent extends Component {
             criteria: criteria
         });
     }
+
+    showResults() {
+        window.sessionStorage.setItem("rubricId", this.state.id);
+        this.props.history.push('/rubric-results');
+    }
+
     render() {
         return (
             [<Modal key="modal" show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
@@ -300,6 +308,7 @@ class GetRubricComponent extends Component {
                     {this.state.loading ? '' :
                         (!this.state.published && this.state.showEditRubricCard) ?
                             <EditRubricCard
+                                id={this.state.id}
                                 edit={this.editRubric}
                                 name={this.state.name}
                                 description={this.state.description}
@@ -311,6 +320,7 @@ class GetRubricComponent extends Component {
                             ></EditRubricCard>
                             :
                             <ViewRubricCard
+                                id={this.state.id}
                                 name={this.state.name}
                                 description={this.state.description}
                                 publishDate={this.state.publishDate}
@@ -319,6 +329,7 @@ class GetRubricComponent extends Component {
                                 editRubric={() => { this.setState({ showEditRubricCard: true }) }}
                                 copyneditRubric={() => this.copyneditRubric(this.state.id)}
                                 publishRubric={()=>this.publishRubric(this.state.id)}
+                                showResults={()=>this.showResults(this.state.id)}
                                 type='view'>
                             </ViewRubricCard>
                     }
