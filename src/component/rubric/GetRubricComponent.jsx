@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, Form, Card, Modal,Breadcrumb } from 'react-bootstrap';
+import { Row, Col, Button, Form, Card, Modal, Breadcrumb } from 'react-bootstrap';
 import { Autocomplete } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
 import EditRubricCard from './RubricCards/EditRubricCard';
@@ -48,7 +48,7 @@ class GetRubricComponent extends Component {
         this.deleteRubric = this.deleteRubric.bind(this);
         this.editRubric = this.editRubric.bind(this);
         this.saveRubric = this.saveRubric.bind(this);
-        this.publishRubric=this.publishRubric.bind(this);
+        this.publishRubric = this.publishRubric.bind(this);
 
         this.handleOpenAutoComplete = this.handleOpenAutoComplete.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -115,13 +115,13 @@ class GetRubricComponent extends Component {
             })
         })
     }
-    publishRubric = (id)=>{
-        ApiService.publishRubric(id).then(res=>
+    publishRubric = (id) => {
+        ApiService.publishRubric(id).then(res =>
             this.setState({
-                publishDate:new Date().toLocaleDateString('fr-CA'),
-                published:true
+                publishDate: new Date().toLocaleDateString('fr-CA'),
+                published: true
             })
-        );  
+        );
     }
     saveRubric = (e) => {
         e.preventDefault();
@@ -129,7 +129,7 @@ class GetRubricComponent extends Component {
             id: this.state.id,
             name: this.state.name,
             description: this.state.description,
-            publishDate: this.state.publishDate ===''?null:this.state.publishDate
+            publishDate: this.state.publishDate === '' ? null : this.state.publishDate
         };
         ApiService.editRubric(rubric).then(res => {
             this.setState({
@@ -300,9 +300,9 @@ class GetRubricComponent extends Component {
                 </Modal.Footer>
             </Modal>,
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-            <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
-            <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
-          </Breadcrumb>,
+                <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
+                <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
+            </Breadcrumb>,
             <Card key="card" className="mx-auto mt-2">
                 <Card.Body>
                     {this.state.loading ? '' :
@@ -328,8 +328,8 @@ class GetRubricComponent extends Component {
                                 preDelete={() => { this.setState({ showModal: true }) }}
                                 editRubric={() => { this.setState({ showEditRubricCard: true }) }}
                                 copyneditRubric={() => this.copyneditRubric(this.state.id)}
-                                publishRubric={()=>this.publishRubric(this.state.id)}
-                                showResults={()=>this.showResults(this.state.id)}
+                                publishRubric={() => this.publishRubric(this.state.id)}
+                                showResults={() => this.showResults(this.state.id)}
                                 type='view'>
                             </ViewRubricCard>
                     }

@@ -395,7 +395,7 @@ class GetAssessmentGroupComponent extends Component {
                                 key="ins_avgChart"
                                 highcharts={Highcharts}
                                 options={this.state.InsChartOptionsAvg}
-                            />,<br></br>,
+                            />,<br key="space"></br>,
                             <HighchartsReact
                                 key="ins_stackedbar"
                                 highcharts={Highcharts}
