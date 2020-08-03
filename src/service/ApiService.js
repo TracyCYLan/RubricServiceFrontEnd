@@ -152,6 +152,9 @@ class ApiService {
     fetchAssessmentGroupsByRubric(rid){
         return axios.get(API_BASE_URL + 'assessment/rubric/'+rid+'/assessmentgroup');
     }
+    searchAssessmentGroup(text){
+        return axios.get(API_BASE_URL +'assessment/assessmentgroup/search/text?text=' + text);
+    }
 }
 
 export default new ApiService();
