@@ -40,7 +40,6 @@ class RubricResultsComponent extends Component {
 
     seeCourseChart(arr){
         this.props.history.push("/rubric-results/compare", { list: arr })
-        //this.props.location.state.list
     }
 
     onChange = (e) =>

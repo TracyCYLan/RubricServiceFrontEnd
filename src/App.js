@@ -7,6 +7,7 @@ import ListRubricComponent from "./component/rubric/ListRubricComponent";
 import GetRubricComponent from "./component/rubric/GetRubricComponent";
 import AddRubricComponent from "./component/rubric/AddRubricComponent";
 import RubricResultsComponent from "./component/rubric/RubricResultsComponent";
+import RubricResultsCompareComponent from "./component/rubric/RubricResultsCompareComponent";
 
 import ListCriteriaComponent from "./component/criterion/ListCriterionComponent";
 import GetCriterionComponent from "./component/criterion/GetCriterionComponent";
@@ -45,6 +46,7 @@ function App() {
                         <Route path="/rubrics" component={ListRubricComponent}/>
                         <Route path="/rubric" exact component={GetRubricComponent} />
                         <Route path="/rubric-results" exact component={RubricResultsComponent}/>
+                        <Route path="/rubric-results/compare" exact component={RubricResultsCompareComponent}/>
                         <Route path="/add-rubric" component={AddRubricComponent} />
                         <Route path="/criteria" exact component={ListCriteriaComponent} />
                         <Route path="/add-criterion" component={AddCriteriaComponent} />
