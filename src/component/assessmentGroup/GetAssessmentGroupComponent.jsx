@@ -215,6 +215,7 @@ class GetAssessmentGroupComponent extends Component {
     }
 
     createStackedBar() {
+        let colors = ['#008000','#00ff00','#fcfc04','#fcac04','#d9534f'];
         if (this.state.assessmentInstructorCount > 0) {
             let seriesData = [];
             for(let i=0;i<this.state.ranks;i++)
@@ -228,7 +229,10 @@ class GetAssessmentGroupComponent extends Component {
                         arr = [...arr,criterion.ratings[i].instructor_count];
                     }
                 }
-                seriesData = [...seriesData, {name:'rank'+(i+1), data:arr}];
+                if(i<5)
+                    seriesData = [...seriesData, {name:'rank'+(i+1), data:arr, color:colors[i]}];
+                else
+                    seriesData = [...seriesData, {name:'rank'+(i+1), data:arr}];
             }
             let obj = {
                 chart: {
@@ -272,7 +276,10 @@ class GetAssessmentGroupComponent extends Component {
                         arr = [...arr,criterion.ratings[i].peer_count];
                     }
                 }
-                seriesData = [...seriesData, {name:'rank'+(i+1), data:arr}];
+                if(i<5)
+                    seriesData = [...seriesData, {name:'rank'+(i+1), data:arr, color:colors[i]}];
+                else
+                    seriesData = [...seriesData, {name:'rank'+(i+1), data:arr}];
             }
             let obj = {
                 chart: {
