@@ -8,6 +8,7 @@ class RubricResultsComponent extends Component {
         this.state = {
             assessmentGroups: [],
             rubricId: window.sessionStorage.getItem("rubricId"),
+            rubric: this.props.location.state.rubric,
             amap: {}
         }
         this.createMap = this.createMap.bind(this);
@@ -39,7 +40,7 @@ class RubricResultsComponent extends Component {
     }
 
     seeCourseChart(arr){
-        this.props.history.push("/rubric-results/compare", { list: arr })
+        this.props.history.push("/rubric-results/compare", { list: arr,rubric: this.state.rubric })
     }
 
     onChange = (e) =>

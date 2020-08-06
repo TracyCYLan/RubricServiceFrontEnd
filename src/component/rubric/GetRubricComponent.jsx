@@ -35,7 +35,8 @@ class GetRubricComponent extends Component {
             importedCriterion: '',//the certain criterion we just select in the autocomplete box
             showEditRubricCard: false,//ViewRubricCard or EditRubricCard
             showEditCriterionCard: false,//ViewCriterionCard or EditCriterion
-            showModal: false
+            showModal: false,
+            rubric: ''
         }
         this.addCriterionBlock = this.addCriterionBlock.bind(this);
         this.addCriterionToRubric = this.addCriterionToRubric.bind(this);
@@ -79,7 +80,8 @@ class GetRubricComponent extends Component {
                     description: rubric.description,
                     criteria: rubric.criteria,
                     published: rubric.published,
-                    publishDate: rubric.publishDate === null ? '' : new Date(rubric.publishDate).toLocaleDateString('fr-CA')
+                    publishDate: rubric.publishDate === null ? '' : new Date(rubric.publishDate).toLocaleDateString('fr-CA'),
+                    rubric: rubric
                 })
             });
     }
@@ -280,7 +282,7 @@ class GetRubricComponent extends Component {
 
     showResults() {
         window.sessionStorage.setItem("rubricId", this.state.id);
-        this.props.history.push('/rubric-results');
+        this.props.history.push('/rubric-results', { rubric: this.state.rubric });
     }
 
     render() {

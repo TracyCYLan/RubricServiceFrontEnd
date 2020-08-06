@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 // import ApiService from "../../service/ApiService";
-// import { Table, Badge } from "react-bootstrap";
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import { Card} from 'react-bootstrap';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import AssessmentGroupInfoTable from '../assessmentGroup/assessmentGroupCards/AssessmentGroupInfoTable';
 class RubricResultsCompareComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             assessmentGroups: this.props.location.state.list,
+            rubric: this.props.location.state.rubric,
             InsChartOptionsAvg: '',
             PeerChartOptionsAvg: '',
             InsChartOptionsStacked: '',
@@ -107,76 +109,79 @@ class RubricResultsCompareComponent extends Component {
                 peer_series = [...peer_series, { name: name, data: avgData }];
             }
         }
-        let ins_obj = {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: this.state.assessmentGroups[0].rubric.name + " - " + this.state.assessmentGroups[0].name
-            },
-            xAxis: {
-                categories: this.state.assessmentGroups[0].rubric.criteria.map(c => c.name),
-                crosshair: true
-            },
-            yAxis: {
-                min: 0,
+
+        if (ins_series.length > 0) {
+            let ins_obj = {
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Points'
-                }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.1f} points</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: ins_series
-        }
-        if (peer_series.length > 0) {
-            this.setState({
-                PeerChartOptionsAvg:
-                {
-                    chart: {
-                        type: 'column'
-                    },
+                    text: this.state.rubric.name + " - " + this.state.assessmentGroups[0].name
+                },
+                xAxis: {
+                    categories: this.state.rubric.criteria.map(c => c.name),
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
                     title: {
-                        text: this.state.assessmentGroups[0].rubric.name + " - " + this.state.assessmentGroups[0].name
-                    },
-                    xAxis: {
-                        categories: this.state.assessmentGroups[0].rubric.criteria.map(c => c.name),
-                        crosshair: true
-                    },
-                    yAxis: {
-                        min: 0,
-                        title: {
-                            text: 'Points'
-                        }
-                    },
-                    tooltip: {
-                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                            '<td style="padding:0"><b>{point.y:.1f} points</b></td></tr>',
-                        footerFormat: '</table>',
-                        shared: true,
-                        useHTML: true
-                    },
-                    plotOptions: {
-                        column: {
-                            pointPadding: 0.2,
-                            borderWidth: 0
-                        }
-                    },
-                    series: peer_series
-                }
-            })
+                        text: 'Points'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} points</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: ins_series
+            }
+            this.setState({ InsChartOptionsAvg: ins_obj })
+        }
+
+        if (peer_series.length > 0) {
+            let peer_obj = {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: this.state.rubric.name + " - " + this.state.assessmentGroups[0].name
+                },
+                xAxis: {
+                    categories: this.state.rubric.criteria.map(c => c.name),
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Points'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} points</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: peer_series
+            }
+            this.setState({ PeerChartOptionsAvg: peer_obj })
         }
     }
 
@@ -188,15 +193,23 @@ class RubricResultsCompareComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
 
     render() {
-        return [<HighchartsReact
-            key="ins_avgChart"
-            highcharts={Highcharts}
-            options={this.state.InsChartOptionsAvg}
-        />, <HighchartsReact
-            key="peer_avgChart"
-            highcharts={Highcharts}
-            options={this.state.PeerChartOptionsAvg}
-        />];
+        return <Card className="mx-auto mt-2">
+            <Card.Body>
+                {this.state.assessmentGroups.map(
+                    a=> <AssessmentGroupInfoTable key="table" assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>
+                )}
+                <HighchartsReact
+                    key="ins_avgChart"
+                    highcharts={Highcharts}
+                    options={this.state.InsChartOptionsAvg}
+                />
+                <HighchartsReact
+                    key="peer_avgChart"
+                    highcharts={Highcharts}
+                    options={this.state.PeerChartOptionsAvg}
+                />
+            </Card.Body>
+        </Card>;
     }
 
 }
