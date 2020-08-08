@@ -220,11 +220,11 @@ class GetAssessmentGroupComponent extends Component {
                     }
                 }
                 if (i < 5)
-                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, color: colors[i],stack:1 }];
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, color: colors[i], stack: 1 }];
                 else
                     seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr }];
             }
-            
+
             let obj = {
                 chart: {
                     type: 'column'
@@ -264,7 +264,7 @@ class GetAssessmentGroupComponent extends Component {
                         arr = [...arr, criterion.ratings[i].peer_count];
                     }
                 }
-                if (i < 5)
+                if (i < colors.length)
                     seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, color: colors[i] }];
                 else
                     seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr }];

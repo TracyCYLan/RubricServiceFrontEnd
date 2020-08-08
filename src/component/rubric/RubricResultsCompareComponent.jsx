@@ -235,8 +235,7 @@ class RubricResultsCompareComponent extends Component {
                 }
             }
         }
-        if(ins_seriesArr.length>0)
-        {
+        if (ins_seriesArr.length > 0) {
             let obj = {
                 chart: {
                     type: 'column'
@@ -275,8 +274,7 @@ class RubricResultsCompareComponent extends Component {
             };
             this.setState({ InsChartOptionsStacked: obj });
         }
-        if(peer_seriesArr.length>0)
-        {
+        if (peer_seriesArr.length > 0) {
             let obj = {
                 chart: {
                     type: 'column'
@@ -315,7 +313,7 @@ class RubricResultsCompareComponent extends Component {
             };
             this.setState({ PeerChartOptionsStacked: obj });
         }
-        
+
 
     }
 
@@ -327,7 +325,10 @@ class RubricResultsCompareComponent extends Component {
             <Card.Body>
                 <Card.Title>{this.state.rubric.name + " - " + this.state.name}</Card.Title>
                 {this.state.assessmentGroups.map(
-                    a => <AssessmentGroupInfoTable key="table" assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>
+                    a => a.ins_count === 0 ? "" : <AssessmentGroupInfoTable key="table" assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>
+                )}
+                {this.state.assessmentGroups.map(
+                    a => a.peer_count === 0 ? "" : <AssessmentGroupInfoTable key="table" assessmentGroup={a} type="peer"></AssessmentGroupInfoTable>
                 )}
                 <HighchartsReact
                     key="ins_avgChart"
