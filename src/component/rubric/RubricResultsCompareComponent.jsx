@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import ApiService from "../../service/ApiService";
-import { Card} from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import AssessmentGroupInfoTable from '../assessmentGroup/assessmentGroupCards/AssessmentGroupInfoTable';
@@ -11,6 +11,7 @@ class RubricResultsCompareComponent extends Component {
         this.state = {
             assessmentGroups: this.props.location.state.list,
             rubric: this.props.location.state.rubric,
+            name: this.props.location.state.name,//assessmentGroup name
             InsChartOptionsAvg: '',
             PeerChartOptionsAvg: '',
             InsChartOptionsStacked: '',
@@ -23,6 +24,7 @@ class RubricResultsCompareComponent extends Component {
     }
     countRating() {
         let newAssessmentGroups = [];
+        let tmpRank = 0;
         for (var i = 0; i < this.state.assessmentGroups.length; i++) {
             let assessmentGroup = this.state.assessmentGroups[i];
             assessmentGroup.rubric.criteria.map(
@@ -35,7 +37,6 @@ class RubricResultsCompareComponent extends Component {
             let assessments = assessmentGroup.assessments;
             let peer_count = 0;
             let ins_count = 0;
-            let tmpRank = 0;
             for (let assessment of assessments) {
                 if (assessment.type === 'peer_review')
                     peer_count++;
@@ -63,17 +64,18 @@ class RubricResultsCompareComponent extends Component {
         }
         this.setState({
             assessmentGroups: newAssessmentGroups,
+            ranks: tmpRank
         }, () => {
-            this.createAvgChart();
-            this.createStackedBar();
+            if (this.state.assessmentGroups !== '' || this.state.assessmentGroups.length !== 0) {
+                this.createAvgChart();
+                this.createStackedBar();
+            }
         })
     }
     createAvgChart() {
-        if (this.state.assessmentGroups === '' || this.state.assessmentGroups.length === 0)
-            return;
         let ins_series = [], peer_series = [];
         for (let assessmentGroup of this.state.assessmentGroups) {
-            let name = new Date(assessmentGroup.assessDate).toLocaleDateString();
+            let date_name = new Date(assessmentGroup.assessDate).toLocaleDateString();
             if (assessmentGroup.ins_count > 0) {
                 let avgData = [];
                 let criteria = assessmentGroup.rubric.criteria
@@ -89,7 +91,7 @@ class RubricResultsCompareComponent extends Component {
                     criterion['avg'] = avg / totalCount;
                     avgData = [...avgData, [criterion.name, criterion['avg']]];
                 }
-                ins_series = [...ins_series, { name: name, data: avgData }];
+                ins_series = [...ins_series, { name: date_name, data: avgData }];
             }
             if (assessmentGroup.peer_count > 0) {
                 let avgData = [];
@@ -106,7 +108,7 @@ class RubricResultsCompareComponent extends Component {
                     criterion['avg'] = avg / totalCount;
                     avgData = [...avgData, [criterion.name, criterion['avg']]];
                 }
-                peer_series = [...peer_series, { name: name, data: avgData }];
+                peer_series = [...peer_series, { name: date_name, data: avgData }];
             }
         }
 
@@ -116,7 +118,7 @@ class RubricResultsCompareComponent extends Component {
                     type: 'column'
                 },
                 title: {
-                    text: this.state.rubric.name + " - " + this.state.assessmentGroups[0].name
+                    text: 'Instructor Evaluations - Average Points'
                 },
                 xAxis: {
                     categories: this.state.rubric.criteria.map(c => c.name),
@@ -125,7 +127,7 @@ class RubricResultsCompareComponent extends Component {
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Points'
+                        text: 'Point'
                     }
                 },
                 tooltip: {
@@ -153,7 +155,7 @@ class RubricResultsCompareComponent extends Component {
                     type: 'column'
                 },
                 title: {
-                    text: this.state.rubric.name + " - " + this.state.assessmentGroups[0].name
+                    text: 'Peer Evaluations - Average Points'
                 },
                 xAxis: {
                     categories: this.state.rubric.criteria.map(c => c.name),
@@ -162,7 +164,7 @@ class RubricResultsCompareComponent extends Component {
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Points'
+                        text: 'Point'
                     }
                 },
                 tooltip: {
@@ -186,6 +188,134 @@ class RubricResultsCompareComponent extends Component {
     }
 
     createStackedBar() {
+        let colors = ['#008000', '#00ff00', '#fcfc04', '#fcac04', '#d9534f'];
+        let ins_seriesArr = [], peer_seriesArr = [];
+        for (let i = 0; i < this.state.ranks; i++) {
+            if (i === colors.length) //if reach number, add random color to array
+                colors = [...colors, 'rgb(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ')'];
+            for (let j = 0; j < this.state.assessmentGroups.length; j++) {
+                let assessmentGroup = this.state.assessmentGroups[j];
+                let ins_data = [], peer_data = [];
+                if (assessmentGroup.ins_count > 0) {
+                    for (let k = 0; k < this.state.rubric.criteria.length; k++) {
+                        let ratings = assessmentGroup.rubric.criteria[k].ratings;
+                        if (i < ratings.length)
+                            ins_data = [...ins_data, ratings[i].instructor_count];
+                    }
+                }
+                if (assessmentGroup.peer_count > 0) {
+                    for (let k = 0; k < this.state.rubric.criteria.length; k++) {
+                        let ratings = assessmentGroup.rubric.criteria[k].ratings;
+                        if (i < ratings.length)
+                            peer_data = [...peer_data, ratings[i].peer_count];
+                    }
+                }
+                let ins_seriesObj = '', peer_seriesObj = '';
+                if (ins_data.length > 0) {
+                    ins_seriesObj = {
+                        name: 'rank' + (i + 1),
+                        data: ins_data,
+                        stack: new Date(assessmentGroup.assessDate).toLocaleDateString(),
+                        color: colors[i]
+                    };
+                    if (j > 0)
+                        ins_seriesObj['linkedTo'] = ':previous';
+                    ins_seriesArr = [...ins_seriesArr, ins_seriesObj];
+                }
+                if (peer_data.length > 0) {
+                    peer_seriesObj = {
+                        name: 'rank' + (i + 1),
+                        data: peer_data,
+                        stack: new Date(assessmentGroup.assessDate).toLocaleDateString(),
+                        color: colors[i]
+                    };
+                    if (j > 0)
+                        peer_seriesObj['linkedTo'] = ':previous';
+                    peer_seriesArr = [...peer_seriesArr, peer_seriesObj];
+                }
+            }
+        }
+        if(ins_seriesArr.length>0)
+        {
+            let obj = {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Instructor Evaluations'
+                },
+                xAxis: {
+                    categories: this.state.rubric.criteria.map(c => c.name)
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Percent'
+                    },
+                    stackLabels: {
+                        enabled: true,
+                        crop: false,
+                        overflow: 'allow',
+                        style: {
+                            fontWeight: 'bold',
+                            color: '#545775'
+                        },
+                        format: '{stack}'
+                    }
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{series.color}">{series.stack}{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>'
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'percent'
+                    }
+                },
+                series: ins_seriesArr
+            };
+            this.setState({ InsChartOptionsStacked: obj });
+        }
+        if(peer_seriesArr.length>0)
+        {
+            let obj = {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Peer Evaluations'
+                },
+                xAxis: {
+                    categories: this.state.rubric.criteria.map(c => c.name)
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Percent'
+                    },
+                    stackLabels: {
+                        enabled: true,
+                        crop: false,
+                        overflow: 'allow',
+                        style: {
+                            fontWeight: 'bold',
+                            color: '#545775'
+                        },
+                        format: '{stack}'
+                    }
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{series.color}">{series.stack}{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>'
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'percent'
+                    }
+                },
+                series: peer_seriesArr
+            };
+            this.setState({ PeerChartOptionsStacked: obj });
+        }
+        
 
     }
 
@@ -195,8 +325,9 @@ class RubricResultsCompareComponent extends Component {
     render() {
         return <Card className="mx-auto mt-2">
             <Card.Body>
+                <Card.Title>{this.state.rubric.name + " - " + this.state.name}</Card.Title>
                 {this.state.assessmentGroups.map(
-                    a=> <AssessmentGroupInfoTable key="table" assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>
+                    a => <AssessmentGroupInfoTable key="table" assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>
                 )}
                 <HighchartsReact
                     key="ins_avgChart"
@@ -207,6 +338,16 @@ class RubricResultsCompareComponent extends Component {
                     key="peer_avgChart"
                     highcharts={Highcharts}
                     options={this.state.PeerChartOptionsAvg}
+                />
+                <HighchartsReact
+                    key="ins_stackedBar"
+                    highcharts={Highcharts}
+                    options={this.state.InsChartOptionsStacked}
+                />
+                <HighchartsReact
+                    key="peer_stackedBar"
+                    highcharts={Highcharts}
+                    options={this.state.PeerChartOptionsStacked}
                 />
             </Card.Body>
         </Card>;

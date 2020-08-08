@@ -39,8 +39,8 @@ class RubricResultsComponent extends Component {
         this.props.history.push('/assessmentGroup');
     }
 
-    seeCourseChart(arr){
-        this.props.history.push("/rubric-results/compare", { list: arr,rubric: this.state.rubric })
+    seeCourseChart(name, arr){
+        this.props.history.push("/rubric-results/compare", { list: arr, name: name, rubric: this.state.rubric })
     }
 
     onChange = (e) =>
@@ -58,7 +58,7 @@ class RubricResultsComponent extends Component {
                 {
                     Object.entries(this.state.amap).map(([key, value]) =>
                         <tr key={key}>
-                            <td onClick={()=>this.seeCourseChart(value)}>{key}</td>
+                            <td className="text-primary" onClick={()=>this.seeCourseChart(key, value)}>{key}</td>
                             <td>{value.map((v, indx) =>
                                 <Badge
                                     key={indx}
