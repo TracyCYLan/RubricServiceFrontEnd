@@ -33,6 +33,10 @@ import RegisterComponent from "./component/logins/RegisterComponent";
 
 import ListAssessmentGroupsComponent from "./component/assessmentGroup/ListAssessmentGroupsComponent";
 import GetAssessmentGroupComponent from "./component/assessmentGroup/GetAssessmentGroupComponent";
+
+import ListAssessmentsComponent from "./component/assessment/ListAssessmentsComponent";
+import GetAssessmentComponent from "./component/assessment/GetAssessmentComponent";
+
 import TestComponent from "./component/TestComponent";
 import TestCanvasComponent from "./Canvas/component/TestCanvasComponent";
 function App() {
@@ -64,6 +68,8 @@ function App() {
                         <Route path="/import-assessments" exact component={ImportAssessmentsComponent}></Route>
                         <Route path="/assessmentGroups" exact component={ListAssessmentGroupsComponent}></Route>
                         <Route path="/assessmentGroup" exact component={GetAssessmentGroupComponent}></Route>
+                        <Route path="/assessments" exact component={ListAssessmentsComponent}></Route>
+                        <Route path="/assessment" exact component={GetAssessmentComponent}></Route>
                         <Route path="/login" exact component={LoginComponent}></Route>
                         <Route path="/register" exact component={RegisterComponent}></Route>
                         <Route path="/redirect" exact component={RedirectPage}></Route>
