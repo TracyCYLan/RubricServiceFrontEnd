@@ -8,6 +8,9 @@ class AssessmentGroupInfoTable extends Component {
             type: props.type //peer or instructor
         }
     }
+    componentDidMount(){
+        console.log(JSON.stringify(this.state.assessmentGroup));
+    }
     render() {
         return <Container>
             <Row className="text-info mb-1">

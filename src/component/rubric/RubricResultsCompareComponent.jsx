@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// import ApiService from "../../service/ApiService";
-import { Card } from 'react-bootstrap';
+import { Card, Breadcrumb } from 'react-bootstrap';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import AssessmentGroupInfoTable from '../assessmentGroup/assessmentGroupCards/AssessmentGroupInfoTable';
@@ -263,7 +262,7 @@ class RubricResultsCompareComponent extends Component {
                     }
                 },
                 tooltip: {
-                    pointFormat: '<span style="color:{series.color}">{series.stack}{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>'
+                    pointFormat: '<span>{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>'
                 },
                 plotOptions: {
                     column: {
@@ -302,7 +301,7 @@ class RubricResultsCompareComponent extends Component {
                     }
                 },
                 tooltip: {
-                    pointFormat: '<span style="color:{series.color}">{series.stack}{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>'
+                    pointFormat: '<span>{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>'
                 },
                 plotOptions: {
                     column: {
@@ -321,37 +320,46 @@ class RubricResultsCompareComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
 
     render() {
-        return <Card className="mx-auto mt-2">
-            <Card.Body>
-                <Card.Title>{this.state.rubric.name + " - " + this.state.name}</Card.Title>
-                {this.state.assessmentGroups.map(
-                    a => a.ins_count === 0 ? "" : <AssessmentGroupInfoTable key="table" assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>
-                )}
-                {this.state.assessmentGroups.map(
-                    a => a.peer_count === 0 ? "" : <AssessmentGroupInfoTable key="table" assessmentGroup={a} type="peer"></AssessmentGroupInfoTable>
-                )}
-                <HighchartsReact
-                    key="ins_avgChart"
-                    highcharts={Highcharts}
-                    options={this.state.InsChartOptionsAvg}
-                />
-                <HighchartsReact
-                    key="peer_avgChart"
-                    highcharts={Highcharts}
-                    options={this.state.PeerChartOptionsAvg}
-                />
-                <HighchartsReact
-                    key="ins_stackedBar"
-                    highcharts={Highcharts}
-                    options={this.state.InsChartOptionsStacked}
-                />
-                <HighchartsReact
-                    key="peer_stackedBar"
-                    highcharts={Highcharts}
-                    options={this.state.PeerChartOptionsStacked}
-                />
-            </Card.Body>
-        </Card>;
+        return [
+            <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
+                <Breadcrumb.Item href="/rubrics">Rubrics</Breadcrumb.Item>
+                <Breadcrumb.Item href="rubric">{this.state.rubric.name}</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubric-results', { rubric: this.state.rubric })}>Results of {this.state.rubric.name}</Breadcrumb.Item>
+                <Breadcrumb.Item active>AssessmentGroups of {this.state.name}</Breadcrumb.Item>
+            </Breadcrumb>,
+            <Card className="mx-auto mt-2">
+                <Card.Body>
+                    <Card.Title>{this.state.rubric.name + " - " + this.state.name}</Card.Title>
+                    <HighchartsReact
+                        key="ins_avgChart"
+                        highcharts={Highcharts}
+                        options={this.state.InsChartOptionsAvg}
+                    />
+                    <HighchartsReact
+                        key="peer_avgChart"
+                        highcharts={Highcharts}
+                        options={this.state.PeerChartOptionsAvg}
+                    />
+                    <HighchartsReact
+                        key="ins_stackedBar"
+                        highcharts={Highcharts}
+                        options={this.state.InsChartOptionsStacked}
+                    />
+                    <HighchartsReact
+                        key="peer_stackedBar"
+                        highcharts={Highcharts}
+                        options={this.state.PeerChartOptionsStacked}
+                    />
+                    {this.state.assessmentGroups.map(
+                        a => a.ins_count === 'undefined' || a.ins_count === 0 ?
+                            "" : <AssessmentGroupInfoTable key={"ins_" + a.id} assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>
+                    )}
+                    {this.state.assessmentGroups.map(
+                        a => a.peer_count === 'undefined' || a.peer_count === 0 ?
+                            "" : <AssessmentGroupInfoTable key={"peer_" + a.id} assessmentGroup={a} type="peer"></AssessmentGroupInfoTable>
+                    )}
+                </Card.Body>
+            </Card>];
     }
 
 }
