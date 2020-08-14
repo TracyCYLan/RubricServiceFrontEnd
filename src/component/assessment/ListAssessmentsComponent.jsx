@@ -1,11 +1,11 @@
 //list all assessments under certain assessmentGroup
 import React, { Component } from 'react'
-// import ApiService from "../../service/ApiService";
+import {Breadcrumb, ListGroup} from 'react-bootstrap';
 class ListAssessmentsComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            assessments:[]
+            assessmentGroup: this.props.location.state.assessmentGroup
         }
     }
 
@@ -15,8 +15,21 @@ class ListAssessmentsComponent extends Component {
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
+
+    getAssessment(indx){
+        this.props.history.push('/assessment',{assessmentGroup: this.state.assessmentGroup,index: indx});
+    }
+
     render() {
-        return "";
+        return [
+            <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
+                <Breadcrumb.Item href="assessmentgroup">{this.state.assessmentGroup.name+" - "+new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Breadcrumb.Item>
+                <Breadcrumb.Item active>Assessments</Breadcrumb.Item>
+            </Breadcrumb>,
+            <ListGroup key="list">
+                {this.state.assessmentGroup.assessments.map((a,indx)=>
+                    <ListGroup.Item action className="text-primary" onClick={()=>this.getAssessment(indx)}>Assessment {indx+1}</ListGroup.Item>)}
+            </ListGroup>];
     }
 
 }

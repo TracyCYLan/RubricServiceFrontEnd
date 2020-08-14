@@ -39,7 +39,6 @@ class EditCriterionComponent extends Component {
         ApiService.fetchCriterionById(window.sessionStorage.getItem("criterionId"))
             .then((res) => {
                 let criterion = res.data;
-                console.log(JSON.stringify(criterion));
                 this.setState({
                     id: criterion.id,
                     name: criterion.name,

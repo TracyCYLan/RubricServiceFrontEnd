@@ -314,7 +314,7 @@ class GetAssessmentGroupComponent extends Component {
                     <Card.Subtitle className="mb-2 text-muted">
                         {ReactHtmlParser(this.state.assessmentGroup.description)}
                     </Card.Subtitle>
-                    <Card.Text as="h6">
+                    <Card.Text as="h6" onClick={()=>{this.props.history.push('assessments',{assessmentGroup: this.state.assessmentGroup})}}>
                         Total {this.state.assessments.length} assessments.
                         </Card.Text>
                     <Card.Text className="text-primary" onClick={() => {

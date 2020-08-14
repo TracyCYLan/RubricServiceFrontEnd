@@ -9,7 +9,6 @@ class AssessmentGroupInfoTable extends Component {
         }
     }
     componentDidMount(){
-        console.log(JSON.stringify(this.state.assessmentGroup));
     }
     render() {
         return <Container>

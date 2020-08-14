@@ -121,39 +121,43 @@ class ApiService {
         return axios.get(API_BASE_URL + 'artifact');
     }
     addTask(task, assessorId, associationId) {
-        return axios.post(API_BASE_URL+'task/assessor/'+assessorId+'/association/'+associationId,task);
+        return axios.post(API_BASE_URL + 'task/assessor/' + assessorId + '/association/' + associationId, task);
     }
-    registerUser(username,password){
+    registerUser(username, password) {
         const hash = crypto.createHash('sha256').update(password).digest('base64');
-        let user = 
-        { 
+        let user =
+        {
             username: username,
             password: hash
         }
         console.log(JSON.stringify(user));
-        return axios.post(API_BASE_URL+'user/register',user);
+        return axios.post(API_BASE_URL + 'user/register', user);
     }
 
-    login(username,password){
+    login(username, password) {
         const hash = crypto.createHash('sha256').update(password).digest('base64');
-        let user = 
-        { 
+        let user =
+        {
             username: username,
             password: hash
         }
-        return axios.post(API_BASE_URL+'user/login',user);
+        return axios.post(API_BASE_URL + 'user/login', user);
     }
-    fetchAssessmentGroups(){
+    fetchAssessmentGroups() {
         return axios.get(API_BASE_URL + 'assessment/assessmentgroup');
     }
-    fetchAssessmentGroupById(id){
-        return axios.get(API_BASE_URL + 'assessment/assessmentgroup/'+id);
+    fetchAssessmentGroupById(id) {
+        return axios.get(API_BASE_URL + 'assessment/assessmentgroup/' + id);
     }
-    fetchAssessmentGroupsByRubric(rid){
-        return axios.get(API_BASE_URL + 'assessment/rubric/'+rid+'/assessmentgroup');
+    fetchAssessmentGroupsByRubric(rid) {
+        return axios.get(API_BASE_URL + 'assessment/rubric/' + rid + '/assessmentgroup');
     }
-    searchAssessmentGroup(text){
-        return axios.get(API_BASE_URL +'assessment/assessmentgroup/search/text?text=' + text);
+    searchAssessmentGroup(text) {
+        return axios.get(API_BASE_URL + 'assessment/assessmentgroup/search/text?text=' + text);
+    }
+
+    fetchAssessmentById(id) {
+        return axios.get(API_BASE_URL + 'assessment/' + id);
     }
 }
 
