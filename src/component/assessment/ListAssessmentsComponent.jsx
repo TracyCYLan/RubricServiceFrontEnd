@@ -28,7 +28,7 @@ class ListAssessmentsComponent extends Component {
             </Breadcrumb>,
             <ListGroup key="list">
                 {this.state.assessmentGroup.assessments.map((a,indx)=>
-                    <ListGroup.Item action className="text-primary" onClick={()=>this.getAssessment(indx)}>Assessment {indx+1}</ListGroup.Item>)}
+                    <ListGroup.Item key={a.id} action className="text-primary" onClick={()=>this.getAssessment(indx)}>Assessment {indx+1}</ListGroup.Item>)}
             </ListGroup>];
     }
 
