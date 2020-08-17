@@ -7,6 +7,7 @@ class GetAssessmentComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            index: this.props.location.state.index,
             assessment: this.props.location.state.assessmentGroup.assessments[this.props.location.state.index],
             assessmentGroup: this.props.location.state.assessmentGroup,
             criteria: this.props.location.state.assessmentGroup.rubric.criteria
@@ -16,8 +17,8 @@ class GetAssessmentComponent extends Component {
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
-    download(id){
-        this.props.history.push('/download',{fileId: id});
+    download(id) {
+        this.props.history.push('/download', { fileId: id, assessmentGroup: this.state.assessmentGroup, index: this.state.index });
     }
     render() {
         console.log(JSON.stringify(this.state.assessment))

@@ -159,6 +159,10 @@ class ApiService {
     fetchAssessmentById(id) {
         return axios.get(API_BASE_URL + 'assessment/' + id);
     }
+
+    fetchArtifactById(id) {
+        return axios.get(API_BASE_URL + 'assessment/artifact/' + id);
+    }
 }
 
 export default new ApiService();

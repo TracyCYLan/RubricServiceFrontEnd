@@ -36,6 +36,7 @@ import GetAssessmentGroupComponent from "./component/assessmentGroup/GetAssessme
 
 import ListAssessmentsComponent from "./component/assessment/ListAssessmentsComponent";
 import GetAssessmentComponent from "./component/assessment/GetAssessmentComponent";
+import GetArtifactComponent from "./component/assessment/GetArtifactComponent";
 
 import TestComponent from "./component/TestComponent";
 import TestCanvasComponent from "./Canvas/component/TestCanvasComponent";
@@ -70,6 +71,7 @@ function App() {
                         <Route path="/assessmentGroup" exact component={GetAssessmentGroupComponent}></Route>
                         <Route path="/assessments" exact component={ListAssessmentsComponent}></Route>
                         <Route path="/assessment" exact component={GetAssessmentComponent}></Route>
+                        <Route path="/download" exact component={GetArtifactComponent}></Route>
                         <Route path="/login" exact component={LoginComponent}></Route>
                         <Route path="/register" exact component={RegisterComponent}></Route>
                         <Route path="/redirect" exact component={RedirectPage}></Route>
