@@ -9,6 +9,7 @@
     "bootstrap": "^4.5.0",
     "highcharts": "^8.1.2",
     "highcharts-react-official": "^3.0.0",
+    "js-file-download": "^0.4.12",
     "react": "^16.13.1",
     "react-autosuggest": "^9.4.3",
     "react-beautiful-dnd": "^13.0.0",
