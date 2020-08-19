@@ -2,6 +2,8 @@
 //and the submission files under this assessment.
 import React, { Component } from 'react';
 import { Table, Breadcrumb, ListGroup } from 'react-bootstrap';
+import ApiService from '../../service/ApiService';
+const FileDownload = require('js-file-download');
 class GetAssessmentComponent extends Component {
 
     constructor(props) {
@@ -17,11 +19,20 @@ class GetAssessmentComponent extends Component {
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
-    download(id) {
-        this.props.history.push('/download', { fileId: id, assessmentGroup: this.state.assessmentGroup, index: this.state.index });
+    download(a) {
+        let ext = a.name.split('.').pop();
+        if (ext === 'java' || ext === 'txt')
+            this.props.history.push('/download', { fileId: a.id, assessmentGroup: this.state.assessmentGroup, index: this.state.index });
+        else
+        {
+            ApiService.downloadArtifact(a.id).then(
+                res=> {
+                    FileDownload(res.data, a.name.split('-')[1]);
+                }
+            )
+        }
     }
     render() {
-        console.log(JSON.stringify(this.state.assessment))
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                 <Breadcrumb.Item onClick={() => { this.props.history.push('assessments', { assessmentGroup: this.state.assessmentGroup }) }}>Assessments</Breadcrumb.Item>
@@ -50,7 +61,7 @@ class GetAssessmentComponent extends Component {
                 [<span key="list-title">Files: </span>,
                 <ListGroup key="list">
                     {this.state.assessment.artifacts.map((a, indx) =>
-                        <ListGroup.Item key={a.id} action className="text-primary" onClick={() => this.download(a.id)}>{a.name.split('-')[1]}</ListGroup.Item>)}
+                        <ListGroup.Item key={a.id} action className="text-primary" onClick={() => this.download(a)}>{a.name.split('-')[1]}</ListGroup.Item>)}
                 </ListGroup>]
         ];
     }

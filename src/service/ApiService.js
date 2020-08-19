@@ -2,7 +2,6 @@ import axios from 'axios';
 // const API_BASE_URL = 'https://jsonplaceholder.typicode.com/comments';
 // const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
 const API_BASE_URL = 'http://localhost:8080/';
-
 const crypto = require('crypto');
 
 class ApiService {
@@ -162,6 +161,10 @@ class ApiService {
 
     fetchArtifactById(id) {
         return axios.get(API_BASE_URL + 'assessment/artifact/' + id);
+    }
+
+    downloadArtifact(id){
+        return axios.get(API_BASE_URL + 'assessment/artifact/' + id + '/download', {responseType: 'blob'});
     }
 }
 
