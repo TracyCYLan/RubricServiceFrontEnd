@@ -163,8 +163,23 @@ class ApiService {
         return axios.get(API_BASE_URL + 'assessment/artifact/' + id);
     }
 
-    downloadArtifact(id){
-        return axios.get(API_BASE_URL + 'assessment/artifact/' + id + '/download', {responseType: 'blob'});
+    // downloadArtifact(id) {
+    //     return axios.get(API_BASE_URL + 'assessment/artifact/' + id + '/download').then(res => {
+    //         let type = res.headers['content-type'];
+    //         if (type === 'text/plain')
+    //             return res;
+    //         else {
+    //             return axios.get(API_BASE_URL + 'assessment/artifact/' + id + '/download', { responseType: 'blob' });
+    //         }
+    //     });
+    // }
+    checkDownloadNeeded(ext, id) {
+        return axios.get(API_BASE_URL + 'assessment/artifact/download/' + ext).then(res => {
+            if (res.data === true)
+                return axios.get(API_BASE_URL + 'assessment/artifact/' + id + '/download', { responseType: 'blob' });
+            else
+                return axios.get(API_BASE_URL + 'assessment/artifact/' + id + '/download')
+        })
     }
 }
 

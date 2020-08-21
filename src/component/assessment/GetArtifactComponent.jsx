@@ -10,16 +10,17 @@ class GetArtifactComponent extends Component {
         this.state = {
             index: this.props.location.state.index,//for assessment
             assessmentGroup: this.props.location.state.assessmentGroup,
-            fileId: this.props.location.state.fileId
+            fileId: this.props.location.state.fileId,
+            text: this.props.location.state.text
         }
     }
 
     componentDidMount() {
-        ApiService.fetchArtifactById(this.state.fileId).then((res) => {
-            this.setState({
-                text: res.data
-            })
-        })
+        // ApiService.fetchArtifactById(this.state.fileId).then((res) => {
+        //     this.setState({
+        //         text: res.data
+        //     })
+        // })
     }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });

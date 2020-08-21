@@ -20,17 +20,15 @@ class GetAssessmentComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
 
     download(a) {
-        let ext = a.name.split('.').pop();
-        if (ext === 'java' || ext === 'txt')
-            this.props.history.push('/download', { fileId: a.id, assessmentGroup: this.state.assessmentGroup, index: this.state.index });
-        else
-        {
-            ApiService.downloadArtifact(a.id).then(
-                res=> {
-                    FileDownload(res.data, a.name.split('-')[1]);
-                }
-            )
+        // window.location.replace('http://localhost:8080/assessment/artifact/' + a.id + '/download');
+        ApiService.checkDownloadNeeded(a.name.split('.').pop(), a.id).then(
+            res => {
+            if (res.config['responseType'] !== 'blob')
+                this.props.history.push('/download', { fileId: a.id, assessmentGroup: this.state.assessmentGroup, index: this.state.index, text: res.data });
+            else
+                FileDownload(res.data, a.name.split('-')[1]);
         }
+        )
     }
     render() {
         return [

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ApiService from "../../service/ApiService";
-import { Card, Breadcrumb } from 'react-bootstrap';
+import { Card, Breadcrumb, Col, Button } from 'react-bootstrap';
 import ReactHtmlParser from 'react-html-parser';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -310,13 +310,15 @@ class GetAssessmentGroupComponent extends Component {
             </Breadcrumb>,
             <Card key="card" className="mx-auto mt-2">
                 <Card.Body>
-                    <Card.Title as="h3">{this.state.assessmentGroup.name}</Card.Title>
+                    <Col>
+                        <Button className="float-right" variant="dark" onClick={() => { this.props.history.push('assessments', { assessmentGroup: this.state.assessmentGroup }) }}> View {this.state.assessments.length} Assessments</Button>
+                    </Col>
+                    <Card.Title as="h3">
+                        {this.state.assessmentGroup.name}
+                    </Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">
                         {ReactHtmlParser(this.state.assessmentGroup.description)}
                     </Card.Subtitle>
-                    <Card.Text as="h6" onClick={()=>{this.props.history.push('assessments',{assessmentGroup: this.state.assessmentGroup})}}>
-                        Total {this.state.assessments.length} assessments.
-                        </Card.Text>
                     <Card.Text className="text-primary" onClick={() => {
                         window.sessionStorage.setItem("rubricId", this.state.rubric.id);
                         this.props.history.push('/rubric');
