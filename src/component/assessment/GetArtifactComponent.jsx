@@ -2,7 +2,6 @@
 //and the submission files under this assessment.
 import React, { Component } from 'react';
 import { Breadcrumb } from 'react-bootstrap';
-import ApiService from '../../service/ApiService';
 class GetArtifactComponent extends Component {
 
     constructor(props) {
