@@ -5,7 +5,8 @@ class AssessmentGroupInfoTable extends Component {
         super(props);
         this.state = {
             assessmentGroup: props.assessmentGroup,
-            type: props.type //peer or instructor
+            type: props.type, //peer or instructor
+            compare: props.compare //if compare, show year; if not, show assessDate
         }
     }
     componentDidMount(){
@@ -14,7 +15,7 @@ class AssessmentGroupInfoTable extends Component {
         return <Container>
             <Row className="text-info mb-1">
                 <Col>{this.state.type === 'peer' ? 'Peer Evaluations' : 'Instructor Evaluations'}</Col>
-                <Col>{new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Col></Row>
+                <Col>{this.state.compare === true? this.state.assessmentGroup.year : new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Col></Row>
             <Row><Col lg={2} md={4}></Col>
                 <Col><Table key="table" bordered responsive="sm" size="sm" style={{ width: 300, textAlign: 'center', verticalAlign: 'middle' }}>
                     <thead>

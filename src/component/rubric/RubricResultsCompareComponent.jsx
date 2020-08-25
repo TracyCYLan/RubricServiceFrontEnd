@@ -8,7 +8,7 @@ class RubricResultsCompareComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assessmentGroups: this.props.location.state.list,
+            assessmentGroups: this.props.location.state.list.sort((a, b) => (new Date(a.assessDate) - new Date(b.assessDate))),
             rubric: this.props.location.state.rubric,
             name: this.props.location.state.name,//assessmentGroup name
             InsChartOptionsAvg: '',
@@ -24,8 +24,8 @@ class RubricResultsCompareComponent extends Component {
     }
     countRating() {
         let newAssessmentGroups = [], years = [];
-        let tmpRank = 0, startYear = Infinity, endYear = -Infinity;
-        for (var i = 0; i < this.state.assessmentGroups.length; i++) {
+        let tmpRank = 0, startYear = Infinity, endYear = -Infinity, len = this.state.assessmentGroups.length;
+        for (var i = 0; i < len; i++) {
             let assessmentGroup = this.state.assessmentGroups[i];
             let year = new Date(assessmentGroup['assessDate']).getFullYear();
             startYear = Math.min(startYear, year);
@@ -37,29 +37,38 @@ class RubricResultsCompareComponent extends Component {
                     return r;
                 })
             )
-            let assessments = assessmentGroup.assessments;
+            assessmentGroup['year'] = year;
             let peer_count = 0;
             let ins_count = 0;
-            for (let assessment of assessments) {
-                if (assessment.type === 'peer_review')
-                    peer_count++;
-                else if (assessment.type === 'grading')
-                    ins_count++;
-                for (let j = 0; j < assessment.comments.length; j++) {
-                    let r = assessment.comments[j].rating; //current rating in this assessment
-                    //traverse ratings in certain criterion
-                    let ratings = assessmentGroup.rubric.criteria[j].ratings;
-                    tmpRank = Math.max(tmpRank, ratings.length);//update rank
-                    for (let rating of ratings) {
-                        if (rating.value === r.value) {
-                            if (assessment.type === 'peer_review')
-                                rating.peer_count++;
-                            else if (assessment.type === 'grading')
-                                rating.instructor_count++;
-                            break;
+            let assessments = this.state.assessmentGroups[i].assessments;
+            while (i < len) {
+                for (let assessment of assessments) {
+                    if (assessment.type === 'peer_review')
+                        peer_count++;
+                    else if (assessment.type === 'grading')
+                        ins_count++;
+                    for (let j = 0; j < assessment.comments.length; j++) {
+                        let r = assessment.comments[j].rating; //current rating in this assessment
+                        //traverse ratings in certain criterion
+                        let ratings = assessmentGroup.rubric.criteria[j].ratings;
+                        tmpRank = Math.max(tmpRank, ratings.length);//update rank
+                        for (let rating of ratings) {
+                            if (rating.value === r.value) {
+                                if (assessment.type === 'peer_review')
+                                    rating.peer_count++;
+                                else if (assessment.type === 'grading')
+                                    rating.instructor_count++;
+                                break;
+                            }
                         }
                     }
                 }
+                if (i < len - 1 && new Date(this.state.assessmentGroups[i + 1]['assessDate']).getFullYear() === year) {
+                    assessments = this.state.assessmentGroups[i + 1].assessments;
+                    i++;
+                }
+                else
+                    break;
             }
             assessmentGroup['ins_count'] = ins_count;
             assessmentGroup['peer_count'] = peer_count;
@@ -84,7 +93,8 @@ class RubricResultsCompareComponent extends Component {
     createAvgChart() {
         let ins_series = [], peer_series = [];
         for (let assessmentGroup of this.state.assessmentGroups) {
-            let date_name = new Date(assessmentGroup.assessDate).toLocaleDateString();
+            // let date_name = new Date(assessmentGroup.assessDate).toLocaleDateString();
+            let date_name = assessmentGroup.year;
             if (assessmentGroup.ins_count > 0) {
                 let avgData = [];
                 let criteria = assessmentGroup.rubric.criteria
@@ -223,7 +233,8 @@ class RubricResultsCompareComponent extends Component {
                     ins_seriesObj = {
                         name: 'rank' + (i + 1),
                         data: ins_data,
-                        stack: new Date(assessmentGroup.assessDate).toLocaleDateString(),
+                        // stack: new Date(assessmentGroup.assessDate).toLocaleDateString(),
+                        stack: assessmentGroup.year,
                         color: colors[i]
                     };
                     if (j > 0)
@@ -234,7 +245,8 @@ class RubricResultsCompareComponent extends Component {
                     peer_seriesObj = {
                         name: 'rank' + (i + 1),
                         data: peer_data,
-                        stack: new Date(assessmentGroup.assessDate).toLocaleDateString(),
+                        // stack: new Date(assessmentGroup.assessDate).toLocaleDateString(),
+                        stack: assessmentGroup.year,
                         color: colors[i]
                     };
                     if (j > 0)
@@ -329,7 +341,8 @@ class RubricResultsCompareComponent extends Component {
         let list = this.state.originalList;
         let s = this.state.startYear, e = this.state.endYear;
         this.setState({
-            assessmentGroups: list.filter(a => new Date(a['assessDate']).getFullYear() >= s && new Date(a['assessDate']).getFullYear() <= e)
+            // assessmentGroups: list.filter(a => new Date(a['assessDate']).getFullYear() >= s && new Date(a['assessDate']).getFullYear() <= e)
+            assessmentGroups: list.filter(a => a.year >= s && a.year <= e)
         }, () => {
             if (this.state.assessmentGroups !== '' || this.state.assessmentGroups.length !== 0) {
                 this.createAvgChart();
@@ -418,11 +431,11 @@ class RubricResultsCompareComponent extends Component {
                     }
                     {this.state.assessmentGroups.map(
                         a => a.ins_count === 'undefined' || a.ins_count === 0 ?
-                            "" : <AssessmentGroupInfoTable key={"ins_" + a.id} assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>
+                            "" : <AssessmentGroupInfoTable key={"ins_" + a.id} assessmentGroup={a} type="instructor" compare={true}></AssessmentGroupInfoTable>
                     )}
                     {this.state.assessmentGroups.map(
                         a => a.peer_count === 'undefined' || a.peer_count === 0 ?
-                            "" : <AssessmentGroupInfoTable key={"peer_" + a.id} assessmentGroup={a} type="peer"></AssessmentGroupInfoTable>
+                            "" : <AssessmentGroupInfoTable key={"peer_" + a.id} assessmentGroup={a} type="peer" compare={true}></AssessmentGroupInfoTable>
                     )}
                 </Card.Body>
             </Card>];
