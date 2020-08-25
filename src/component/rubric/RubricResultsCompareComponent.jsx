@@ -93,8 +93,7 @@ class RubricResultsCompareComponent extends Component {
     createAvgChart() {
         let ins_series = [], peer_series = [];
         for (let assessmentGroup of this.state.assessmentGroups) {
-            // let date_name = new Date(assessmentGroup.assessDate).toLocaleDateString();
-            let date_name = assessmentGroup.year;
+            let year_name = assessmentGroup.year;
             if (assessmentGroup.ins_count > 0) {
                 let avgData = [];
                 let criteria = assessmentGroup.rubric.criteria
@@ -110,7 +109,7 @@ class RubricResultsCompareComponent extends Component {
                     criterion['avg'] = avg / totalCount;
                     avgData = [...avgData, [criterion.name, criterion['avg']]];
                 }
-                ins_series = [...ins_series, { name: date_name, data: avgData }];
+                ins_series = [...ins_series, { name: year_name, data: avgData }];
             }
             if (assessmentGroup.peer_count > 0) {
                 let avgData = [];
@@ -127,7 +126,7 @@ class RubricResultsCompareComponent extends Component {
                     criterion['avg'] = avg / totalCount;
                     avgData = [...avgData, [criterion.name, criterion['avg']]];
                 }
-                peer_series = [...peer_series, { name: date_name, data: avgData }];
+                peer_series = [...peer_series, { name: year_name, data: avgData }];
             }
         }
 
@@ -233,7 +232,6 @@ class RubricResultsCompareComponent extends Component {
                     ins_seriesObj = {
                         name: 'rank' + (i + 1),
                         data: ins_data,
-                        // stack: new Date(assessmentGroup.assessDate).toLocaleDateString(),
                         stack: assessmentGroup.year,
                         color: colors[i]
                     };
@@ -245,7 +243,6 @@ class RubricResultsCompareComponent extends Component {
                     peer_seriesObj = {
                         name: 'rank' + (i + 1),
                         data: peer_data,
-                        // stack: new Date(assessmentGroup.assessDate).toLocaleDateString(),
                         stack: assessmentGroup.year,
                         color: colors[i]
                     };
@@ -341,7 +338,6 @@ class RubricResultsCompareComponent extends Component {
         let list = this.state.originalList;
         let s = this.state.startYear, e = this.state.endYear;
         this.setState({
-            // assessmentGroups: list.filter(a => new Date(a['assessDate']).getFullYear() >= s && new Date(a['assessDate']).getFullYear() <= e)
             assessmentGroups: list.filter(a => a.year >= s && a.year <= e)
         }, () => {
             if (this.state.assessmentGroups !== '' || this.state.assessmentGroups.length !== 0) {
