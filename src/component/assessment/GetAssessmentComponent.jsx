@@ -23,11 +23,11 @@ class GetAssessmentComponent extends Component {
         // window.location.replace('http://localhost:8080/assessment/artifact/' + a.id + '/download');
         ApiService.checkDownloadNeeded(a.name.split('.').pop(), a.id).then(
             res => {
-            if (res.config['responseType'] !== 'blob')
-                this.props.history.push('/download', { fileId: a.id, assessmentGroup: this.state.assessmentGroup, index: this.state.index, text: res.data });
-            else
-                FileDownload(res.data, a.name.split('-')[1]);
-        }
+                if (res.config['responseType'] !== 'blob')
+                    this.props.history.push('/download', { fileId: a.id, assessmentGroup: this.state.assessmentGroup, index: this.state.index, text: res.data });
+                else
+                    FileDownload(res.data, a.name.split('-')[1]);
+            }
         )
     }
     render() {
@@ -36,11 +36,12 @@ class GetAssessmentComponent extends Component {
                 <Breadcrumb.Item onClick={() => { this.props.history.push('assessments', { assessmentGroup: this.state.assessmentGroup }) }}>Assessments</Breadcrumb.Item>
                 <Breadcrumb.Item active>Assessment</Breadcrumb.Item>
             </Breadcrumb>,
-            <Table key="rating-table" bordered responsive="sm" size="sm" style={{ width: 300, textAlign: 'center', verticalAlign: 'middle' }}>
+            <Table key="rating-table" bordered responsive="sm" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                 <thead>
                     <tr>
                         <th>Criterion Name</th>
                         <th>Points</th>
+                        <th>Comments</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,13 +49,14 @@ class GetAssessmentComponent extends Component {
                         this.state.criteria.map((c, indx) =>
                             <tr key={c.id + indx}>
                                 <td>{c.name}</td>
-                                {this.state.assessment.ratings[indx] === undefined ? <td>ungraded</td> : <td>{this.state.assessment.ratings[indx].value} points</td>}
+                                {this.state.assessment.comments[indx] === undefined ? [<td>ungraded</td>, <td></td>] :
+                                    [<td>{this.state.assessment.comments[indx].rating.value} points</td>,
+                                    <td>{this.state.assessment.comments[indx].content}</td>]}
                             </tr>
                         )
                     }
                 </tbody>
             </Table>,
-            <div key="comment">Comments: {this.state.assessment.comments}</div>,
             this.state.assessment.artifacts.length === 0 ? "" :
                 [<span key="list-title">Files: </span>,
                 <ListGroup key="list">

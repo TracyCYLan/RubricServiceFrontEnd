@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Breadcrumb } from 'react-bootstrap';
+import { Card, Breadcrumb, Form, Col, Button } from 'react-bootstrap';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import AssessmentGroupInfoTable from '../assessmentGroup/assessmentGroupCards/AssessmentGroupInfoTable';
@@ -14,7 +14,8 @@ class RubricResultsCompareComponent extends Component {
             InsChartOptionsAvg: '',
             PeerChartOptionsAvg: '',
             InsChartOptionsStacked: '',
-            PeerChartOptionsStacked: ''
+            PeerChartOptionsStacked: '',
+            years: []
         }
     }
 
@@ -22,10 +23,13 @@ class RubricResultsCompareComponent extends Component {
         this.countRating();
     }
     countRating() {
-        let newAssessmentGroups = [];
-        let tmpRank = 0;
+        let newAssessmentGroups = [], years = [];
+        let tmpRank = 0, startYear = Infinity, endYear = -Infinity;
         for (var i = 0; i < this.state.assessmentGroups.length; i++) {
             let assessmentGroup = this.state.assessmentGroups[i];
+            let year = new Date(assessmentGroup['assessDate']).getFullYear();
+            startYear = Math.min(startYear, year);
+            endYear = Math.max(endYear, year);
             assessmentGroup.rubric.criteria.map(
                 c => c.ratings.map(r => {
                     r['peer_count'] = 0
@@ -41,8 +45,8 @@ class RubricResultsCompareComponent extends Component {
                     peer_count++;
                 else if (assessment.type === 'grading')
                     ins_count++;
-                for (let j = 0; j < assessment.ratings.length; j++) {
-                    let r = assessment.ratings[j]; //current rating in this assessment
+                for (let j = 0; j < assessment.comments.length; j++) {
+                    let r = assessment.comments[j].rating; //current rating in this assessment
                     //traverse ratings in certain criterion
                     let ratings = assessmentGroup.rubric.criteria[j].ratings;
                     tmpRank = Math.max(tmpRank, ratings.length);//update rank
@@ -61,9 +65,15 @@ class RubricResultsCompareComponent extends Component {
             assessmentGroup['peer_count'] = peer_count;
             newAssessmentGroups = [...newAssessmentGroups, assessmentGroup];
         }
+        for (let i = startYear; i <= endYear; i++)
+            years = [...years, i];
         this.setState({
             assessmentGroups: newAssessmentGroups,
-            ranks: tmpRank
+            originalList: newAssessmentGroups, // later might change the range, then we will based on this to change
+            ranks: tmpRank,
+            years: years,
+            startYear: startYear,
+            endYear: endYear
         }, () => {
             if (this.state.assessmentGroups !== '' || this.state.assessmentGroups.length !== 0) {
                 this.createAvgChart();
@@ -147,7 +157,6 @@ class RubricResultsCompareComponent extends Component {
             }
             this.setState({ InsChartOptionsAvg: ins_obj })
         }
-
         if (peer_series.length > 0) {
             let peer_obj = {
                 chart: {
@@ -316,6 +325,32 @@ class RubricResultsCompareComponent extends Component {
 
     }
 
+    reloadGroups() {
+        let list = this.state.originalList;
+        let s = this.state.startYear, e = this.state.endYear;
+        this.setState({
+            assessmentGroups: list.filter(a => new Date(a['assessDate']).getFullYear() >= s && new Date(a['assessDate']).getFullYear() <= e)
+        }, () => {
+            if (this.state.assessmentGroups !== '' || this.state.assessmentGroups.length !== 0) {
+                this.createAvgChart();
+                this.createStackedBar();
+            }
+        })
+    }
+    changeYear = (e, text) => {
+        if (text === 's') {
+            this.setState({
+                startYear: e.target.value
+            });
+            if (this.state.endYear < e.target.value)
+                this.setState({ endYear: e.target.value })
+        }
+        else if (text === 'e') {
+            this.setState({
+                endYear: e.target.value
+            });
+        }
+    }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
@@ -323,33 +358,64 @@ class RubricResultsCompareComponent extends Component {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                 <Breadcrumb.Item href="/rubrics">Rubrics</Breadcrumb.Item>
-                <Breadcrumb.Item href="rubric">{this.state.rubric.name}</Breadcrumb.Item>
-                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubric-results', { rubric: this.state.rubric })}>Results of {this.state.rubric.name}</Breadcrumb.Item>
+                <Breadcrumb.Item href="/rubric">{this.state.rubric.name}</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => this.props.history.push('/rubric-results', { rubric: this.state.rubric })}>Results of {this.state.rubric.name}</Breadcrumb.Item>
                 <Breadcrumb.Item active>AssessmentGroups of {this.state.name}</Breadcrumb.Item>
             </Breadcrumb>,
-            <Card className="mx-auto mt-2">
+            <Card key="card" className="mx-auto mt-2">
                 <Card.Body>
                     <Card.Title>{this.state.rubric.name + " - " + this.state.name}</Card.Title>
-                    <HighchartsReact
-                        key="ins_avgChart"
-                        highcharts={Highcharts}
-                        options={this.state.InsChartOptionsAvg}
-                    />
-                    <HighchartsReact
-                        key="peer_avgChart"
-                        highcharts={Highcharts}
-                        options={this.state.PeerChartOptionsAvg}
-                    />
-                    <HighchartsReact
-                        key="ins_stackedBar"
-                        highcharts={Highcharts}
-                        options={this.state.InsChartOptionsStacked}
-                    />
-                    <HighchartsReact
-                        key="peer_stackedBar"
-                        highcharts={Highcharts}
-                        options={this.state.PeerChartOptionsStacked}
-                    />
+                    <Form>
+                        <Form.Row key="selectRange">
+                            <Col sm={1} style={{ textAlign: 'center', verticalAlign: 'middle' }}>From</Col>
+                            <Col sm={2} key="beginYear">
+                                <Form.Control as="select" onChange={(e) => this.changeYear(e, 's')}>
+                                    {this.state.years.map(y => <option key={y}>{y}</option>)}
+                                </Form.Control>
+                            </Col>
+                            <Col sm={1} style={{ textAlign: 'center', verticalAlign: 'middle' }}>To</Col>
+                            <Col sm={2} key="endYear">
+                                <Form.Control as="select" value={this.state.endYear} onChange={(e) => this.changeYear(e, 'e')}>
+                                    {
+                                        this.state.years.filter(y => y >= this.state.startYear).map(y => <option key={y}>{y}</option>)
+                                    }
+                                </Form.Control>
+                            </Col>
+                            <Col sm={1} key="submit">
+                                <Button className="float-right" variant="info" onClick={() => this.reloadGroups()}>
+                                    Select
+                                </Button>
+                            </Col>
+                        </Form.Row>
+                    </Form>
+                    {this.state.InsChartOptionsAvg === '' ? "" :
+                        <HighchartsReact
+                            key="ins_avgChart"
+                            highcharts={Highcharts}
+                            options={this.state.InsChartOptionsAvg}
+                        />
+                    }
+                    {this.state.PeerChartOptionsAvg === '' ? "" :
+                        <HighchartsReact
+                            key="peer_avgChart"
+                            highcharts={Highcharts}
+                            options={this.state.PeerChartOptionsAvg}
+                        />
+                    }
+                    {this.state.InsChartOptionsStacked === '' ? "" :
+                        <HighchartsReact
+                            key="ins_stackedBar"
+                            highcharts={Highcharts}
+                            options={this.state.InsChartOptionsStacked}
+                        />
+                    }
+                    {this.state.PeerChartOptionsStacked === '' ? "" :
+                        <HighchartsReact
+                            key="peer_stackedBar"
+                            highcharts={Highcharts}
+                            options={this.state.PeerChartOptionsStacked}
+                        />
+                    }
                     {this.state.assessmentGroups.map(
                         a => a.ins_count === 'undefined' || a.ins_count === 0 ?
                             "" : <AssessmentGroupInfoTable key={"ins_" + a.id} assessmentGroup={a} type="instructor"></AssessmentGroupInfoTable>

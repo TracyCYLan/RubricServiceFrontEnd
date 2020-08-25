@@ -50,10 +50,10 @@ class RubricResultsComponent extends Component {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                 <Breadcrumb.Item href="/rubrics">Rubrics</Breadcrumb.Item>
-                <Breadcrumb.Item href="rubric">{this.state.rubric.name}</Breadcrumb.Item>
+                <Breadcrumb.Item href="/rubric">{this.state.rubric.name}</Breadcrumb.Item>
                 <Breadcrumb.Item active>Results of {this.state.rubric.name}</Breadcrumb.Item>
             </Breadcrumb>,
-            <Table border="1" className="mt-2">
+            <Table key="table" border="1" className="mt-2">
                 <thead>
                     <tr>
                         <th>Name</th>

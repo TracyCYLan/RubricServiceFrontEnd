@@ -17,10 +17,8 @@ class GetAssessmentGroupComponent extends Component {
             assessmentPeerCount: 0, //count num of peer assessments
             assessmentInstructorCount: 0,//count num of instructor assessments
             ranks: 0,//num of ranks (i.e., the max number of ratings among all criteria) (for stackedbar x-axis)
-            InsChartOptionsAvg: '',
-            PeerChartOptionsAvg: '',
-            InsChartOptionsStacked: '',
-            PeerChartOptionsStacked: ''
+            ChartOptionsAvg: '',
+            ChartOptionsStacked: ''
         }
         this.loadAssessmentGroup = this.loadAssessmentGroup.bind(this);
         this.countRating = this.countRating.bind(this);
@@ -60,8 +58,8 @@ class GetAssessmentGroupComponent extends Component {
                 peer_count++;
             else if (assessment.type === 'grading')
                 ins_count++;
-            for (let i = 0; i < assessment.ratings.length; i++) {
-                let r = assessment.ratings[i]; //current rating in this assessment
+            for (let i = 0; i < assessment.comments.length; i++) {
+                let r = assessment.comments[i].rating; //current rating in this assessment
                 //traverse ratings in certain criterion
                 let ratings = this.state.criteria[i].ratings;
                 tmpRank = Math.max(tmpRank, ratings.length);//update rank
@@ -87,6 +85,7 @@ class GetAssessmentGroupComponent extends Component {
         })
     }
     createAvgChart() {
+        let avgSeries = [];
         if (this.state.assessmentInstructorCount > 0) {
             let avgData = [];
             for (let i = 0; i < this.state.criteria.length; i++) {
@@ -101,50 +100,7 @@ class GetAssessmentGroupComponent extends Component {
                 criterion['avg'] = avg / totalCount;
                 avgData = [...avgData, [criterion.name, criterion['avg']]];
             }
-            let obj = {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Instructor Evaluations - Average points'
-                },
-                xAxis: {
-                    type: 'category',
-                    labels: {
-                        style: {
-                            fontSize: '13px',
-                            fontFamily: 'Verdana, sans-serif'
-                        }
-                    }
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: 'Points'
-                    }
-                },
-                legend: {
-                    enabled: false
-                },
-                tooltip: {
-                    pointFormat: '<b>{point.y:.1f} points</b>'
-                },
-                series: [{
-                    data: avgData,
-                    color: 'rgb(243, 167, 18)',
-                    dataLabels: {
-                        enabled: true,
-                        color: '#545775',
-                        format: '{point.y:.1f}', // one decimal
-                        y: 10, // 10 pixels down from the top
-                        style: {
-                            fontSize: '13px',
-                            fontFamily: 'Verdana, sans-serif'
-                        }
-                    }
-                }]
-            };
-            this.setState({ InsChartOptionsAvg: obj });
+            avgSeries = [...avgSeries, { name: "Instructor", data: avgData }]
         }
         if (this.state.assessmentPeerCount > 0) {
             let avgData = [];
@@ -160,57 +116,69 @@ class GetAssessmentGroupComponent extends Component {
                 criterion['avg'] = avg / totalCount;
                 avgData = [...avgData, [criterion.name, criterion['avg']]];
             }
-            let obj = {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Peer Evaluations - Average Points'
-                },
-                xAxis: {
-                    type: 'category',
-                    labels: {
-                        style: {
-                            fontSize: '13px',
-                            fontFamily: 'Verdana, sans-serif'
-                        }
-                    }
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: 'Points'
-                    }
-                },
-                legend: {
-                    enabled: false
-                },
-                tooltip: {
-                    pointFormat: '<b>{point.y:.1f} points</b>'
-                },
-                series: [{
-                    data: avgData,
-                    color: 'rgb(243, 167, 18)',
-                    dataLabels: {
-                        enabled: true,
-                        color: '#545775',
-                        format: '{point.y:.1f}', // one decimal
-                        y: 10, // 10 pixels down from the top
-                        style: {
-                            fontSize: '13px',
-                            fontFamily: 'Verdana, sans-serif'
-                        }
-                    }
-                }]
-            };
-            this.setState({ PeerChartOptionsAvg: obj });
+            avgSeries = [...avgSeries, { "name": "Peer", "data": avgData }]
         }
+
+        let obj = {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Evaluations - Average Points'
+            },
+            xAxis: {
+                categories: this.state.rubric.criteria.map(c => c.name),
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Point'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} points</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: avgSeries
+        };
+        this.setState({ ChartOptionsAvg: obj })
     }
 
     createStackedBar() {
         let colors = ['#008000', '#00ff00', '#fcfc04', '#fcac04', '#d9534f'];
-        if (this.state.assessmentInstructorCount > 0) {
-            let seriesData = [];
+        let seriesData = [];
+        if (this.state.assessmentInstructorCount > 0 && this.state.assessmentPeerCount > 0) {
+            for (let i = 0; i < this.state.ranks; i++) {
+                let ins_arr = [], peer_arr = [];
+                for (let j = 0; j < this.state.criteria.length; j++) {
+                    let criterion = this.state.criteria[j];
+                    if (i < criterion.ratings.length) {
+                        ins_arr = [...ins_arr, criterion.ratings[i].instructor_count];
+                        peer_arr = [...peer_arr, criterion.ratings[i].peer_count];
+                    }
+                }
+                if (i < 5) {
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: ins_arr, color: colors[i], stack: 'Instructor' }];
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: peer_arr, color: colors[i], stack: 'Peer', linkedTo: ':previous' }];
+                }
+                else {
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: ins_arr, stack: 'Instructor' }];
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: peer_arr, stack: 'Peer', linkedTo: ':previous' }];
+                }
+            }
+        }
+        else if (this.state.assessmentInstructorCount > 0) {
             for (let i = 0; i < this.state.ranks; i++) {
                 let arr = [];
                 for (let j = 0; j < this.state.criteria.length; j++) {
@@ -220,42 +188,12 @@ class GetAssessmentGroupComponent extends Component {
                     }
                 }
                 if (i < 5)
-                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, color: colors[i], stack: 1 }];
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, color: colors[i], stack: 'Instructor' }];
                 else
-                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr }];
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, stack: 'Instructor' }];
             }
-
-            let obj = {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Instructor Evaluations'
-                },
-                xAxis: {
-                    categories: this.state.criteria.map(c => c.name)
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: 'Percent'
-                    }
-                },
-                tooltip: {
-                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
-                    shared: true
-                },
-                plotOptions: {
-                    column: {
-                        stacking: 'percent'
-                    }
-                },
-                series: seriesData
-            };
-            this.setState({ InsChartOptionsStacked: obj });
         }
-        if (this.state.assessmentPeerCount > 0) {
-            let seriesData = [];
+        else if (this.state.assessmentPeerCount > 0) {
             for (let i = 0; i < this.state.ranks; i++) {
                 let arr = [];
                 for (let j = 0; j < this.state.criteria.length; j++) {
@@ -265,39 +203,48 @@ class GetAssessmentGroupComponent extends Component {
                     }
                 }
                 if (i < colors.length)
-                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, color: colors[i] }];
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, color: colors[i], stack: 'Peer' }];
                 else
-                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr }];
+                    seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, stack: 'Peer' }];
             }
-            let obj = {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Peer Evaluations'
-                },
-                xAxis: {
-                    categories: this.state.criteria.map(c => c.name)
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: 'Percent'
-                    }
-                },
-                tooltip: {
-                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
-                    shared: true
-                },
-                plotOptions: {
-                    column: {
-                        stacking: 'percent'
-                    }
-                },
-                series: seriesData
-            };
-            this.setState({ PeerChartOptionsStacked: obj });
         }
+        let obj = {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Stacked Evaluations'
+            },
+            xAxis: {
+                categories: this.state.criteria.map(c => c.name)
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Percent'
+                },
+                stackLabels: {
+                    enabled: true,
+                    crop: false,
+                    overflow: 'allow',
+                    style: {
+                        fontWeight: 'bold',
+                        color: '#545775'
+                    },
+                    format: '{stack}'
+                }
+            },
+            tooltip: {
+                pointFormat: '<span>{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>'
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'percent'
+                }
+            },
+            series: seriesData
+        };
+        this.setState({ ChartOptionsStacked: obj });
     }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
@@ -331,32 +278,16 @@ class GetAssessmentGroupComponent extends Component {
                         this.state.assessmentPeerCount === 0 ? "" :
                             <AssessmentGroupInfoTable assessmentGroup={this.state.assessmentGroup} type="peer"></AssessmentGroupInfoTable>
                     }
-                    {
-                        this.state.assessmentInstructorCount === 0 ? "" :
-                            [<HighchartsReact
-                                key="ins_avgChart"
-                                highcharts={Highcharts}
-                                options={this.state.InsChartOptionsAvg}
-                            />, <br key="space"></br>,
-                            <HighchartsReact
-                                key="ins_stackedbar"
-                                highcharts={Highcharts}
-                                options={this.state.InsChartOptionsStacked}
-                            />]
-                    }
-                    {
-                        this.state.assessmentPeerCount === 0 ? "" :
-                            [<HighchartsReact
-                                key="peer_avgChart"
-                                highcharts={Highcharts}
-                                options={this.state.PeerChartOptionsAvg}
-                            />, <br></br>,
-                            <HighchartsReact
-                                key="peer_stackedbar"
-                                highcharts={Highcharts}
-                                options={this.state.PeerChartOptionsStacked}
-                            />]
-                    }
+                    <HighchartsReact
+                        key="avgChart"
+                        highcharts={Highcharts}
+                        options={this.state.ChartOptionsAvg}
+                    />
+                    <HighchartsReact
+                        key="stackedBarChart"
+                        highcharts={Highcharts}
+                        options={this.state.ChartOptionsStacked}
+                    />
                 </Card.Body>
             </Card>
             ]
