@@ -15,7 +15,9 @@ class RubricResultsCompareComponent extends Component {
             PeerChartOptionsAvg: '',
             InsChartOptionsStacked: '',
             PeerChartOptionsStacked: '',
-            years: []
+            years: [],
+            showIns: true, //current show instructor chart or peer chart
+            show: true //same thing as showIns, think of like a temp boolean which won't affect the chart
         }
     }
 
@@ -202,6 +204,8 @@ class RubricResultsCompareComponent extends Component {
             }
             this.setState({ PeerChartOptionsAvg: peer_obj })
         }
+        if (ins_series.length === 0)
+            this.setState({ showIns: false });
     }
 
     createStackedBar() {
@@ -338,7 +342,8 @@ class RubricResultsCompareComponent extends Component {
         let list = this.state.originalList;
         let s = this.state.startYear, e = this.state.endYear;
         this.setState({
-            assessmentGroups: list.filter(a => a.year >= s && a.year <= e)
+            assessmentGroups: list.filter(a => a.year >= s && a.year <= e),
+            showIns: this.state.show === true
         }, () => {
             if (this.state.assessmentGroups !== '' || this.state.assessmentGroups.length !== 0) {
                 this.createAvgChart();
@@ -346,7 +351,7 @@ class RubricResultsCompareComponent extends Component {
             }
         })
     }
-    changeYear = (e, text) => {
+    selectHandler = (e, text) => {
         if (text === 's') {
             this.setState({
                 startYear: e.target.value
@@ -358,6 +363,11 @@ class RubricResultsCompareComponent extends Component {
             this.setState({
                 endYear: e.target.value
             });
+        }
+        else if (text === 'type') {
+            this.setState({
+                show: e.target.value
+            })
         }
     }
     onChange = (e) =>
@@ -376,15 +386,22 @@ class RubricResultsCompareComponent extends Component {
                     <Card.Title>{this.state.rubric.name + " - " + this.state.name}</Card.Title>
                     <Form>
                         <Form.Row key="selectRange">
+                            <Col sm={1} style={{ textAlign: 'center', verticalAlign: 'middle' }}>Type: </Col>
+                            <Col sm={2} key="selectType">
+                                <Form.Control as="select" onChange={(e) => this.selectHandler(e, 'type')}>
+                                    {this.state.InsChartOptionsAvg === '' ? '' : <option key="ins" value={true}>Instructor</option>}
+                                    {this.state.PeerChartOptionsAvg === '' ? '' : <option key="peer" value={false}>Peer</option>}
+                                </Form.Control>
+                            </Col>
                             <Col sm={1} style={{ textAlign: 'center', verticalAlign: 'middle' }}>From</Col>
                             <Col sm={2} key="beginYear">
-                                <Form.Control as="select" onChange={(e) => this.changeYear(e, 's')}>
+                                <Form.Control as="select" onChange={(e) => this.selectHandler(e, 's')}>
                                     {this.state.years.map(y => <option key={y}>{y}</option>)}
                                 </Form.Control>
                             </Col>
                             <Col sm={1} style={{ textAlign: 'center', verticalAlign: 'middle' }}>To</Col>
                             <Col sm={2} key="endYear">
-                                <Form.Control as="select" value={this.state.endYear} onChange={(e) => this.changeYear(e, 'e')}>
+                                <Form.Control as="select" value={this.state.endYear} onChange={(e) => this.selectHandler(e, 'e')}>
                                     {
                                         this.state.years.filter(y => y >= this.state.startYear).map(y => <option key={y}>{y}</option>)
                                     }
@@ -397,42 +414,42 @@ class RubricResultsCompareComponent extends Component {
                             </Col>
                         </Form.Row>
                     </Form>
-                    {this.state.InsChartOptionsAvg === '' ? "" :
+                    {!this.state.showIns || this.state.InsChartOptionsAvg === '' ? "" :
                         <HighchartsReact
                             key="ins_avgChart"
                             highcharts={Highcharts}
                             options={this.state.InsChartOptionsAvg}
                         />
                     }
-                    {this.state.PeerChartOptionsAvg === '' ? "" :
+                    {(this.state.showIns || this.state.PeerChartOptionsAvg === '') ? "" :
                         <HighchartsReact
                             key="peer_avgChart"
                             highcharts={Highcharts}
                             options={this.state.PeerChartOptionsAvg}
                         />
                     }
-                    {this.state.InsChartOptionsStacked === '' ? "" :
+                    {!this.state.showIns || this.state.InsChartOptionsStacked === '' ? "" :
                         <HighchartsReact
                             key="ins_stackedBar"
                             highcharts={Highcharts}
                             options={this.state.InsChartOptionsStacked}
                         />
                     }
-                    {this.state.PeerChartOptionsStacked === '' ? "" :
+                    {this.state.showIns || this.state.PeerChartOptionsStacked === '' ? "" :
                         <HighchartsReact
                             key="peer_stackedBar"
                             highcharts={Highcharts}
                             options={this.state.PeerChartOptionsStacked}
                         />
                     }
-                    {this.state.assessmentGroups.map(
+                    {this.state.showIns ? this.state.assessmentGroups.map(
                         a => a.ins_count === 'undefined' || a.ins_count === 0 ?
                             "" : <AssessmentGroupInfoTable key={"ins_" + a.id} assessmentGroup={a} type="instructor" compare={true}></AssessmentGroupInfoTable>
-                    )}
-                    {this.state.assessmentGroups.map(
+                    ) : ""}
+                    {!this.state.showIns ? this.state.assessmentGroups.map(
                         a => a.peer_count === 'undefined' || a.peer_count === 0 ?
                             "" : <AssessmentGroupInfoTable key={"peer_" + a.id} assessmentGroup={a} type="peer" compare={true}></AssessmentGroupInfoTable>
-                    )}
+                    ) : ""}
                 </Card.Body>
             </Card>];
     }
