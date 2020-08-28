@@ -40,6 +40,7 @@ import GetArtifactComponent from "./component/assessment/GetArtifactComponent";
 
 import TestComponent from "./component/TestComponent";
 import TestCanvasComponent from "./Canvas/component/TestCanvasComponent";
+import OIDCRedirectComponent from './component/auth/OIDCRedirectComponent.tsx';
 function App() {
     return (
         <React.Fragment>
@@ -75,6 +76,7 @@ function App() {
                         <Route path="/login" exact component={LoginComponent}></Route>
                         <Route path="/register" exact component={RegisterComponent}></Route>
                         <Route path="/redirect" exact component={RedirectPage}></Route>
+                        <Route path="/auth" exact component={OIDCRedirectComponent}></Route>
                     </Switch>
                 </Layout>
             </Router>
