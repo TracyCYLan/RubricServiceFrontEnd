@@ -14,8 +14,6 @@ class GetAssessmentGroupComponent extends Component {
             assessments: [],
             rubric: '',
             criteria: [],
-            assessmentPeerCount: 0, //count num of peer assessments
-            assessmentInstructorCount: 0,//count num of instructor assessments
             ranks: 0,//num of ranks (i.e., the max number of ratings among all criteria) (for stackedbar x-axis)
             ChartOptionsAvg: '',
             ChartOptionsStacked: ''
@@ -50,14 +48,15 @@ class GetAssessmentGroupComponent extends Component {
                 return r;
             })
         )
-        let peer_count = 0;
-        let ins_count = 0;
+        let agroup = this.state.assessmentGroup;
+        agroup['peer_count'] = 0;
+        agroup['ins_count'] = 0;
         let tmpRank = 0;
         for (let assessment of this.state.assessments) {
             if (assessment.type === 'peer_review')
-                peer_count++;
+                agroup['peer_count']++;
             else if (assessment.type === 'grading')
-                ins_count++;
+                agroup['ins_count']++;
             for (let i = 0; i < assessment.comments.length; i++) {
                 let r = assessment.comments[i].rating; //current rating in this assessment
                 //traverse ratings in certain criterion
@@ -76,8 +75,7 @@ class GetAssessmentGroupComponent extends Component {
         }
         this.setState({
             criteria: this.state.criteria,
-            assessmentInstructorCount: ins_count,
-            assessmentPeerCount: peer_count,
+            assessmentGroup: agroup,
             ranks: tmpRank
         }, () => {
             this.createAvgChart();
@@ -86,7 +84,7 @@ class GetAssessmentGroupComponent extends Component {
     }
     createAvgChart() {
         let avgSeries = [];
-        if (this.state.assessmentInstructorCount > 0) {
+        if (this.state.assessmentGroup['ins_count'] > 0) {
             let avgData = [];
             for (let i = 0; i < this.state.criteria.length; i++) {
                 let criterion = this.state.criteria[i];
@@ -102,7 +100,7 @@ class GetAssessmentGroupComponent extends Component {
             }
             avgSeries = [...avgSeries, { name: "Instructor", data: avgData }]
         }
-        if (this.state.assessmentPeerCount > 0) {
+        if (this.state.assessmentGroup['peer_count'] > 0) {
             let avgData = [];
             for (let i = 0; i < this.state.criteria.length; i++) {
                 let criterion = this.state.criteria[i];
@@ -158,7 +156,7 @@ class GetAssessmentGroupComponent extends Component {
     createStackedBar() {
         let colors = ['#008000', '#00ff00', '#fcfc04', '#fcac04', '#d9534f'];
         let seriesData = [];
-        if (this.state.assessmentInstructorCount > 0 && this.state.assessmentPeerCount > 0) {
+        if (this.state.assessmentGroup['ins_count'] > 0 && this.state.assessmentGroup['peer_count'] > 0) {
             for (let i = 0; i < this.state.ranks; i++) {
                 let ins_arr = [], peer_arr = [];
                 for (let j = 0; j < this.state.criteria.length; j++) {
@@ -178,7 +176,7 @@ class GetAssessmentGroupComponent extends Component {
                 }
             }
         }
-        else if (this.state.assessmentInstructorCount > 0) {
+        else if (this.state.assessmentGroup['ins_count'] > 0) {
             for (let i = 0; i < this.state.ranks; i++) {
                 let arr = [];
                 for (let j = 0; j < this.state.criteria.length; j++) {
@@ -193,7 +191,7 @@ class GetAssessmentGroupComponent extends Component {
                     seriesData = [...seriesData, { name: 'rank' + (i + 1), data: arr, stack: 'Instructor' }];
             }
         }
-        else if (this.state.assessmentPeerCount > 0) {
+        else if (this.state.assessmentGroup['peer_count'] > 0) {
             for (let i = 0; i < this.state.ranks; i++) {
                 let arr = [];
                 for (let j = 0; j < this.state.criteria.length; j++) {
@@ -258,11 +256,14 @@ class GetAssessmentGroupComponent extends Component {
             <Card key="card" className="mx-auto mt-2">
                 <Card.Body>
                     <Col>
-                        <Button className="float-right" variant="dark" onClick={() => { this.props.history.push('assessments', { assessmentGroup: this.state.assessmentGroup }) }}> View {this.state.assessments.length} Assessments</Button>
+                        <Button className="float-right" variant="outline-dark" onClick={() => { this.props.history.push('assessments', { assessmentGroup: this.state.assessmentGroup }) }}> View {this.state.assessments.length} Assessments</Button>
                     </Col>
                     <Card.Title as="h3">
                         {this.state.assessmentGroup.name}
                     </Card.Title>
+                    <Col>
+                        <Button className="float-right" variant="outline-dark" onClick={() => { this.props.history.push('comments', { assessmentGroup: this.state.assessmentGroup }) }}> View All Comments</Button>
+                    </Col>
                     <Card.Subtitle className="mb-2 text-muted">
                         {ReactHtmlParser(this.state.assessmentGroup.description)}
                     </Card.Subtitle>
@@ -271,11 +272,11 @@ class GetAssessmentGroupComponent extends Component {
                         this.props.history.push('/rubric');
                     }}>Using {this.state.rubric.name}</Card.Text>
                     {
-                        this.state.assessmentInstructorCount === 0 ? "" :
+                        this.state.assessmentGroup['ins_count'] === 0 || this.state.assessmentGroup['ins_count'] === undefined ? "" :
                             <AssessmentGroupInfoTable assessmentGroup={this.state.assessmentGroup} type="instructor"></AssessmentGroupInfoTable>
                     }
                     {
-                        this.state.assessmentPeerCount === 0 ? "" :
+                        this.state.assessmentGroup['peer_count'] === 0 || this.state.assessmentGroup['peer_count'] === undefined ? "" :
                             <AssessmentGroupInfoTable assessmentGroup={this.state.assessmentGroup} type="peer"></AssessmentGroupInfoTable>
                     }
                     <HighchartsReact

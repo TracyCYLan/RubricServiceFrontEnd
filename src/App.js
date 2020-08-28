@@ -33,6 +33,7 @@ import RegisterComponent from "./component/logins/RegisterComponent";
 
 import ListAssessmentGroupsComponent from "./component/assessmentGroup/ListAssessmentGroupsComponent";
 import GetAssessmentGroupComponent from "./component/assessmentGroup/GetAssessmentGroupComponent";
+import ListCommentsComponent from "./component/assessmentGroup/ListCommentsComponent";
 
 import ListAssessmentsComponent from "./component/assessment/ListAssessmentsComponent";
 import GetAssessmentComponent from "./component/assessment/GetAssessmentComponent";
@@ -72,6 +73,7 @@ function App() {
                         <Route path="/assessmentGroup" exact component={GetAssessmentGroupComponent}></Route>
                         <Route path="/assessments" exact component={ListAssessmentsComponent}></Route>
                         <Route path="/assessment" exact component={GetAssessmentComponent}></Route>
+                        <Route path="/comments" exact component={ListCommentsComponent}></Route>
                         <Route path="/download" exact component={GetArtifactComponent}></Route>
                         <Route path="/login" exact component={LoginComponent}></Route>
                         <Route path="/register" exact component={RegisterComponent}></Route>
