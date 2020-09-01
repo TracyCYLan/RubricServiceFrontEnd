@@ -1,5 +1,6 @@
 import React from 'react';
 import { AuthProvider } from 'oidc-react';
+import {Button} from 'react-bootstrap';
 
 const oidcConfig = {
   onSignIn: async (user: any) => {
@@ -10,15 +11,15 @@ const oidcConfig = {
   authority: 'https://identity.cysun.org',
   clientId: 'alice-rubric-service-dev',
   responseType: 'code',
+  scope: 'openid profile email',
   redirectUri: 'http://localhost:3000/auth'
 };
-
 function OIDCHandler() {
   return (
     <AuthProvider {...oidcConfig}>
       <div className="App">
         <header className="App-header">
-          <p>Redirect to OIDC Log in</p>
+          <Button variant="info" href="/">Back</Button>
         </header>
       </div>
      </AuthProvider>

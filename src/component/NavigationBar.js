@@ -35,7 +35,8 @@ const NavigationBar = (props) => (
                     ""
                 }
             </Nav>
-            {window.sessionStorage.getItem("userToken") ?
+            {window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-dev") ||
+                window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service") ?
                 [
                     <Nav key="canvaslogin">
                         <Nav.Link href="/redirect">
@@ -44,7 +45,8 @@ const NavigationBar = (props) => (
                     </Nav>,
                     <Nav key="rslogout">
                         <Nav.Link onClick={() => {
-                            window.sessionStorage.removeItem("userToken");
+                            window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service-dev");
+                            window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
                             window.sessionStorage.removeItem("canvasToken");
                             window.location.reload(false);
                         }
@@ -53,7 +55,7 @@ const NavigationBar = (props) => (
                 ]
                 :
                 <Nav>
-                    <Nav.Link href="/login">Login</Nav.Link>
+                    <Nav.Link href="/auth">Login</Nav.Link>
                 </Nav>
             }
 

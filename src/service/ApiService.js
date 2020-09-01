@@ -1,14 +1,10 @@
 import axios from 'axios';
-// const API_BASE_URL = 'https://jsonplaceholder.typicode.com/comments';
 // const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
 const API_BASE_URL = 'http://localhost:8080/';
-const crypto = require('crypto');
+// const crypto = require('crypto');
 
 class ApiService {
 
-    // fetchTest(){
-    //     return axios.get(API_BASE_URL);
-    // }
     fetchRubrics() {
         return axios.get(API_BASE_URL + 'rubric');
     }
@@ -122,26 +118,26 @@ class ApiService {
     addTask(task, assessorId, associationId) {
         return axios.post(API_BASE_URL + 'task/assessor/' + assessorId + '/association/' + associationId, task);
     }
-    registerUser(username, password) {
-        const hash = crypto.createHash('sha256').update(password).digest('base64');
-        let user =
-        {
-            username: username,
-            password: hash
-        }
-        console.log(JSON.stringify(user));
-        return axios.post(API_BASE_URL + 'user/register', user);
-    }
+    // registerUser(username, password) {
+    //     const hash = crypto.createHash('sha256').update(password).digest('base64');
+    //     let user =
+    //     {
+    //         username: username,
+    //         password: hash
+    //     }
+    //     console.log(JSON.stringify(user));
+    //     return axios.post(API_BASE_URL + 'user/register', user);
+    // }
 
-    login(username, password) {
-        const hash = crypto.createHash('sha256').update(password).digest('base64');
-        let user =
-        {
-            username: username,
-            password: hash
-        }
-        return axios.post(API_BASE_URL + 'user/login', user);
-    }
+    // login(username, password) {
+    //     const hash = crypto.createHash('sha256').update(password).digest('base64');
+    //     let user =
+    //     {
+    //         username: username,
+    //         password: hash
+    //     }
+    //     return axios.post(API_BASE_URL + 'user/login', user);
+    // }
     fetchAssessmentGroups() {
         return axios.get(API_BASE_URL + 'assessment/assessmentgroup');
     }
