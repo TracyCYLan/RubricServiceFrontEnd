@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Card, Form, Col, CardGroup } from 'react-bootstrap';
+import { Button, Card, Form, Col, Row, CardGroup } from 'react-bootstrap';
 import RatingE from '../../RatingCards/RatingEdition';
 import ApiService from '../../../service/ApiService';
 import RichTextEditor from 'react-rte';
@@ -119,7 +119,7 @@ class EditCriterionCard extends Component {
                 <Card.Body>
                     <Button className="float-right" variant="outline-danger"
                         size="sm" onClick={this.state.deleteCriterionBlock}>x</Button>
-                    <Card.Text>
+                    <Row>
                         <Form.Label column lg={2}>Criterion Name</Form.Label>
                         <Col md={10}>
                             <Form.Control type="text"
@@ -128,8 +128,8 @@ class EditCriterionCard extends Component {
                                 onChange={this.onChange}
                             />
                         </Col>
-                    </Card.Text>
-                    <Card.Text>
+                    </Row>
+                    <Row>
                         <Form.Label column lg={2}>Description</Form.Label>
                         <Col sm={10}>
                             <RichTextEditor
@@ -137,8 +137,8 @@ class EditCriterionCard extends Component {
                                     onChange={this.richTextonChange}
                                 />
                         </Col>
-                    </Card.Text>
-                    <Card.Text>
+                    </Row>
+                    <Row>
                         <Form.Label column lg={2}>Ratings:</Form.Label>
                         <Col>
                             <CardGroup>
@@ -150,7 +150,7 @@ class EditCriterionCard extends Component {
                                 <Button variant="secondary" onClick={this.addRating}>+</Button>
                             </CardGroup>
                         </Col>
-                    </Card.Text>
+                    </Row>
                 </Card.Body>
                 <Card.Footer>
                     <Button variant="outline-dark float-right" onClick={this.saveCriterion}>Save</Button>
