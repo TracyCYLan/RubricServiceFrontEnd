@@ -20,7 +20,7 @@ class ListCommentsComponent extends Component {
     render() {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item href="assessmentgroup">{this.state.assessmentGroup.name + " - " + new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={()=>this.props.history.push('/assessmentgroup')}>{this.state.assessmentGroup.name + " - " + new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Breadcrumb.Item>
                 <Breadcrumb.Item active>All Comments</Breadcrumb.Item>
             </Breadcrumb>,
             <Card key="card" className="mx-auto mt-2">

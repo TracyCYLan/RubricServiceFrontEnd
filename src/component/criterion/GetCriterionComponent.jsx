@@ -91,7 +91,7 @@ class GetCriterionComponent extends Component {
                 </Modal.Footer>
             </Modal>,
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-            <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
+            <Breadcrumb.Item onClick={()=>this.props.history.push('/criteria')}>Criteria</Breadcrumb.Item>
             <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
           </Breadcrumb>,
             <Card key="card" className="mx-auto mt-2">

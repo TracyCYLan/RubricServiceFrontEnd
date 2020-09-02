@@ -43,7 +43,7 @@ class GetTagComponent extends Component {
         return (
             [
                 <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                    <Breadcrumb.Item href="tags">All Tags</Breadcrumb.Item>
+                    <Breadcrumb.Item onClick={()=>this.props.history.push('/tags')}>All Tags</Breadcrumb.Item>
                     <Breadcrumb.Item active>{this.state.tag.value}</Breadcrumb.Item>
                 </Breadcrumb>,
                 <Card.Title key="cardTitle" as="h3" className="text-info mt-3 mb-3">Criteria using {this.state.tag.value}:

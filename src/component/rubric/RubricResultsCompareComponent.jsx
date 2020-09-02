@@ -376,8 +376,8 @@ class RubricResultsCompareComponent extends Component {
     render() {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item href="/rubrics">Rubrics</Breadcrumb.Item>
-                <Breadcrumb.Item href="/rubric">{this.state.rubric.name}</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubric')}>{this.state.rubric.name}</Breadcrumb.Item>
                 <Breadcrumb.Item onClick={() => this.props.history.push('/rubric-results', { rubric: this.state.rubric })}>Results of {this.state.rubric.name}</Breadcrumb.Item>
                 <Breadcrumb.Item active>AssessmentGroups of {this.state.name}</Breadcrumb.Item>
             </Breadcrumb>,

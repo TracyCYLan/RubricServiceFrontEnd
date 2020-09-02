@@ -242,7 +242,7 @@ class AddRubricComponent extends Component {
     render() {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
                 <Breadcrumb.Item active>Add Rubric</Breadcrumb.Item>
             </Breadcrumb>,
             <Card key="card" className="mx-auto mt-3">

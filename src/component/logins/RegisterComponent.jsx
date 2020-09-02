@@ -28,7 +28,7 @@ class RegisterComponent extends Component {
     render() {
         return [
             <Breadcrumb className="mx-auto mt-2">
-                <Breadcrumb.Item href="login">Login</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={()=>this.props.history.push('/login')}>Login</Breadcrumb.Item>
                 <Breadcrumb.Item active>Register</Breadcrumb.Item>
             </Breadcrumb>,
             <Card className="mx-auto mt-3">

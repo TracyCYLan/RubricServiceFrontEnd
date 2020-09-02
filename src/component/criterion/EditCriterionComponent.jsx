@@ -165,7 +165,7 @@ class EditCriterionComponent extends Component {
                     </Modal.Footer>
                 </Modal>,
                 <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                    <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
+                    <Breadcrumb.Item onClick={()=>this.props.history.push('/criteria')}>Criteria</Breadcrumb.Item>
                     <Breadcrumb.Item onClick={this.getCriterion}>View Criterion</Breadcrumb.Item>
                     <Breadcrumb.Item active>Edit Criterion</Breadcrumb.Item>
                 </Breadcrumb>,

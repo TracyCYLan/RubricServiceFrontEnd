@@ -142,7 +142,7 @@ class AddCriterionComponent extends Component {
         }
         return [
             <Breadcrumb className="mx-auto mt-2">
-                <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={()=>this.props.history.push('/criteria')}>Criteria</Breadcrumb.Item>
                 <Breadcrumb.Item active>Add Criterion</Breadcrumb.Item>
             </Breadcrumb>,
             <Card className="mx-auto mt-3">
