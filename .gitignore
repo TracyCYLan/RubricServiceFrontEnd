@@ -2,3 +2,4 @@ node_modules/
 src/component/TestComponent.jsx
 src/Canvas/component/TestCanvasComponent.jsx
 .vs/
+build/
