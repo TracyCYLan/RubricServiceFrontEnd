@@ -14,13 +14,16 @@ class ListCommentsComponent extends Component {
     }
 
     getAssessment(indx) {
-        this.props.history.push('/assessment', { assessmentGroup: this.state.assessmentGroup, index: indx });
+        this.props.history.push({
+            pathname: '/assessment',
+            state: { assessmentGroup: this.state.assessmentGroup, index: indx }
+        });
     }
 
     render() {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item onClick={()=>this.props.history.push('/assessmentgroup')}>{this.state.assessmentGroup.name + " - " + new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => this.props.history.push('/assessmentgroup')}>{this.state.assessmentGroup.name + " - " + new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Breadcrumb.Item>
                 <Breadcrumb.Item active>All Comments</Breadcrumb.Item>
             </Breadcrumb>,
             <Card key="card" className="mx-auto mt-2">
@@ -44,7 +47,7 @@ class ListCommentsComponent extends Component {
                                                         {this.state.assessmentGroup.assessments.map((a, j) =>
                                                             a.comments[indx].content === '' ? '' :
                                                                 <ListGroup.Item key={a.id} action className="text-primary" variant="light"
-                                                                    onClick={() => { this.props.history.push('/assessment', { assessmentGroup: this.state.assessmentGroup, index: j }) }}>
+                                                                    onClick={() => { this.props.history.push({ pathname: '/assessment', state: { assessmentGroup: this.state.assessmentGroup, index: j } }) }}>
                                                                     {a.comments[indx].rating.value} pts - {a.comments[indx].content}
                                                                 </ListGroup.Item>
                                                         )}

@@ -27,7 +27,12 @@ class GetArtifactComponent extends Component {
     render() {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item onClick={() => { this.props.history.push('assessment', { assessmentGroup: this.state.assessmentGroup, index: this.state.index }) }}>Assessment</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => 
+                    { this.props.history.push({
+                        pathname:"/assessment",
+                        state: {assessmentGroup: this.state.assessmentGroup, index: this.state.index}
+                    }) }
+                }>Assessment</Breadcrumb.Item>
                 <Breadcrumb.Item active>File</Breadcrumb.Item>
             </Breadcrumb>,
             <pre key="text">{this.state.text}</pre>

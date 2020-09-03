@@ -40,7 +40,7 @@ class RubricResultsComponent extends Component {
     }
 
     seeCourseChart(name, arr) {
-        this.props.history.push("/rubric-results/compare", { list: arr, name: name, rubric: this.state.rubric })
+        this.props.history.push({ pathname: "/rubric-results/compare", state: { list: arr, name: name, rubric: this.state.rubric } })
     }
 
     onChange = (e) =>
@@ -49,8 +49,8 @@ class RubricResultsComponent extends Component {
     render() {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
-                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubric')}>{this.state.rubric.name}</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => this.props.history.push('/rubric')}>{this.state.rubric.name}</Breadcrumb.Item>
                 <Breadcrumb.Item active>Results of {this.state.rubric.name}</Breadcrumb.Item>
             </Breadcrumb>,
             <Table key="table" border="1" className="mt-2">

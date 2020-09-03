@@ -9,10 +9,10 @@ const oidcConfig = {
     window.location.hash = '';
   },
   authority: 'https://identity.cysun.org',
-  clientId: 'alice-rubric-service-dev',
+  clientId: 'alice-rubric-service',
   responseType: 'code',
   scope: 'openid profile email',
-  redirectUri: 'http://localhost:3000/auth'
+  redirectUri: 'https://alice.cysun.org/tlan/#/auth'
 };
 function OIDCHandler() {
   return (

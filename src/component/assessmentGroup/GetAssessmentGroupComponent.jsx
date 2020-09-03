@@ -250,19 +250,23 @@ class GetAssessmentGroupComponent extends Component {
     render() {
         return (
             [<Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item onClick={()=>this.props.history.push('/assessmentgroups')}>AssessmentGroups</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => this.props.history.push('/assessmentgroups')}>AssessmentGroups</Breadcrumb.Item>
                 <Breadcrumb.Item active>{this.state.assessmentGroup.name}</Breadcrumb.Item>
             </Breadcrumb>,
             <Card key="card" className="mx-auto mt-2">
                 <Card.Body>
                     <Col>
-                        <Button className="float-right" variant="outline-dark" onClick={() => { this.props.history.push('assessments', { assessmentGroup: this.state.assessmentGroup }) }}> View {this.state.assessments.length} Assessments</Button>
+                        <Button className="float-right" variant="outline-dark"
+                            onClick={() => this.props.history.push({
+                                pathname: "/assessments",
+                                state: { assessmentGroup: this.state.assessmentGroup }
+                            })}> View {this.state.assessments.length} Assessments</Button>
                     </Col>
                     <Card.Title as="h3">
                         {this.state.assessmentGroup.name}
                     </Card.Title>
                     <Col>
-                        <Button className="float-right" variant="outline-dark" onClick={() => { this.props.history.push('comments', { assessmentGroup: this.state.assessmentGroup }) }}> View All Comments</Button>
+                        <Button className="float-right" variant="outline-dark" onClick={() => { this.props.history.push({ pathname: 'comments', state: { assessmentGroup: this.state.assessmentGroup } }) }}> View All Comments</Button>
                     </Col>
                     <Card.Subtitle className="mb-2 text-muted">
                         {ReactHtmlParser(this.state.assessmentGroup.description)}

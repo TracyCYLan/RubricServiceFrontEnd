@@ -39,6 +39,7 @@ const NavigationBar = (props) => (
             {window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-dev") ||
                 window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service") ?
                 [
+                    window.sessionStorage.getItem("canvasToken")?"":
                     <Nav key="canvaslogin">
                         <Nav.Link as={Link} to="/redirect">
                             Login to Canvas

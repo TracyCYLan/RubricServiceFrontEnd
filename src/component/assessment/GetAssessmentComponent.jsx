@@ -24,7 +24,10 @@ class GetAssessmentComponent extends Component {
         ApiService.checkDownloadNeeded(a.name.split('.').pop(), a.id).then(
             res => {
                 if (res.config['responseType'] !== 'blob')
-                    this.props.history.push('/download', { fileId: a.id, assessmentGroup: this.state.assessmentGroup, index: this.state.index, text: res.data });
+                    this.props.history.push({
+                        pathname: '/download',
+                        state: { fileId: a.id, assessmentGroup: this.state.assessmentGroup, index: this.state.index, text: res.data }
+                    });
                 else
                     FileDownload(res.data, a.name.split('-')[1]);
             }
@@ -33,7 +36,7 @@ class GetAssessmentComponent extends Component {
     render() {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item onClick={() => { this.props.history.push('assessments', { assessmentGroup: this.state.assessmentGroup }) }}>Assessments</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => { this.props.history.push({ pathname: 'assessments', state: { assessmentGroup: this.state.assessmentGroup } }) }}>Assessments</Breadcrumb.Item>
                 <Breadcrumb.Item active>Assessment</Breadcrumb.Item>
             </Breadcrumb>,
             <Table key="rating-table" bordered responsive="sm" style={{ textAlign: 'center', verticalAlign: 'middle' }}>

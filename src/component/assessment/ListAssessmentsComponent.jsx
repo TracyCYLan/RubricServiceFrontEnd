@@ -14,7 +14,10 @@ class ListAssessmentsComponent extends Component {
     }
 
     getAssessment(indx){
-        this.props.history.push('/assessment',{assessmentGroup: this.state.assessmentGroup,index: indx});
+        this.props.history.push({
+            pathname: '/assessment',
+            state: {assessmentGroup: this.state.assessmentGroup,index: indx}
+        });
     }
 
     render() {

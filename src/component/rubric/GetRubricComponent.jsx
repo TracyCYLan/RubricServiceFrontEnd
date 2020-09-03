@@ -282,7 +282,7 @@ class GetRubricComponent extends Component {
 
     showResults() {
         window.sessionStorage.setItem("rubricId", this.state.id);
-        this.props.history.push('/rubric-results', { rubric: this.state.rubric });
+        this.props.history.push({ pathname: '/rubric-results', state: { rubric: this.state.rubric } });
     }
 
     render() {
@@ -302,7 +302,7 @@ class GetRubricComponent extends Component {
                 </Modal.Footer>
             </Modal>,
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
                 <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
             </Breadcrumb>,
             <Card key="card" className="mx-auto mt-2">
