@@ -1,8 +1,7 @@
 import axios from 'axios';
-const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
-// const API_BASE_URL = 'http://localhost:8080/';
+// const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
+const API_BASE_URL = 'http://localhost:8080/';
 // const crypto = require('crypto');
-
 class ApiService {
 
     fetchRubrics() {
@@ -22,7 +21,11 @@ class ApiService {
     }
 
     addRubric(rubric) {
-        return axios.post(API_BASE_URL + 'rubric', rubric);
+        return axios.post(API_BASE_URL + 'rubric', rubric, { headers: { "access_token": JSON.parse(window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service"))['access_token'] } })
+            .catch((error) => {
+                alert("Sorry, you need to login or your login is expired")
+                window.location.replace("/");
+            });
     }
 
     addExistedCriterionUnderRubric(rubricId, criterionId) {
