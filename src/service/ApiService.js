@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:8080/';
 // const crypto = require('crypto');
 let userObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
-let homepage = '/tlan'; // /#/criteria /tlan
+let homepage = '/tlan/#'; // /#/criteria /tlan
 class ApiService {
     constructor() {
         this.setInterceptors();
@@ -25,6 +25,10 @@ class ApiService {
                 window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service-dev");
                 window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
                 window.location.reload(false);
+            }
+            else if(error.response.status === 403){
+                alert("Sorry, you are not authorized to do this action")
+                window.location.replace(homepage);//go to homepage
             }
             else {
                 alert("error status code: " + error.response.status);
