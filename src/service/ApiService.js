@@ -2,10 +2,39 @@ import axios from 'axios';
 // const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
 const API_BASE_URL = 'http://localhost:8080/';
 // const crypto = require('crypto');
+let userObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+let homepage = '/tlan'; // /#/criteria /tlan
 class ApiService {
+    constructor() {
+        this.setInterceptors();
+    }
+    setInterceptors() {
+        if (userObj)
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + JSON.parse(userObj)['access_token'];
+        else
+            axios.defaults.headers.common['Authorization'] = null;
+        axios.interceptors.response.use(response => {
+            return response;
+        }, error => {
+            if(error.message === 'Network Error'){ //if didn't turn on the spring-boot server 
+                alert('Rubric Server is Down. Please come to visit the site later');
+            }
+            else if (error.response.status === 401) {
+                alert("Sorry, your login is expired")
+                window.location.replace(homepage);//go to homepage
+                window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service-dev");
+                window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+                window.location.reload(false);
+            }
+            else {
+                alert("error status code: " + error.response.status);
+                window.location.replace(homepage);//go to homepage
+            }
+        });
 
+    }
     fetchRubrics() {
-        return axios.get(API_BASE_URL + 'rubric');
+        return axios.get(API_BASE_URL + 'rubric')
     }
 
     fetchRubricById(rubricId) {
@@ -21,11 +50,7 @@ class ApiService {
     }
 
     addRubric(rubric) {
-        return axios.post(API_BASE_URL + 'rubric', rubric, { headers: { "access_token": JSON.parse(window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service"))['access_token'] } })
-            .catch((error) => {
-                alert("Sorry, you need to login or your login is expired")
-                window.location.replace("/");
-            });
+        return axios.post(API_BASE_URL + 'rubric', rubric);
     }
 
     addExistedCriterionUnderRubric(rubricId, criterionId) {
