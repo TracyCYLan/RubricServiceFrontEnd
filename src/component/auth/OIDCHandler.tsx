@@ -12,7 +12,7 @@ const oidcConfig = {
   authority: 'https://identity.cysun.org',
   clientId: 'alice-rubric-service',
   responseType: 'code',
-  scope: 'openid profile email',
+  scope: 'openid profile email rubric-service',
   redirectUri: 'https://alice.cysun.org/tlan/#/auth'
 };
 function OIDCHandler() {
