@@ -1,8 +1,9 @@
 import axios from 'axios';
 // const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
 const API_BASE_URL = 'http://localhost:8080/';
-let aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
-let homepage = '/tlan/#'; // /#/criteria /tlan/#
+const decode = require('jwt-claims');
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+const homepage = '/tlan/#'; // /#/criteria /tlan/#
 class ApiService {
 
     constructor() {
@@ -11,14 +12,18 @@ class ApiService {
 
     setInterceptors() {
         if (aliceObj)
+        {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + JSON.parse(aliceObj)['access_token'];
+            var claims = decode(JSON.parse(aliceObj)['id_token']);
+            axios.defaults.headers.common['alice_sub'] = claims['sub'];
+        }
         else
             axios.defaults.headers.common['Authorization'] = null;
-    
+
         axios.interceptors.response.use(response => {
             return response;
         }, error => {
-            if (error.message === 'Network Error') { //if didn't turn on the spring-boot server 
+            if (error.message === 'Network Error'|| error.response.status === 502) { //if didn't turn on the spring-boot server 
                 alert('Rubric Server is Down. Please come to visit the site later');
             }
             else if (error.response.status === 401) {
