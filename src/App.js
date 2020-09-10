@@ -20,8 +20,6 @@ import GetTagComponent from "./component/tag/GetTagComponent";
 import NavBar from "./component/NavigationBar";
 import RedirectPage from "./component/RedirectPage";
 
-import AddTaskComponent from "./component/task/AddTaskComponent";
-
 import ImportRubricComponent from "./Canvas/component/ImportRubricComponent";
 import ImportCriterionComponent from "./Canvas/component/ImportCriterionComponent";
 import ExportCriterionComponent from "./Canvas/component/ExportCriterionComponent";
@@ -41,7 +39,6 @@ import GetArtifactComponent from "./component/assessment/GetArtifactComponent";
 
 import TestComponent from "./component/TestComponent";
 import TestCanvasComponent from "./Canvas/component/TestCanvasComponent";
-import OIDCRedirectComponent from './component/auth/OIDCRedirectComponent.tsx';
 import OIDCHandler from './component/auth/OIDCHandler.tsx';
 
 function App() {
@@ -65,7 +62,6 @@ function App() {
                         <Route path="/tag" component={GetTagComponent} />
                         <Route path="/test" component={TestComponent}/>
                         <Route path="/test-canvas" component={TestCanvasComponent}/>
-                        <Route path="/add-task" exact component={AddTaskComponent} />
                         <Route path="/import-rubric" exact component={ImportRubricComponent}></Route>
                         <Route path="/import-criterion" exact component={ImportCriterionComponent}></Route>
                         <Route path="/export-criterion" exact component={ExportCriterionComponent}></Route>
@@ -80,7 +76,6 @@ function App() {
                         <Route path="/login" exact component={LoginComponent}></Route>
                         <Route path="/register" exact component={RegisterComponent}></Route>
                         <Route path="/redirect" exact component={RedirectPage}></Route>
-                        <Route path="/auth_google" exact component={OIDCRedirectComponent}></Route>
                         <Route path="/auth" exact component={OIDCHandler}></Route>
                     </Switch>
                 </Layout>
