@@ -1,22 +1,24 @@
 import axios from 'axios';
 // const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
 const API_BASE_URL = 'http://localhost:8080/';
-// const crypto = require('crypto');
-let userObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
-let homepage = '/tlan/#'; // /#/criteria /tlan
+let aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+let homepage = '/tlan/#'; // /#/criteria /tlan/#
 class ApiService {
+
     constructor() {
         this.setInterceptors();
     }
+
     setInterceptors() {
-        if (userObj)
-            axios.defaults.headers.common['Authorization'] = 'Bearer ' + JSON.parse(userObj)['access_token'];
+        if (aliceObj)
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + JSON.parse(aliceObj)['access_token'];
         else
             axios.defaults.headers.common['Authorization'] = null;
+    
         axios.interceptors.response.use(response => {
             return response;
         }, error => {
-            if(error.message === 'Network Error'){ //if didn't turn on the spring-boot server 
+            if (error.message === 'Network Error') { //if didn't turn on the spring-boot server 
                 alert('Rubric Server is Down. Please come to visit the site later');
             }
             else if (error.response.status === 401) {
@@ -26,7 +28,7 @@ class ApiService {
                 window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
                 window.location.reload(false);
             }
-            else if(error.response.status === 403){
+            else if (error.response.status === 403) {
                 alert("Sorry, you are not authorized to do this action")
                 window.location.replace(homepage);//go to homepage
             }
@@ -35,8 +37,8 @@ class ApiService {
                 window.location.replace(homepage);//go to homepage
             }
         });
-
     }
+
     fetchRubrics() {
         return axios.get(API_BASE_URL + 'rubric')
     }
@@ -64,15 +66,19 @@ class ApiService {
     removeCriterionUnderRubric(rubricId, criterionId) {
         return axios.delete(API_BASE_URL + 'rubric/' + rubricId + '/criterion/' + criterionId);
     }
+
     changeCriterionOrderUnderRubric(rubricId, order1, order2) {
         return axios.patch(API_BASE_URL + 'rubric/' + rubricId + '/criteria/' + order1 + '/' + order2);
     }
+
     editRubric(rubric) {
         return axios.patch(API_BASE_URL + 'rubric/' + rubric.id, rubric);
     }
+
     publishRubric(id) {
         return axios.put(API_BASE_URL + 'rubric/publish/' + id);
     }
+
     fetchCriteria() {
         return axios.get(API_BASE_URL + 'rubric/criterion');
     }
@@ -84,6 +90,7 @@ class ApiService {
     searchCriterion(text) {
         return axios.get(API_BASE_URL + 'rubric/criterion/search/text?text=' + text);
     }
+
     deleteCriterion(criterionId) {
         return axios.delete(API_BASE_URL + 'rubric/criterion/delete/' + criterionId);
     }
@@ -99,9 +106,11 @@ class ApiService {
         };
         return axios.post("" + API_BASE_URL + 'rubric/criterion', newCriterion);
     }
+
     publishCriterion(id) {
         return axios.put(API_BASE_URL + 'rubric/criterion/publish/' + id);
     }
+
     editCriterion(criterion, ratings, tags) {
         const newCriterion = {
             id: criterion.id,
@@ -114,6 +123,7 @@ class ApiService {
         };
         return axios.patch(API_BASE_URL + 'rubric/criterion/' + criterion.id, newCriterion);
     }
+
     addRating(rating, criterionId) {
         return axios.post(API_BASE_URL + 'rubric/criterion/' + criterionId + '/rating', rating);
     }
@@ -141,44 +151,27 @@ class ApiService {
     fetchUsers() {
         return axios.get(API_BASE_URL + 'user');
     }
+
     fetchAssociations() {
         return axios.get(API_BASE_URL + 'association');
     }
+
     fetchArtifacts() {
         return axios.get(API_BASE_URL + 'artifact');
     }
-    addTask(task, assessorId, associationId) {
-        return axios.post(API_BASE_URL + 'task/assessor/' + assessorId + '/association/' + associationId, task);
-    }
-    // registerUser(username, password) {
-    //     const hash = crypto.createHash('sha256').update(password).digest('base64');
-    //     let user =
-    //     {
-    //         username: username,
-    //         password: hash
-    //     }
-    //     console.log(JSON.stringify(user));
-    //     return axios.post(API_BASE_URL + 'user/register', user);
-    // }
 
-    // login(username, password) {
-    //     const hash = crypto.createHash('sha256').update(password).digest('base64');
-    //     let user =
-    //     {
-    //         username: username,
-    //         password: hash
-    //     }
-    //     return axios.post(API_BASE_URL + 'user/login', user);
-    // }
     fetchAssessmentGroups() {
         return axios.get(API_BASE_URL + 'assessment/assessmentgroup');
     }
+
     fetchAssessmentGroupById(id) {
         return axios.get(API_BASE_URL + 'assessment/assessmentgroup/' + id);
     }
+
     fetchAssessmentGroupsByRubric(rid) {
         return axios.get(API_BASE_URL + 'assessment/rubric/' + rid + '/assessmentgroup');
     }
+
     searchAssessmentGroup(text) {
         return axios.get(API_BASE_URL + 'assessment/assessmentgroup/search/text?text=' + text);
     }
@@ -191,16 +184,6 @@ class ApiService {
         return axios.get(API_BASE_URL + 'assessment/artifact/' + id);
     }
 
-    // downloadArtifact(id) {
-    //     return axios.get(API_BASE_URL + 'assessment/artifact/' + id + '/download').then(res => {
-    //         let type = res.headers['content-type'];
-    //         if (type === 'text/plain')
-    //             return res;
-    //         else {
-    //             return axios.get(API_BASE_URL + 'assessment/artifact/' + id + '/download', { responseType: 'blob' });
-    //         }
-    //     });
-    // }
     checkDownloadNeeded(ext, id) {
         return axios.get(API_BASE_URL + 'assessment/artifact/download/' + ext).then(res => {
             if (res.data === true)
