@@ -24,7 +24,7 @@ class GetRubricComponent extends Component {
             id: '',
             name: '',
             description: '',
-            loading: true,//in case we haven't finish loading rubric
+            loading: true,//means still loading ... in case we haven't finish loading rubric
             criteria: [],
             message: '',
             published: '',
@@ -75,6 +75,14 @@ class GetRubricComponent extends Component {
         ApiService.fetchRubricById(window.sessionStorage.getItem("rubricId"))
             .then((res) => {
                 let rubric = res.data;
+                let aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+                let temp = false;
+                if (aliceObj) {
+                    var claims = decode(JSON.parse(aliceObj)['id_token']);
+                    var sub = claims['sub'];
+                    if (sub === res.data.creator.sub)
+                        temp = true;
+                }
                 this.setState({
                     loading: false,
                     id: rubric.id,
@@ -83,15 +91,10 @@ class GetRubricComponent extends Component {
                     criteria: rubric.criteria,
                     published: rubric.published,
                     publishDate: rubric.publishDate === null ? '' : new Date(rubric.publishDate).toLocaleDateString('fr-CA'),
-                    rubric: rubric
+                    rubric: rubric,
+                    allowEdit: temp
                 })
-                let aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
-                if (aliceObj) {
-                    var claims = decode(JSON.parse(aliceObj)['id_token']);
-                    var sub = claims['sub'];
-                    if (sub === res.data.creator.sub)
-                        this.setState({ allowEdit: true })
-                }
+                
             });
     }
     copyneditRubric = (id) => {
@@ -335,7 +338,7 @@ class GetRubricComponent extends Component {
                                 name={this.state.name}
                                 description={this.state.description}
                                 publishDate={this.state.publishDate}
-                                published={this.state.published || !this.state.allowEdit} //treat it as published if not allow edit
+                                published={this.state.published || (!this.state.allowEdit&&!this.state.published)} //treat it as published if not allow edit and not publish
                                 preDelete={() => { this.setState({ showModal: true }) }}
                                 editRubric={() => {this.setState({ showEditRubricCard: true })}}
                                 copyneditRubric={() => this.copyneditRubric(this.state.id)}
@@ -352,7 +355,7 @@ class GetRubricComponent extends Component {
                                         <Col>
                                             {this.state.criteria.map(
                                                 c => <ViewCriterionCard key={c.id} index={c.id} name={c.name} description={c.description} ratings={c.ratings}
-                                                    reusable={c.reusable} published={this.state.published || !this.state.allowEdit}
+                                                    reusable={c.reusable} published={this.state.published || (!this.state.allowEdit&&!this.state.published)}
                                                     deleteExistedCriterion={() => this.deleteExistedCriterion(c.id)}
                                                     changeToEditCriterion={this.changeToEditCriterion} ></ViewCriterionCard>)}
                                         </Col>
