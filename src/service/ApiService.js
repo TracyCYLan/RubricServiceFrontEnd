@@ -1,6 +1,6 @@
 import axios from 'axios';
-// const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
-const API_BASE_URL = 'http://localhost:8080/';
+const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
+// const API_BASE_URL = 'http://localhost:8080/';
 const decode = require('jwt-claims');
 const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 const homepage = '/tlan/#'; // /#/criteria /tlan/#
@@ -14,12 +14,14 @@ class ApiService {
         if (aliceObj)
         {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + JSON.parse(aliceObj)['access_token'];
-            var claims = decode(JSON.parse(aliceObj)['id_token']);
-            axios.defaults.headers.common['alice_sub'] = claims['sub'];
+            // var claims = decode(JSON.parse(aliceObj)['id_token']);
+            // axios.defaults.headers.common['alice_sub'] = claims['sub'];
         }
         else
+        {
             axios.defaults.headers.common['Authorization'] = null;
-
+            // axios.defaults.headers.common['alice_sub'] = null;
+        }
         axios.interceptors.response.use(response => {
             return response;
         }, error => {
@@ -27,9 +29,9 @@ class ApiService {
                 alert('Rubric Server is Down. Please come to visit the site later');
             }
             else if (error.response.status === 401) {
+                console.log(error.message)
                 alert("Sorry, your login is expired")
                 window.location.replace(homepage);//go to homepage
-                window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service-dev");
                 window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
                 window.location.reload(false);
             }
@@ -61,7 +63,10 @@ class ApiService {
     }
 
     addRubric(rubric) {
-        return axios.post(API_BASE_URL + 'rubric', rubric);
+        var sub = '';
+        if(aliceObj)
+            sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
+        return axios.post(API_BASE_URL + 'rubric/sub?sub='+sub, rubric);
     }
 
     addExistedCriterionUnderRubric(rubricId, criterionId) {
