@@ -1,7 +1,6 @@
 import axios from 'axios';
-const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
-// const API_BASE_URL = 'http://localhost:8080/';
-const decode = require('jwt-claims');
+// const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
+const API_BASE_URL = 'http://localhost:8080/';
 const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 const homepage = '/tlan/#'; // /#/criteria /tlan/#
 class ApiService {
@@ -14,13 +13,10 @@ class ApiService {
         if (aliceObj)
         {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + JSON.parse(aliceObj)['access_token'];
-            // var claims = decode(JSON.parse(aliceObj)['id_token']);
-            // axios.defaults.headers.common['alice_sub'] = claims['sub'];
         }
         else
         {
             axios.defaults.headers.common['Authorization'] = null;
-            // axios.defaults.headers.common['alice_sub'] = null;
         }
         axios.interceptors.response.use(response => {
             return response;
@@ -63,10 +59,7 @@ class ApiService {
     }
 
     addRubric(rubric) {
-        var sub = '';
-        if(aliceObj)
-            sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
-        return axios.post(API_BASE_URL + 'rubric/sub?sub='+sub, rubric);
+        return axios.post(API_BASE_URL + 'rubric', rubric);
     }
 
     addExistedCriterionUnderRubric(rubricId, criterionId) {
