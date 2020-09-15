@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import { Button, InputGroup, FormControl, Row, Col } from 'react-bootstrap';
 import Posts from "../pageComponents/Posts";
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 class ListCriterionComponent extends Component {
     constructor(props) {
         super(props)
@@ -45,25 +46,34 @@ class ListCriterionComponent extends Component {
         this.props.history.push('/criterion');
     }
     publishCriterion = (id) => {
-        ApiService.publishCriterion(id).then(res =>
-            this.setState({
-                criteria: this.state.criteria.map(c => {
-                    if (c.id === id)
-                        return {...c,publishDate:new Date(),published:true}
-                    return c
+        if (aliceObj) {
+            ApiService.publishCriterion(id).then(res =>
+                this.setState({
+                    criteria: this.state.criteria.map(c => {
+                        if (c.id === id)
+                            return { ...c, publishDate: new Date(), published: true }
+                        return c
+                    })
                 })
-            })
-        );
+            );
+        }
+        else
+            alert('You need to login')
+
     }
     //direct to export page along with criterion Id
     exportPage = (id) => {
-        window.sessionStorage.setItem("criterionId",id);
+        window.sessionStorage.setItem("criterionId", id);
         this.props.history.push('/export-criterion');
     }
 
     addCriterion() {
-        window.sessionStorage.removeItem("criterionId");
-        this.props.history.push('add-criterion');
+        if (aliceObj) {
+            window.sessionStorage.removeItem("criterionId");
+            this.props.history.push('add-criterion');
+        }
+        else
+            alert('You need to login')
     }
     copyneditCriterion(criterion) {
         //send exactly the same content to add-criterion
@@ -82,8 +92,13 @@ class ListCriterionComponent extends Component {
         );
     }
     editCriterion(id) {
-        window.sessionStorage.setItem("criterionId", id);
-        this.props.history.push('/edit-criterion');
+        if(aliceObj)
+        {
+            window.sessionStorage.setItem("criterionId", id);
+            this.props.history.push('/edit-criterion');
+        }
+        else
+            alert('You need to login')
     }
     search = (e) => {
         this.setState({ searchingText: this.state.searchingText.trim() })
@@ -108,41 +123,41 @@ class ListCriterionComponent extends Component {
     render() {
         return (<div key="listcriterionDiv">
             {
-                    [<h2 key="header" className="text-center mt-3">All Criteria</h2>,
-                    <Row key="row">
-                        <Col lg={8} md={10}>
-                            <Button variant="outline-secondary" onClick={() => this.addCriterion()}>Add Criterion</Button>
-                        </Col>
-                        <Col className="mt-1">
-                            <InputGroup>
-                                <InputGroup.Prepend>
-                                    <Button variant="outline-danger" onClick={this.clearSearchBox}>x</Button>
-                                </InputGroup.Prepend>
-                                <FormControl name="searchingText"
-                                    value={this.state.searchingText}
-                                    onChange={this.onChange}
-                                    onKeyPress={event => {
-                                        if (event.key === 'Enter') {
-                                            this.search()
-                                        }
-                                    }} />
-                                <InputGroup.Append>
-                                    <Button variant="outline-secondary" onClick={this.search}>Search</Button>
-                                </InputGroup.Append>
-                            </InputGroup>
-                        </Col>
-                    </Row>,
-                    <Posts key="posts"
-                        posts={this.state.criteria}
-                        loading={this.state.loading}
-                        edit={this.editCriterion}
-                        copynedit={this.copyneditCriterion}
-                        get={this.getCriterion}
-                        getTag={this.getTag}
-                        publishPost={this.publishCriterion}
-                        exportPage={this.exportPage}
-                        category='criterion' />
-                    ] 
+                [<h2 key="header" className="text-center mt-3">All Criteria</h2>,
+                <Row key="row">
+                    <Col lg={8} md={10}>
+                        <Button variant="outline-secondary" onClick={() => this.addCriterion()}>Add Criterion</Button>
+                    </Col>
+                    <Col className="mt-1">
+                        <InputGroup>
+                            <InputGroup.Prepend>
+                                <Button variant="outline-danger" onClick={this.clearSearchBox}>x</Button>
+                            </InputGroup.Prepend>
+                            <FormControl name="searchingText"
+                                value={this.state.searchingText}
+                                onChange={this.onChange}
+                                onKeyPress={event => {
+                                    if (event.key === 'Enter') {
+                                        this.search()
+                                    }
+                                }} />
+                            <InputGroup.Append>
+                                <Button variant="outline-secondary" onClick={this.search}>Search</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    </Col>
+                </Row>,
+                <Posts key="posts"
+                    posts={this.state.criteria}
+                    loading={this.state.loading}
+                    edit={this.editCriterion}
+                    copynedit={this.copyneditCriterion}
+                    get={this.getCriterion}
+                    getTag={this.getTag}
+                    publishPost={this.publishCriterion}
+                    exportPage={this.exportPage}
+                    category='criterion' />
+                ]
             }</div>);
     }
 

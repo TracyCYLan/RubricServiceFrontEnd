@@ -16,6 +16,7 @@ const reorder = (list, startIndex, endIndex) => {
     return result;
 };
 const decode = require('jwt-claims');
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 class GetRubricComponent extends Component {
 
     constructor(props) {
@@ -79,9 +80,12 @@ class GetRubricComponent extends Component {
                 let temp = false;
                 if (aliceObj) {
                     var claims = decode(JSON.parse(aliceObj)['id_token']);
-                    var sub = claims['sub'];
-                    if (sub === res.data.creator.sub)
-                        temp = true;
+                    if(claims)
+                    {
+                        var sub = claims['sub'];
+                        if (res.data && res.data.creator && sub === res.data.creator.sub)
+                            temp = true;
+                    }
                 }
                 this.setState({
                     loading: false,
@@ -98,18 +102,23 @@ class GetRubricComponent extends Component {
             });
     }
     copyneditRubric = (id) => {
-        window.sessionStorage.setItem("rubricId", id);
-        //send exactly the same content to add-rubric
-        this.props.history.push(
-            {
-                pathname: '/add-rubric',
-                state: {
-                    name: this.state.name + "_copy",
-                    description: this.state.description,
-                    criteria: this.state.criteria
+        if(aliceObj)
+        {
+            window.sessionStorage.setItem("rubricId", id);
+            //send exactly the same content to add-rubric
+            this.props.history.push(
+                {
+                    pathname: '/add-rubric',
+                    state: {
+                        name: this.state.name + "_copy",
+                        description: this.state.description,
+                        criteria: this.state.criteria
+                    }
                 }
-            }
-        );
+            );
+        }
+        else
+            alert('You need to login')
     }
     editRubric = (input_name, input_value) => {
         this.setState({
@@ -130,12 +139,17 @@ class GetRubricComponent extends Component {
         })
     }
     publishRubric = (id) => {
-        ApiService.publishRubric(id).then(res =>
-            this.setState({
-                publishDate: new Date().toLocaleDateString('fr-CA'),
-                published: true
-            })
-        );
+        if(aliceObj)
+        {
+            ApiService.publishRubric(id).then(res =>
+                this.setState({
+                    publishDate: new Date().toLocaleDateString('fr-CA'),
+                    published: true
+                })
+            );
+        }
+        else
+            alert('You need to login')
     }
     saveRubric = (e) => {
         e.preventDefault();
@@ -154,11 +168,16 @@ class GetRubricComponent extends Component {
         });
     }
     deleteRubric(id) {
-        ApiService.deleteRubric(id)
+        if(aliceObj)
+        {
+            ApiService.deleteRubric(id)
             .then(res => {
                 this.setState({ message: 'Rubric deleted successfully.' });
                 this.props.history.push('/rubrics');
             })
+        }
+        else
+            alert('You need to login')
     }
     addCriterionBlock = () => {
         if (this.state.newCriterion !== '')

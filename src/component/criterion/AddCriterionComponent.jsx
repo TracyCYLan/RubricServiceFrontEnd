@@ -5,10 +5,16 @@ import Rating from '../RatingCards/RatingEdition';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
 import RichTextEditor from 'react-rte';
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 class AddCriterionComponent extends Component {
 
     constructor(props) {
         super(props);
+        if(!aliceObj)
+        {
+            alert('You need to login')
+            this.props.history.push('/');
+        }
         this.state = {
             name: '',
             description: RichTextEditor.createEmptyValue(),

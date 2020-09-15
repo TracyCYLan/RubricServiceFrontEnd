@@ -15,10 +15,17 @@ const reorder = (list, startIndex, endIndex) => {
 
     return result;
 };
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 class AddRubricComponent extends Component {
 
     constructor(props) {
         super(props);
+        //if not login, we don't let user to access this page: 
+        if(!aliceObj)
+        {
+            alert('You need to login')
+            this.props.history.push('/rubrics');
+        }
         //if we passed default value to this page: (i.e., copy original one to add)
         if (typeof (this.props.location.state) !== 'undefined') {
             this.state = {

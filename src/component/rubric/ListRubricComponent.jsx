@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import { Button, InputGroup, FormControl, Row, Col } from 'react-bootstrap';
 import Posts from "../pageComponents/Posts";
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 class ListRubricComponent extends Component {
 
     constructor(props) {
@@ -47,36 +48,56 @@ class ListRubricComponent extends Component {
     }
 
     editRubric(id) {
-        window.sessionStorage.setItem("rubricId", id);
-        this.props.history.push('/edit-rubric');
+        if(aliceObj)
+        {
+            window.sessionStorage.setItem("rubricId", id);
+            this.props.history.push('/edit-rubric');
+        }
+        else
+            alert('You need to login')
     }
 
     publishRubric = (id) => {
-        ApiService.publishRubric(id).then(res =>
-            this.setState({
-                rubrics: this.state.rubrics.map(r => {
-                    if (r.id === id)
-                        return { ...r, publishDate: new Date(), published:true }
-                    return r
+        if(aliceObj)
+        {
+            ApiService.publishRubric(id).then(res =>
+                this.setState({
+                    rubrics: this.state.rubrics.map(r => {
+                        if (r.id === id)
+                            return { ...r, publishDate: new Date(), published:true }
+                        return r
+                    })
                 })
-            })
-        );
+            );
+        }
+        else
+            alert('You need to login')
     }
     copyneditRubric(rubric) {
         //send exactly the same content to add-rubric
-        this.props.history.push(
-            {
-                pathname: '/add-rubric',
-                state: {
-                    name: rubric.name + "_copy",
-                    description: rubric.description,
+        if(aliceObj)
+        {
+            this.props.history.push(
+                {
+                    pathname: '/add-rubric',
+                    state: {
+                        name: rubric.name + "_copy",
+                        description: rubric.description,
+                    }
                 }
-            }
-        );
+            );
+        }
+        else
+            alert('You need to login')
     }
     addRubric() {
-        window.sessionStorage.removeItem("rubricId");
-        this.props.history.push('/add-rubric');
+        if(aliceObj)
+        {
+            window.sessionStorage.removeItem("rubricId");
+            this.props.history.push('/add-rubric');
+        }
+        else
+            alert('You need to Login');
     }
 
     //direct to export page along with rubric Id

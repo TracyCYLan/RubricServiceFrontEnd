@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-
+const aliceLink = "oidc.user:https://identity.cysun.org:alice-rubric-service";
 const NavigationBar = (props) => (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Navbar.Brand as={Link} to='/'>Rubric Service</Navbar.Brand>
@@ -10,22 +10,25 @@ const NavigationBar = (props) => (
             <Nav className="mr-auto">
                 <NavDropdown title="Criteria" id="collasible-nav-dropdown">
                     <NavDropdown.Item as={Link} to="/criteria">See All Criteria</NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/add-criterion">Add a Criterion</NavDropdown.Item>
+                    {window.sessionStorage.getItem(aliceLink)?<NavDropdown.Item as={Link} to="/add-criterion">Add a Criterion</NavDropdown.Item>:""}
                     <NavDropdown.Divider />
                 </NavDropdown>
                 <NavDropdown title="Rubrics" id="collasible-nav-dropdown">
                     <NavDropdown.Item as={Link} to="/rubrics">See All Rubrics</NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/add-rubric">Add a Rubric</NavDropdown.Item>
+                    {window.sessionStorage.getItem(aliceLink)?<NavDropdown.Item as={Link} to="/add-rubric">Add a Rubric</NavDropdown.Item>:""}
                     <NavDropdown.Divider />
                 </NavDropdown>
                 <NavDropdown title="Tag" id="collasible-nav-dropdown">
                     <NavDropdown.Item as={Link} to="/tags">See All Tags</NavDropdown.Item>
                     <NavDropdown.Divider />
                 </NavDropdown>
-                <NavDropdown title="AssessmentGroups" id="collasible-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/assessmentGroups">See AssessmentGroups</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                </NavDropdown>
+                {
+                    window.sessionStorage.getItem(aliceLink) ?
+                        <NavDropdown title="AssessmentGroups" id="collasible-nav-dropdown">
+                            <NavDropdown.Item as={Link} to="/assessmentGroups">See AssessmentGroups</NavDropdown.Item>
+                            <NavDropdown.Divider />
+                        </NavDropdown>:""
+                }
                 {window.sessionStorage.getItem("canvasToken") ?
                     [
                         <NavDropdown title="Import from Canvas" id="collasible-nav-dropdown" key="importCanvas">
@@ -36,19 +39,17 @@ const NavigationBar = (props) => (
                     ""
                 }
             </Nav>
-            {window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-dev") ||
-                window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service") ?
+            {window.sessionStorage.getItem(aliceLink) ?
                 [
-                    window.sessionStorage.getItem("canvasToken")?"":
-                    <Nav key="canvaslogin">
-                        <Nav.Link as={Link} to="/redirect">
-                            Login to Canvas
+                    window.sessionStorage.getItem("canvasToken") ? "" :
+                        <Nav key="canvaslogin">
+                            <Nav.Link as={Link} to="/redirect">
+                                Login to Canvas
                         </Nav.Link>
-                    </Nav>,
+                        </Nav>,
                     <Nav key="rslogout">
                         <Nav.Link onClick={() => {
-                            window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service-dev");
-                            window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+                            window.sessionStorage.removeItem(aliceLink);
                             window.sessionStorage.removeItem("canvasToken");
                             window.location.reload(false);
                         }

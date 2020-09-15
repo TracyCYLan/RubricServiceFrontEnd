@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Card, Button } from 'react-bootstrap';
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 class ViewRubricCard extends Component {
 
     constructor(props) {
@@ -36,11 +37,15 @@ class ViewRubricCard extends Component {
     }
     publishRubric = () => {
         if (this.state.type === 'view') {
-            this.setState({
-                publishDate: new Date().toLocaleDateString('fr-CA'),
-                published: true
-            })
-            this.state.publishRubric();
+            if (aliceObj) {
+                this.setState({
+                    publishDate: new Date().toLocaleDateString('fr-CA'),
+                    published: true
+                })
+                this.state.publishRubric();
+            }
+            else
+                alert('You need to login')
         }
     }
 
