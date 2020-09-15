@@ -138,15 +138,20 @@ class GetRubricComponent extends Component {
             })
         })
     }
-    publishRubric = (id) => {
+    publishRubric = (id,allowEdit) => {
         if(aliceObj)
         {
-            ApiService.publishRubric(id).then(res =>
-                this.setState({
-                    publishDate: new Date().toLocaleDateString('fr-CA'),
-                    published: true
-                })
-            );
+            if(allowEdit)
+            {
+                ApiService.publishRubric(id).then(res =>
+                    this.setState({
+                        publishDate: new Date().toLocaleDateString('fr-CA'),
+                        published: true
+                    })
+                );
+            }
+            else
+                alert('You are not authorized to do this action')
         }
         else
             alert('You need to login')
@@ -361,7 +366,8 @@ class GetRubricComponent extends Component {
                                 preDelete={() => { this.setState({ showModal: true }) }}
                                 editRubric={() => {this.setState({ showEditRubricCard: true })}}
                                 copyneditRubric={() => this.copyneditRubric(this.state.id)}
-                                publishRubric={() => this.publishRubric(this.state.id)}
+                                publishRubric={() => this.publishRubric(this.state.id,this.state.allowEdit)}
+                                allowEdit ={this.state.allowEdit}
                                 showResults={() => this.showResults(this.state.id)}
                                 type='view'>
                             </ViewRubricCard>

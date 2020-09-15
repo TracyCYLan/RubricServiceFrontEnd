@@ -25,6 +25,7 @@ class ViewRubricCard extends Component {
                 editRubric: props.editRubric,
                 copyneditRubric: props.copyneditRubric,
                 publishRubric: props.publishRubric,
+                allowEdit: props.allowEdit,
                 type: props.type,
                 showResults: props.showResults
             }
@@ -38,11 +39,16 @@ class ViewRubricCard extends Component {
     publishRubric = () => {
         if (this.state.type === 'view') {
             if (aliceObj) {
-                this.setState({
-                    publishDate: new Date().toLocaleDateString('fr-CA'),
-                    published: true
-                })
-                this.state.publishRubric();
+                if(this.state.allowEdit)
+                {
+                    this.setState({
+                        publishDate: new Date().toLocaleDateString('fr-CA'),
+                        published: true
+                    })
+                    this.state.publishRubric();
+                }
+                else
+                    alert('You are not authorized to do this action')
             }
             else
                 alert('You need to login')

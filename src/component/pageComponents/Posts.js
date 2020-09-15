@@ -4,6 +4,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+const decode = require('jwt-claims');
 const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publishPost, exportPage }) => {
     if (loading) {
         return <h2>Loading...</h2>;
@@ -30,7 +32,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             <Col key="2" className="ml-2">
                                 {row.tags.map(
                                     function (tag) {
-                                        return ([' ', <Button key={tag.id}className="mt-1" variant="secondary" size="sm" onClick={() => getTag(tag.id)}>{tag.value}</Button>])
+                                        return ([' ', <Button key={tag.id} className="mt-1" variant="secondary" size="sm" onClick={() => getTag(tag.id)}>{tag.value}</Button>])
                                     }
                                 )}
                             </Col>]
@@ -46,16 +48,26 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         formatter: (cellContent, row) => {
                             return <span className="text-info"
                                 style={{ fontSize: "20px", fontFamily: "sans-serif" }}>
-                                {row.publishDate === null ? 
-                                <Button variant="info" style={{ width: '80%', height: '50%' }}
-                                onClick={() => publishPost(row.id)}>publish</Button> :
-                                new Date(row.publishDate).toLocaleDateString()}
+                                {row.publishDate === null ?
+                                    <Button variant="info" style={{ width: '80%', height: '50%' }}
+                                    onClick={() => {
+                                        if (aliceObj && decode(JSON.parse(aliceObj)['id_token'])) {
+                                            var sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
+                                            if (row.creator && sub !== row.creator.sub)
+                                                    alert('You are not authorized')
+                                            else
+                                                publishPost(row.id)
+                                        }
+                                        else
+                                            alert('You need to login')
+                                    }}>publish</Button> :
+                                    new Date(row.publishDate).toLocaleDateString()}
                             </span>
                         },
                         sort: false
                     },
                     {
-                        dataField:'operation',
+                        dataField: 'operation',
                         text: 'Operation',
                         headerStyle: (colum, colIndex) => {
                             return { width: '10%', textAlign: 'center', verticalAlign: 'middle' };
@@ -67,25 +79,23 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         }
                     },
                     {
-                        dataField:'export',
+                        dataField: 'export',
                         text: 'Export to Canvas',
                         headerStyle: (colum, colIndex) => {
                             return { width: '10%', textAlign: 'center', verticalAlign: 'middle' };
                         },
                         formatter: (cellContent, row) => {
                             return <div>
-                                <Button variant="info" style={{ width: '80%', height: '50%' }} 
-                                onClick={function(){
-                                    if(row.published)
-                                    {
-                                        exportPage(row.id)
-                                    }
-                                    else
-                                    {
-                                        alert("You need to publish the rubric before export it");
-                                    }
-                                }}>Export</Button>
-                                </div>
+                                <Button variant="info" style={{ width: '80%', height: '50%' }}
+                                    onClick={function () {
+                                        if (row.published) {
+                                            exportPage(row.id)
+                                        }
+                                        else {
+                                            alert("You need to publish the rubric before export it");
+                                        }
+                                    }}>Export</Button>
+                            </div>
                         },
                         hidden: !window.sessionStorage.getItem("canvasToken")
                     }
@@ -130,14 +140,24 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         },
                         formatter: (cellContent, row) => {
                             return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>
-                                {row.publishDate === null  ?
+                                {row.publishDate === null ?
                                     <Button variant="info" style={{ width: '80%', height: '50%' }}
-                                        onClick={() => publishPost(row.id)}>publish</Button> :
+                                        onClick={() => {
+                                            if (aliceObj && decode(JSON.parse(aliceObj)['id_token'])) {
+                                                var sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
+                                                if (row.creator && sub !== row.creator.sub)
+                                                        alert('You are not authorized')
+                                                else
+                                                    publishPost(row.id)
+                                            }
+                                            else
+                                                alert('You need to login')
+                                        }}>publish</Button> :
                                     new Date(row.publishDate).toLocaleDateString()}
                             </span>
                         },
                         sort: true
-                    }, 
+                    },
                     {
                         dataField: 'lastUpdatedDate',
                         text: 'Last Update Date',
@@ -150,28 +170,26 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         sort: true
                     },
                     {
-                        dataField:'export',
+                        dataField: 'export',
                         text: 'Export to Canvas',
                         formatter: (cellContent, row) => {
                             return <div>
-                                <Button variant="info" style={{ width: '80%', height: '50%' }} 
-                                onClick={function(){
-                                    if(row.published)
-                                    {
-                                        exportPage(row.id)
-                                    }
-                                    else
-                                    {
-                                        alert("You need to publish the rubric before export it");
-                                    }
-                                }}
+                                <Button variant="info" style={{ width: '80%', height: '50%' }}
+                                    onClick={function () {
+                                        if (row.published) {
+                                            exportPage(row.id)
+                                        }
+                                        else {
+                                            alert("You need to publish the rubric before export it");
+                                        }
+                                    }}
                                 >Export</Button>
-                                </div>
+                            </div>
                         },
                         hidden: !window.sessionStorage.getItem("canvasToken")
                     }
-                    
-                ]}
+
+                    ]}
                     defaultSorted={[{
                         dataField: 'lastUpdatedDate',
                         order: 'desc'
@@ -201,10 +219,10 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             return <span className="text-primary"
                                 style={{ cursor: "pointer", fontSize: "22px", fontFamily: "sans-serif" }}
                                 onClick={() => get(row.id)}>
-                                {row.rubric.name+" - "+row.name}</span>
+                                {row.rubric.name + " - " + row.name}</span>
                         },
                         sort: true
-                    }, 
+                    },
                     {
                         dataField: 'assessDate',
                         text: 'Assess Date',
@@ -213,14 +231,14 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         },
                         formatter: (cellContent, row) => {
                             return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>
-                                {row.assessDate === null  ?
+                                {row.assessDate === null ?
                                     '' :
                                     new Date(row.assessDate).toLocaleDateString()}
                             </span>
                         },
                         sort: true
                     }
-                ]}
+                    ]}
                     defaultSorted={[{
                         dataField: 'assessDate',
                         order: 'desc'
