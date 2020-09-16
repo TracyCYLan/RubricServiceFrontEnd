@@ -9,7 +9,9 @@ class ExportRubricComponent extends Component {
             message: null,
             courseId: '',
             courses: [],
-            rubricId: window.sessionStorage.getItem('rubricId')
+            rubricId: window.sessionStorage.getItem('rubricId'),
+            assignmentName: '',
+            needAssignment: false
         }
         this.loadCourses = this.loadCourses.bind(this);
         this.exportRubric = this.exportRubric.bind(this);
@@ -34,16 +36,18 @@ class ExportRubricComponent extends Component {
     exportRubric = (e) => {
         e.preventDefault();
         ApiService.exportRubric(this.state.rubricId, this.state.courseId,
-            window.sessionStorage.getItem("canvasToken")).then(res => {
+            window.sessionStorage.getItem("canvasToken"), this.state.needAssignment?this.state.assignmentName:'').then(res => {
                 window.sessionStorage.removeItem('rubricId');
                 this.props.history.push('/');
             })
     }
-    changeCourse = (e) =>{
+    changeCourse = (e) => {
         this.setState({
             courseId: e.target.value
         });
     }
+    onChange = (e) =>
+        this.setState({ [e.target.name]: e.target.value });
     render() {
         return <Card className="mx-auto mt-3">
             <Card.Body>
@@ -62,6 +66,24 @@ class ExportRubricComponent extends Component {
                             </Form.Control>
                         </Col>
                     </Form.Group>
+                    <Form.Group as={Row} controlId="assignmentSelect">
+                        <Col><Form.Check
+                            custom
+                            type='checkbox'
+                            id='checkbox1'
+                            label='Check if want to create assignment'
+                            onClick={() => this.setState({ needAssignment: !this.state.needAssignment })}
+                        /></Col>
+                    </Form.Group>
+                    {
+                        this.state.needAssignment ?
+                            <Form.Group as={Row} controlId="assignmentname">
+                                <Form.Label column md={2}>Assignment Name</Form.Label>
+                                <Col md={10}>
+                                    <Form.Control type="text" placeholder="Enter name" name="assignmentName" value={this.state.assignmentName} onChange={this.onChange} />
+                                </Col>
+                            </Form.Group> : ""
+                    }
                     {this.state.courseId === '' ? '' : <Button onClick={this.exportRubric}>Export</Button>}
                 </Form>
             </Card.Body>
