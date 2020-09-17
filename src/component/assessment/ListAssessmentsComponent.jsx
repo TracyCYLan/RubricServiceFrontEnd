@@ -1,6 +1,6 @@
 //list all assessments under certain assessmentGroup
 import React, { Component } from 'react'
-import {Breadcrumb, ListGroup} from 'react-bootstrap';
+import { Breadcrumb, ListGroup, Alert } from 'react-bootstrap';
 class ListAssessmentsComponent extends Component {
     constructor(props) {
         super(props)
@@ -13,23 +13,41 @@ class ListAssessmentsComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    getAssessment(indx){
+    getAssessment(aid) {
+        window.sessionStorage.setItem("assessmentId",aid);
         this.props.history.push({
             pathname: '/assessment',
-            state: {assessmentGroup: this.state.assessmentGroup,index: indx}
+            state: { assessmentGroup: this.state.assessmentGroup}
         });
     }
 
     render() {
         return [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
-                <Breadcrumb.Item onClick={()=>this.props.history.push('/assessmentgroup')}>{this.state.assessmentGroup.name+" - "+new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Breadcrumb.Item>
+                <Breadcrumb.Item onClick={() => this.props.history.push('/assessmentgroup')}>{this.state.assessmentGroup.name + " - " + new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Breadcrumb.Item>
                 <Breadcrumb.Item active>Assessments</Breadcrumb.Item>
             </Breadcrumb>,
+            <div key="alert1">
+                {this.state.assessmentGroup.ins_count === 0 ? "" :
+                    <Alert key='ins' variant='primary'>
+                        Instructor Evaluations
+                </Alert>}
+            </div>,
             <ListGroup key="list">
-                {this.state.assessmentGroup.assessments.map((a,indx)=>
-                    <ListGroup.Item key={a.id} action className="text-primary" onClick={()=>this.getAssessment(indx)}>Assessment {indx+1}</ListGroup.Item>)}
-            </ListGroup>];
+                {this.state.assessmentGroup.assessments.filter(a=>a.type === 'grading').map((a, indx) =>
+                    <ListGroup.Item key={a.id} action className="text-primary" onClick={() => this.getAssessment(a.id)}>Assessment {indx + 1}</ListGroup.Item>)}
+            </ListGroup>,
+            <div key="alert2">
+                {this.state.assessmentGroup.peer_count === 0 ? "" :
+                    <Alert key='ins' variant='primary'>
+                        Peer Evaluations
+            </Alert>}
+            </div>,
+            <ListGroup key="list2">
+                {this.state.assessmentGroup.assessments.filter(a=>a.type === 'peer_review').map((a, indx) =>
+                    <ListGroup.Item key={a.id} action className="text-primary" onClick={() => this.getAssessment(a.id)}>Assessment {indx + 1}</ListGroup.Item>)}
+            </ListGroup>,
+        ];
     }
 
 }
