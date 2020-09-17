@@ -57,7 +57,7 @@ class EditCriterionCard extends Component {
         //assume maximum rating num till 21
         if (ratings.length >= 21)
             return;
-        ratings.push({ id: this.state.ratingCount, description: '', value: '' });
+        ratings.push({ id: this.state.ratingCount, description: '', value: 0 });
         let num = this.state.ratingCount.substr(1);
         this.setState({ ratingCount: 'r' + (+num + 1) });
         this.setState({
