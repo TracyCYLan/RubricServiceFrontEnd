@@ -7,7 +7,6 @@ class GetArtifactComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            index: this.props.location.state.index,//for assessment
             assessmentGroup: this.props.location.state.assessmentGroup,
             fileId: this.props.location.state.fileId,
             text: this.props.location.state.text
@@ -15,11 +14,6 @@ class GetArtifactComponent extends Component {
     }
 
     componentDidMount() {
-        // ApiService.fetchArtifactById(this.state.fileId).then((res) => {
-        //     this.setState({
-        //         text: res.data
-        //     })
-        // })
     }
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
@@ -30,7 +24,7 @@ class GetArtifactComponent extends Component {
                 <Breadcrumb.Item onClick={() => 
                     { this.props.history.push({
                         pathname:"/assessment",
-                        state: {assessmentGroup: this.state.assessmentGroup, index: this.state.index}
+                        state: {assessmentGroup: this.state.assessmentGroup}
                     }) }
                 }>Assessment</Breadcrumb.Item>
                 <Breadcrumb.Item active>File</Breadcrumb.Item>
