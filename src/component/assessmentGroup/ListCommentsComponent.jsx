@@ -41,29 +41,16 @@ class ListCommentsComponent extends Component {
                                     <tr key={c.id}>
                                         <th>{c.name}</th>
                                         <td>
-                                            <Table>
-                                                <tbody>
-                                                    <ListGroup key="list" variant="flush">
-                                                        {this.state.assessmentGroup.assessments.map((a, j) =>
-                                                            a.comments[indx].content === '' ? '' :
-                                                                <ListGroup.Item key={a.id} action className="text-primary" variant="light"
-                                                                    onClick={() => { this.props.history.push({ pathname: '/assessment', state: { assessmentGroup: this.state.assessmentGroup, index: j } }) }}>
-                                                                    {a.comments[indx].rating.value} pts - {a.comments[indx].content}
-                                                                </ListGroup.Item>
-                                                        )}
+                                            <ListGroup key="list" variant="flush">
+                                                {this.state.assessmentGroup.assessments.map((a, j) =>
+                                                    a.comments[indx].content === '' ? '' :
+                                                        <ListGroup.Item key={a.id} action className="text-primary" variant="light"
+                                                            onClick={() => { this.props.history.push({ pathname: '/assessment', state: { assessmentGroup: this.state.assessmentGroup, index: j } }) }}>
+                                                            {a.comments[indx].rating.value} pts - {a.comments[indx].content}
+                                                        </ListGroup.Item>
+                                                )}
 
-                                                    </ListGroup>
-                                                    {/* {
-                                                        this.state.assessmentGroup.assessments.map((a) =>
-                                                            a.comments[indx].content === '' ? '' :
-                                                                <tr>
-                                                                    <td>{a.comments[indx].rating.value} pts</td>
-                                                                    <td>{a.comments[indx].content}</td>
-                                                                </tr>
-                                                        )
-                                                    } */}
-                                                </tbody>
-                                            </Table>
+                                            </ListGroup>
                                         </td>
                                     </tr>
                                 )
