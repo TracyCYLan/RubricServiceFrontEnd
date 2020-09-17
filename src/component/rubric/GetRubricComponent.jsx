@@ -22,7 +22,7 @@ class GetRubricComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: '',
+            id: window.sessionStorage.getItem("rubricId"),
             name: '',
             description: '',
             loading: true,//means still loading ... in case we haven't finish loading rubric
@@ -30,7 +30,7 @@ class GetRubricComponent extends Component {
             message: '',
             published: '',
             publishDate: '',
-            newCriterion: '',//new criterion we add by pressing add btn
+            newCriterion: '',//new criterion we add by pressing addBtn
             suggestionCriteria: [],//for autocomplete
             resetText: true, //will change its value everytime we click import button. this prop will help us to clear the autocomplete field
             openAutoComplete: false,//open auto complete or not

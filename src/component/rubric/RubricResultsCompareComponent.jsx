@@ -8,9 +8,6 @@ class RubricResultsCompareComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assessmentGroups: this.props.location.state.list.sort((a, b) => (new Date(a.assessDate) - new Date(b.assessDate))),
-            rubric: this.props.location.state.rubric,
-            name: this.props.location.state.name,//assessmentGroup name
             InsChartOptionsAvg: '',
             PeerChartOptionsAvg: '',
             InsChartOptionsStacked: '',
@@ -22,7 +19,20 @@ class RubricResultsCompareComponent extends Component {
     }
 
     componentDidMount() {
-        this.countRating();
+        if (typeof (this.props.location.state) !== 'undefined') {
+            this.setState({
+                assessmentGroups: this.props.location.state.list.sort((a, b) => (new Date(a.assessDate) - new Date(b.assessDate))),
+                rubric: this.props.location.state.rubric,
+                name: this.props.location.state.name,//assessmentGroup name
+            },() => {
+                this.countRating();
+            });
+        }
+        else //we can only access this page if previous page is /rubric-results
+        {
+            this.props.history.push('/rubric-results')
+        }
+        
     }
     countRating() {
         let newAssessmentGroups = [], years = [];
@@ -374,7 +384,7 @@ class RubricResultsCompareComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
 
     render() {
-        return [
+        return this.state.assessmentGroups===undefined?'':[
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                 <Breadcrumb.Item onClick={() => this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
                 <Breadcrumb.Item onClick={() => this.props.history.push('/rubric')}>{this.state.rubric.name}</Breadcrumb.Item>

@@ -10,12 +10,26 @@ class GetAssessmentComponent extends Component {
         super(props);
         this.state = {
             assessment: '',
-            assessmentGroup: this.props.location.state.assessmentGroup,
-            criteria: this.props.location.state.assessmentGroup.rubric.criteria
+            assessmentGroup: '',
+            criteria: []
         }
     }
 
     componentDidMount() {
+        if (typeof (this.props.location.state) === 'undefined') {
+            ApiService.fetchAssessmentGroupById(window.sessionStorage.getItem("assessmentGroupId")).then(
+                res => this.setState({
+                    assessmentGroup: res.data,
+                    criteria: res.data.rubric.criteria
+                })
+            )
+        }
+        else {
+            this.setState({
+                assessmentGroup: this.props.location.state.assessmentGroup,
+                criteria: this.props.location.state.assessmentGroup.rubric.criteria
+            })
+        }
         ApiService.fetchAssessmentById(window.sessionStorage.getItem("assessmentId"))
             .then((res) => {
                 this.setState({ assessment: res.data })
@@ -38,43 +52,39 @@ class GetAssessmentComponent extends Component {
         )
     }
     render() {
-        console.log(this.state.assessment)
-        return [
+        return this.state.assessment === ''|| this.state.assessmentGroup==='' ? '' : [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                 <Breadcrumb.Item onClick={() => { this.props.history.push({ pathname: 'assessments', state: { assessmentGroup: this.state.assessmentGroup } }) }}>Assessments</Breadcrumb.Item>
                 <Breadcrumb.Item active>Assessment</Breadcrumb.Item>
             </Breadcrumb>,
-            <div key="assessmentTable">
-                {this.state.assessment === '' ? '' : [
-                    <Table key="rating-table" bordered responsive="sm" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                        <thead>
-                            <tr>
-                                <th>Criterion Name</th>
-                                <th>Points</th>
-                                <th>Comments</th>
+            <Table key="rating-table" bordered responsive="sm" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                <thead>
+                    <tr>
+                        <th>Criterion Name</th>
+                        <th>Points</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        this.state.criteria.map((c, indx) =>
+                            <tr key={c.id + indx}>
+                                <td>{c.name}</td>
+                                {this.state.assessment.comments[indx] === undefined ? [<td>ungraded</td>, <td></td>] :
+                                    [<td>{this.state.assessment.comments[indx].rating.value} points</td>,
+                                    <td>{this.state.assessment.comments[indx].content}</td>]}
                             </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.state.criteria.map((c, indx) =>
-                                    <tr key={c.id + indx}>
-                                        <td>{c.name}</td>
-                                        {this.state.assessment.comments[indx] === undefined ? [<td>ungraded</td>, <td></td>] :
-                                            [<td>{this.state.assessment.comments[indx].rating.value} points</td>,
-                                            <td>{this.state.assessment.comments[indx].content}</td>]}
-                                    </tr>
-                                )
-                            }
-                        </tbody>
-                    </Table>,
-                    this.state.assessment.artifacts.length === 0 ? "" :
-                        [<span key="list-title">Files: </span>,
-                        <ListGroup key="list">
-                            {this.state.assessment.artifacts.map((a, indx) =>
-                                <ListGroup.Item key={a.id} action className="text-primary" onClick={() => this.download(a)}>{a.name.split('-')[1]}</ListGroup.Item>)}
-                        </ListGroup>]
-                ]}
-            </div>
+                        )
+                    }
+                </tbody>
+            </Table>,
+            this.state.assessment.artifacts.length === 0 ? "" :
+                [<span key="list-title">Files: </span>,
+                <ListGroup key="list">
+                    {this.state.assessment.artifacts.map((a, indx) =>
+                        <ListGroup.Item key={a.id} action className="text-primary" onClick={() => this.download(a)}>{a.name.split('-')[1]}</ListGroup.Item>)}
+                </ListGroup>]
+
         ];
     }
 

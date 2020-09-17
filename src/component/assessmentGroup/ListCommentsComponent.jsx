@@ -1,27 +1,39 @@
 //list all assessments under certain assessmentGroup
 import React, { Component } from 'react'
 import { Breadcrumb, Card, Table, ListGroup } from 'react-bootstrap';
+import ApiService from '../../service/ApiService';
 class ListCommentsComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            assessmentGroup: this.props.location.state.assessmentGroup
+            assessmentGroup: ''
         }
+        this.getAssessment = this.getAssessment.bind(this);
     }
 
+    componentDidMount() {
+        if (typeof (this.props.location.state) === 'undefined') {
+            ApiService.fetchAssessmentGroupById(window.sessionStorage.getItem("assessmentGroupId")).then(
+                res => this.setState({ assessmentGroup: res.data })
+            )
+        }
+        else {
+            this.setState({ assessmentGroup: this.props.location.state.assessmentGroup })
+        }
+    }
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
-
-    getAssessment(indx) {
-        this.props.history.push({
-            pathname: '/assessment',
-            state: { assessmentGroup: this.state.assessmentGroup, index: indx }
-        });
+    getAssessment(id) {
+        window.sessionStorage.setItem("assessmentId",id);
+        this.props.history.push(
+            {
+                pathname: '/assessment',
+                state: { assessmentGroup: this.state.assessmentGroup }
+            })
     }
-
     render() {
-        return [
+        return this.state.assessmentGroup === '' ? '' : [
             <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
                 <Breadcrumb.Item onClick={() => this.props.history.push('/assessmentgroup')}>{this.state.assessmentGroup.name + " - " + new Date(this.state.assessmentGroup.assessDate).toLocaleDateString()}</Breadcrumb.Item>
                 <Breadcrumb.Item active>All Comments</Breadcrumb.Item>
@@ -45,7 +57,7 @@ class ListCommentsComponent extends Component {
                                                 {this.state.assessmentGroup.assessments.map((a, j) =>
                                                     a.comments[indx].content === '' ? '' :
                                                         <ListGroup.Item key={a.id} action className="text-primary" variant="light"
-                                                            onClick={() => { this.props.history.push({ pathname: '/assessment', state: { assessmentGroup: this.state.assessmentGroup, index: j } }) }}>
+                                                            onClick={() => this.getAssessment(a.id)}>
                                                             {a.comments[indx].rating.value} pts - {a.comments[indx].content}
                                                         </ListGroup.Item>
                                                 )}
