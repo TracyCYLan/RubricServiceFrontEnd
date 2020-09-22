@@ -1,6 +1,6 @@
 import axios from 'axios';
-// const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
-const API_BASE_URL = 'http://localhost:8080/';
+const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/';
+// const API_BASE_URL = 'http://localhost:8080/';
 const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 const homepage = '/tlan/#'; // /#/criteria /tlan/#
 class ApiService {
@@ -26,7 +26,7 @@ class ApiService {
             }
             else if (error.response.status === 401) {
                 console.log(error.message)
-                alert("Sorry, your login is expired")
+                alert("Sorry, your login is expired!")
                 window.location.replace(homepage);//go to homepage
                 window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
                 window.location.reload(false);
