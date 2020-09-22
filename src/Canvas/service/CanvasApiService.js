@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/canvas/';
-// const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/canvas/';
+// const API_BASE_URL = 'http://localhost:8080/canvas/';
+const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/canvas/';
 const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
 const homepage = '/tlan/#'; // /#/criteria /tlan/#
 class CanvasApiService {
@@ -73,9 +73,15 @@ class CanvasApiService {
             outcome_group_id + '/token?token=' + token);
     }
 
-    exportRubric(rubricId, courseId, token, assignmentName) {
-        return axios.post(API_BASE_URL + 'rubric/' + rubricId +
-            '/export/course/' + courseId + '/token?token=' + token,{'name':assignmentName});
+    exportRubric(rubricId, courseId, token, type, value) {
+        if (type === 'name') { //create new assignment (or simply export rubric)
+            return axios.post(API_BASE_URL + 'rubric/' + rubricId +
+                '/export/course/' + courseId + '/token?token=' + token, { 'name': value });
+        }
+        else if (type === 'id') { //bind with existing assignment
+            return axios.post(API_BASE_URL + 'rubric/' + rubricId +
+                '/export/course/' + courseId + '/token?token=' + token, { 'id': value });
+        }
     }
 
     fetchAssignments(courseId, token) {
