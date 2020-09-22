@@ -22,13 +22,11 @@ const NavigationBar = (props) => (
                     <NavDropdown.Item as={Link} to="/tags">See All Tags</NavDropdown.Item>
                     <NavDropdown.Divider />
                 </NavDropdown>
-                {
-                    window.sessionStorage.getItem(aliceLink) ?
+                {window.sessionStorage.getItem(aliceLink) ?
                         <NavDropdown title="AssessmentGroups" id="collasible-nav-dropdown">
                             <NavDropdown.Item as={Link} to="/assessmentGroups">See AssessmentGroups</NavDropdown.Item>
                             <NavDropdown.Divider />
-                        </NavDropdown>:""
-                }
+                        </NavDropdown>:""}
                 {window.sessionStorage.getItem("canvasToken") ?
                     [
                         <NavDropdown title="Import from Canvas" id="collasible-nav-dropdown" key="importCanvas">
