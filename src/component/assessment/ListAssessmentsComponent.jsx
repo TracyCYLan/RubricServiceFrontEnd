@@ -50,7 +50,7 @@ class ListAssessmentsComponent extends Component {
             </ListGroup>,
             <div key="alert2">
                 {this.state.assessmentGroup.peer_count === 0 ? "" :
-                    <Alert key='ins' variant='primary'>
+                    <Alert key='ins' variant='primary' className='mt-4'>
                         Peer Evaluations
             </Alert>}
             </div>,
