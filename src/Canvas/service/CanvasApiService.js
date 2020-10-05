@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // const API_BASE_URL = 'http://localhost:8080/canvas/';
 const API_BASE_URL = 'https://alice.cysun.org/alice-rubrics/canvas/';
-const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
 const homepage = '/tlan/#'; // /#/criteria /tlan/#
 class CanvasApiService {
     constructor() {
@@ -25,7 +25,7 @@ class CanvasApiService {
                 console.log(error.message)
                 alert("Sorry, your login is expired")
                 window.location.replace(homepage);//go to homepage
-                window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+                window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
                 window.location.reload(false);
             }
             else if (error.response.status === 403) {

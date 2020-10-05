@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-const aliceLink = "oidc.user:https://identity.cysun.org:alice-rubric-service";
+const aliceLink = "oidc.user:https://identity.cysun.org:alice-rubric-service-spa";
 const NavigationBar = (props) => (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Navbar.Brand as={Link} to='/'>Rubric Service</Navbar.Brand>

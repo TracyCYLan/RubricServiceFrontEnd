@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Card, Button } from 'react-bootstrap';
-const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
 class ViewRubricCard extends Component {
 
     constructor(props) {

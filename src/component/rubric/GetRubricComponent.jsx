@@ -16,7 +16,7 @@ const reorder = (list, startIndex, endIndex) => {
     return result;
 };
 const decode = require('jwt-claims');
-const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
 class GetRubricComponent extends Component {
 
     constructor(props) {
@@ -76,7 +76,7 @@ class GetRubricComponent extends Component {
         ApiService.fetchRubricById(window.sessionStorage.getItem("rubricId"))
             .then((res) => {
                 let rubric = res.data;
-                let aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+                let aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
                 let temp = false;
                 if (aliceObj) {
                     var claims = decode(JSON.parse(aliceObj)['id_token']);

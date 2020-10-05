@@ -15,7 +15,7 @@ const reorder = (list, startIndex, endIndex) => {
 
     return result;
 };
-const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service");
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
 class AddRubricComponent extends Component {
 
     constructor(props) {
