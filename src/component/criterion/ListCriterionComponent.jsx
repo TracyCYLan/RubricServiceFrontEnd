@@ -77,19 +77,24 @@ class ListCriterionComponent extends Component {
     }
     copyneditCriterion(criterion) {
         //send exactly the same content to add-criterion
-        this.props.history.push(
-            {
-                pathname: '/add-criterion',
-                state: {
-                    name: criterion.name + "_copy",
-                    description: criterion.description,
-                    ratings: criterion.ratings,
-                    published: criterion.published,
-                    publishDate: criterion.publishDate,
-                    tags: criterion.tags.map(t => t.value)//send only string array
+        if(aliceObj)
+        {
+            this.props.history.push(
+                {
+                    pathname: '/add-criterion',
+                    state: {
+                        name: criterion.name + "_copy",
+                        description: criterion.description,
+                        ratings: criterion.ratings,
+                        published: criterion.published,
+                        publishDate: criterion.publishDate,
+                        tags: criterion.tags.map(t => t.value)//send only string array
+                    }
                 }
-            }
-        );
+            );
+        }
+        else
+            alert('You need to login')
     }
     editCriterion(id) {
         if(aliceObj)
