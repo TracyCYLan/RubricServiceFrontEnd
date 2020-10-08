@@ -75,7 +75,18 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         formatter: (cellContent, row) => {
                             return row.published ?
                                 <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => copynedit(row)}>Copy</Button>
-                                : <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => edit(row.id)}>Edit</Button>
+                                : <Button variant="info" style={{ width: '80%', height: '50%' }} 
+                                    onClick={() => {
+                                        if (aliceObj && decode(JSON.parse(aliceObj)['id_token'])) {
+                                            var sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
+                                            if (row.creator && sub !== row.creator.sub)
+                                                    alert('You are not authorized')
+                                            else
+                                                edit(row.id)
+                                        }
+                                        else
+                                            alert('You need to login')
+                                    }}>Edit</Button>
                         },
                         hidden: !aliceObj
                     },
