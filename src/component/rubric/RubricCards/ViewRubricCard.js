@@ -39,8 +39,7 @@ class ViewRubricCard extends Component {
     publishRubric = () => {
         if (this.state.type === 'view') {
             if (aliceObj) {
-                if(this.state.allowEdit)
-                {
+                if (this.state.allowEdit) {
                     this.setState({
                         publishDate: new Date().toLocaleDateString('fr-CA'),
                         published: true
@@ -70,7 +69,7 @@ class ViewRubricCard extends Component {
                                 <Col>
                                     <Button className="float-right" variant="outline-success ml-1" hidden={!this.state.published || !aliceObj} onClick={this.state.showResults}>Results</Button>
                                     <Button className="float-right" variant="outline-danger ml-1" hidden={this.state.published} onClick={this.state.preDelete}>Delete</Button>
-                                    <Button className="float-right" variant="outline-secondary ml-1" hidden={!this.state.published} onClick={this.state.copyneditRubric}>Copy</Button>
+                                    <Button className="float-right" variant="outline-secondary ml-1" hidden={!this.state.published || !aliceObj} onClick={this.state.copyneditRubric}>Copy</Button>
                                     <Button className="float-right" variant="outline-secondary ml-1" hidden={this.state.published} onClick={() => this.state.editRubric(this.state.id)}>Edit</Button>
                                 </Col>
 
