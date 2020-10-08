@@ -76,7 +76,8 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                             return row.published ?
                                 <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => copynedit(row)}>Copy</Button>
                                 : <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => edit(row.id)}>Edit</Button>
-                        }
+                        },
+                        hidden: !aliceObj
                     },
                     {
                         dataField: 'export',
