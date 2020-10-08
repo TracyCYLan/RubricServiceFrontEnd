@@ -317,8 +317,12 @@ class GetRubricComponent extends Component {
     }
 
     showResults() {
-        window.sessionStorage.setItem("rubricId", this.state.id);
-        this.props.history.push({ pathname: '/rubric-results', state: { rubric: this.state.rubric } });
+        if(aliceObj){
+            window.sessionStorage.setItem("rubricId", this.state.id);
+            this.props.history.push({ pathname: '/rubric-results', state: { rubric: this.state.rubric } });
+        }
+        else
+            alert('You need to login!');
     }
 
     render() {
