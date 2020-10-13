@@ -23,9 +23,10 @@ class CanvasApiService {
             }
             else if (error.response.status === 401) {
                 console.log(error.message)
-                alert("Sorry, your login is expired")
+                alert("Sorry, your login is expired. Please login again.")
                 window.location.replace(homepage);//go to homepage
                 window.sessionStorage.removeItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
+                window.sessionStorage.removeItem("canvasToken");
                 window.location.reload(false);
             }
             else if (error.response.status === 403) {
