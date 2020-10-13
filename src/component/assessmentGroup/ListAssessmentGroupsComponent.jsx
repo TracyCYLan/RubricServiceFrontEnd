@@ -9,17 +9,25 @@ class ListAssessmentGroupsComponent extends Component {
         this.state = {
             assessmentGroups: [],
             loading: false,
-            searchingText: ''
+            searchingText: '',
+            resizeVar: true //dummy value for detecting if window resize
         }
         this.reloadList = this.reloadList.bind(this);
         this.getAssessmentGroup = this.getAssessmentGroup.bind(this);
         this.search = this.search.bind(this);
+        this.handleWindowResize = this.handleWindowResize.bind(this);
     }
 
     componentDidMount() {
         this.reloadList();
+        window.addEventListener('resize', this.handleWindowResize);
     }
-
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleWindowResize);
+    }
+    handleWindowResize() {
+        this.setState({ resizeVar: true })
+    }
     reloadList() {
         // this.setState({ loading: true }); //if this line is not commented. the whole page will refresh somehow
         ApiService.fetchAssessmentGroups()

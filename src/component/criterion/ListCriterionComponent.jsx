@@ -10,7 +10,8 @@ class ListCriterionComponent extends Component {
             criteria: [],
             message: null,
             loading: false,
-            searchingText: ''
+            searchingText: '',
+            resizeVar: true //dummy value for detecting if window resize
         }
         this.addCriterion = this.addCriterion.bind(this);
         this.reloadCriterionList = this.reloadCriterionList.bind(this);
@@ -21,12 +22,21 @@ class ListCriterionComponent extends Component {
         this.search = this.search.bind(this);
         this.getTag = this.getTag.bind(this);
         this.exportPage = this.exportPage.bind(this);
+        this.handleWindowResize = this.handleWindowResize.bind(this);
     }
 
     componentDidMount() {
         this.reloadCriterionList();
+        window.addEventListener('resize', this.handleWindowResize);
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleWindowResize);
+    }
+
+    handleWindowResize() {
+        this.setState({ resizeVar: true })
+    }
     reloadCriterionList() {
         ApiService.fetchCriteria()
             .then((res) => {
@@ -77,8 +87,7 @@ class ListCriterionComponent extends Component {
     }
     copyneditCriterion(criterion) {
         //send exactly the same content to add-criterion
-        if(aliceObj)
-        {
+        if (aliceObj) {
             this.props.history.push(
                 {
                     pathname: '/add-criterion',
@@ -97,8 +106,7 @@ class ListCriterionComponent extends Component {
             alert('You need to login')
     }
     editCriterion(id) {
-        if(aliceObj)
-        {
+        if (aliceObj) {
             window.sessionStorage.setItem("criterionId", id);
             this.props.history.push('/edit-criterion');
         }

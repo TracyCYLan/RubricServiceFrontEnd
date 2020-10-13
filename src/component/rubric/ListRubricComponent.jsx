@@ -11,7 +11,8 @@ class ListRubricComponent extends Component {
             rubrics: [],
             message: null,
             loading: false,
-            searchingText: ''
+            searchingText: '',
+            resizeVar: true //dummy value for detecting if window resize
         }
         this.addRubric = this.addRubric.bind(this);
         this.reloadRubricList = this.reloadRubricList.bind(this);
@@ -20,10 +21,18 @@ class ListRubricComponent extends Component {
         this.getRubric = this.getRubric.bind(this);
         this.search = this.search.bind(this);
         this.exportPage = this.exportPage.bind(this);
+        this.handleWindowResize = this.handleWindowResize.bind(this);
     }
 
     componentDidMount() {
         this.reloadRubricList();
+        window.addEventListener('resize', this.handleWindowResize);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleWindowResize);
+    }
+    handleWindowResize() {
+        this.setState({ resizeVar: true })
     }
 
     reloadRubricList() {

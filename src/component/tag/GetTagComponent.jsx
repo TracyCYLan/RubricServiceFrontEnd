@@ -10,7 +10,8 @@ class GetTagComponent extends Component {
         this.state = {
             tag: '',
             criteria: [],
-            loading: false
+            loading: false,
+            resizeVar: true //dummy value for detecting if window resize
         }
         this.loadTag = this.loadTag.bind(this);
         this.getCriterion = this.getCriterion.bind(this);
@@ -19,10 +20,18 @@ class GetTagComponent extends Component {
         this.getCriterion = this.getCriterion.bind(this);
         this.publishCriterion = this.publishCriterion.bind(this);
         this.exportPage = this.exportPage.bind(this);
+        this.handleWindowResize = this.handleWindowResize.bind(this);
     }
 
     componentDidMount() {
         this.loadTag(window.sessionStorage.getItem("tagId"));
+        window.addEventListener('resize', this.handleWindowResize);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleWindowResize);
+    }
+    handleWindowResize() {
+        this.setState({ resizeVar: true })
     }
 
     getCriterion(id) {

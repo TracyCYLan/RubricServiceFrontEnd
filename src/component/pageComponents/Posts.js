@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Badge, Col } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -44,23 +44,23 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         headerStyle: (colum, colIndex) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
-                        // hidden: window.matchMedia("(max-width: 768px)"),
+                        hidden: !window.matchMedia("screen and (min-width: 992px)").matches,
                         formatter: (cellContent, row) => {
                             return <span className="text-info"
                                 style={{ fontSize: "20px", fontFamily: "sans-serif" }}>
                                 {row.publishDate === null ?
                                     <Button variant="info" style={{ width: '80%', height: '50%' }}
-                                    onClick={() => {
-                                        if (aliceObj && decode(JSON.parse(aliceObj)['id_token'])) {
-                                            var sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
-                                            if (row.creator && sub !== row.creator.sub)
+                                        onClick={() => {
+                                            if (aliceObj && decode(JSON.parse(aliceObj)['id_token'])) {
+                                                var sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
+                                                if (row.creator && sub !== row.creator.sub)
                                                     alert('You are not authorized')
+                                                else
+                                                    publishPost(row.id)
+                                            }
                                             else
-                                                publishPost(row.id)
-                                        }
-                                        else
-                                            alert('You need to login')
-                                    }}>publish</Button> :
+                                                alert('You need to login')
+                                        }}>publish</Button> :
                                     new Date(row.publishDate).toLocaleDateString()}
                             </span>
                         },
@@ -72,23 +72,23 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         headerStyle: (colum, colIndex) => {
                             return { width: '10%', textAlign: 'center', verticalAlign: 'middle' };
                         },
+                        hidden: !aliceObj || !window.matchMedia("screen and (min-width: 768px)").matches,
                         formatter: (cellContent, row) => {
                             return row.published ?
                                 <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => copynedit(row)}>Copy</Button>
-                                : <Button variant="info" style={{ width: '80%', height: '50%' }} 
+                                : <Button variant="info" style={{ width: '80%', height: '50%' }}
                                     onClick={() => {
                                         if (aliceObj && decode(JSON.parse(aliceObj)['id_token'])) {
                                             var sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
                                             if (row.creator && sub !== row.creator.sub)
-                                                    alert('You are not authorized')
+                                                alert('You are not authorized')
                                             else
                                                 edit(row.id)
                                         }
                                         else
                                             alert('You need to login')
                                     }}>Edit</Button>
-                        },
-                        hidden: !aliceObj
+                        }
                     },
                     {
                         dataField: 'export',
@@ -123,7 +123,6 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
         );
     }
     else if (category === 'rubric') {
-
         return (
             <div key="rubrictableDiv" className="mx-auto mt-2">
                 <BootstrapTable
@@ -150,6 +149,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         headerStyle: (colum, colIndex) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
+                        hidden: !window.matchMedia("screen and (min-width: 992px)").matches,
                         formatter: (cellContent, row) => {
                             return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>
                                 {row.publishDate === null ?
@@ -158,7 +158,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                                             if (aliceObj && decode(JSON.parse(aliceObj)['id_token'])) {
                                                 var sub = decode(JSON.parse(aliceObj)['id_token'])['sub'];
                                                 if (row.creator && sub !== row.creator.sub)
-                                                        alert('You are not authorized')
+                                                    alert('You are not authorized')
                                                 else
                                                     publishPost(row.id)
                                             }
@@ -176,6 +176,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         headerStyle: (colum, colIndex) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
+                        hidden: !window.matchMedia("screen and (min-width: 992px)").matches,
                         formatter: (cellContent, row) => {
                             return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>{new Date(row.lastUpdatedDate).toLocaleDateString()}</span>
                         },
@@ -213,7 +214,6 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
         );
     }
     else if (category === 'assessmentGroup') {
-
         return (
             <div key="rubrictableDiv" className="mx-auto mt-2">
                 <BootstrapTable
@@ -241,6 +241,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         headerStyle: (colum, colIndex) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
+                        hidden: !window.matchMedia("screen and (min-width: 768px)").matches,
                         formatter: (cellContent, row) => {
                             return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>
                                 {row.assessDate === null ?
@@ -259,47 +260,6 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                     hover
                 />
             </div>
-        );
-    }
-    else if (category === 'tempcriterion') {//temp no one using this
-        return (
-            <Table className="mx-auto mt-2" responsive="lg" hover="true" bordered="true">
-                <thead>
-                    <tr>
-                        <th style={{ width: '80%' }}>Name</th>
-                        <th style={{ width: '10%' }}>Publish Date</th>
-                        <th style={{ width: '10%' }}>Operation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        posts.map(
-                            post =>
-                                <tr key={post.id}>
-                                    <td style={{ width: '80%' }}>
-                                        <span className="text-primary"
-                                            style={{ cursor: "pointer", fontSize: "20px", fontFamily: "sans-serif" }}
-                                            onClick={() => get(post.id)}>
-                                            {post.name}
-                                            {post.tags.map(
-                                                function (tag) {
-                                                    return ([' ', <Badge variant="info">{tag.value}</Badge>])
-                                                }
-                                            )}
-                                        </span>
-                                    </td>
-                                    <td style={{ width: '10%' }}><span>{post.publishDate === null ? '--/--/----' : new Date(post.publishDate).toLocaleDateString()}</span></td>
-                                    <td style={{ width: '10%' }}>
-                                        {post.published ?
-                                            <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => copynedit(post)}>Copy</Button>
-                                            : <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => edit(post.id)}>Edit</Button>
-                                        }
-                                    </td>
-                                </tr>
-                        )
-                    }
-                </tbody>
-            </Table>
         );
     }
 };
