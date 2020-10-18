@@ -17,11 +17,16 @@ class ExportRubricComponent extends Component {
             //for existing assignment
             assignments: [],
             assignment: '',
-            bindWithAssignment: false
+            bindWithAssignment: false,
+            //for create peer reviews
+            groupCategories: [],
+            groupCategory: '',
+            needCreatePeerReview: false
         }
         this.loadCourses = this.loadCourses.bind(this);
         this.exportRubric = this.exportRubric.bind(this);
         this.reloadAssignments = this.reloadAssignments.bind(this);
+        this.loadGroupCategories = this.loadGroupCategories.bind(this);
     }
 
     componentDidMount() {
@@ -40,48 +45,55 @@ class ExportRubricComponent extends Component {
             })
         })
     }
+    loadGroupCategories() {
+        ApiService.fetchGroupCategories(this.state.courseId, window.sessionStorage.getItem("canvasToken")).then(res => {
+            this.setState({
+                groupCategories: JSON.parse(res.data)
+            })
+        })
+    }
     exportRubric = (e) => {
         e.preventDefault();
+        var obj = '';
         if (this.state.bindWithAssignment) {
-            if (this.state.needCreateNewAssignment) {
-                if (this.state.assignmentName === '') {
-                    alert('Assignment name cannot be null')
-                    return;
-                }
-                ApiService.exportRubric(this.state.rubricId, this.state.courseId,
-                    window.sessionStorage.getItem("canvasToken"), 'name', this.state.assignmentName).then(res => {
-                        window.sessionStorage.removeItem('rubricId');
-                        this.props.history.push('/');
-                    })
+            if (this.state.needCreateNewAssignment && this.state.assignmentName === '') {
+                alert('Assignment name cannot be null');
+                return;
             }
-            else {
-                if (this.state.assignment === '')
-                    alert('Select the assignment you would like to assign this rubric with')
-                else if (this.state.assignment[0].rubric_settings !== undefined)
-                    alert('selected assignment has already been assigned with other rubric');
-                else {
-                    ApiService.exportRubric(this.state.rubricId, this.state.courseId,
-                        window.sessionStorage.getItem("canvasToken"), 'id', this.state.assignment[0].id).then(res => {
-                            window.sessionStorage.removeItem('rubricId');
-                            this.props.history.push('/');
-                        })
-                }
+            if (!this.state.needCreateNewAssignment && this.state.assignment === '') {
+                alert('Select the assignment you would like to assign this rubric with');
+                return;
             }
+            if (!this.state.needCreateNewAssignment && this.state.assignment[0].rubric_settings !== undefined) {
+                alert('selected assignment has already been assigned with other rubric');
+                return;
+            }
+            if (this.state.needCreatePeerReview && this.state.groupCategory === '') {
+                alert('need to select group set if want to assign intra-group peer reviews');
+                return;
+            }
+            if (this.state.needCreateNewAssignment)
+                obj = { 'name': this.state.assignmentName, 'group_category_id': this.state.groupCategory }
+            else
+                obj = { 'id': this.state.assignment[0].id, 'group_category_id': this.state.groupCategory }
         }
-        else //no need to bind with any assignment!
-        {
-            ApiService.exportRubric(this.state.rubricId, this.state.courseId,
-                window.sessionStorage.getItem("canvasToken"), 'name', '').then(res => {
-                    window.sessionStorage.removeItem('rubricId');
-                    this.props.history.push('/');
-                })
-        }
+        ApiService.exportRubric(this.state.rubricId, this.state.courseId,
+            window.sessionStorage.getItem("canvasToken"), obj);
+        alert('this might take a while to process')
+        window.sessionStorage.removeItem('rubricId');
+        this.props.history.push('/');
     }
     changeCourse = (e) => {
         this.setState({
             courseId: e.target.value
         }, () => {
             this.reloadAssignments();
+            this.loadGroupCategories();
+        });
+    }
+    changeGroupCategory = (e) => {
+        this.setState({
+            groupCategory: e.target.value
         });
     }
     reloadAssignments() {
@@ -152,6 +164,30 @@ class ExportRubricComponent extends Component {
                                         <Form.Control type="text" placeholder="Enter name" name="assignmentName" value={this.state.assignmentName} onChange={this.onChange} />
                                     </Col>
                                 </Form.Group>}
+                            <Form.Group as={Row} controlId="checkifassignPeerReview">
+                                <Col><Form.Check
+                                    custom
+                                    type='checkbox'
+                                    id='checkbox3'
+                                    label='Check if this is a group project and you would like to create intra-group peer reviews'
+                                    onClick={() => this.setState({ needCreatePeerReview: !this.state.needCreatePeerReview })}
+                                /></Col>
+                            </Form.Group>
+                            {!this.state.needCreatePeerReview ? '' :
+                                <Form.Group as={Row} controlId="selectGroupCategory">
+                                    <Form.Label column md={2}>Select Group Set</Form.Label>
+                                    <Col md={10}>
+                                        <Form.Control as="select" defaultValue="DEFAULT"
+                                            onChange={(e) => this.changeGroupCategory(e)} >
+                                            <option value="DEFAULT" disabled>Select a group set</option>
+                                            {
+                                                this.state.groupCategories.map(
+                                                    gc => <option value={gc.id} key={gc.id}>{gc.name}</option>)
+                                            }
+                                        </Form.Control>
+                                    </Col>
+                                </Form.Group>
+                            }
                         </Form.Group>}
                     {this.state.courseId === '' ? '' : <Button onClick={this.exportRubric}>Export</Button>}
                 </Form>
