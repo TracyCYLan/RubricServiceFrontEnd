@@ -41,10 +41,10 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                     }, {
                         dataField: 'publishDate',
                         text: 'Publish Date',
+                        hidden: !window.matchMedia("screen and (min-width: 992px)").matches,
                         headerStyle: (colum, colIndex) => {
                             return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
                         },
-                        hidden: !window.matchMedia("screen and (min-width: 992px)").matches,
                         formatter: (cellContent, row) => {
                             return <span className="text-info"
                                 style={{ fontSize: "20px", fontFamily: "sans-serif" }}>
@@ -72,7 +72,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         headerStyle: (colum, colIndex) => {
                             return { width: '10%', textAlign: 'center', verticalAlign: 'middle' };
                         },
-                        hidden: !aliceObj || !window.matchMedia("screen and (min-width: 768px)").matches,
+                        hidden: !aliceObj || !window.matchMedia("screen and (min-width: 992px)").matches,
                         formatter: (cellContent, row) => {
                             return row.published ?
                                 <Button variant="info" style={{ width: '80%', height: '50%' }} onClick={() => copynedit(row)}>Copy</Button>
@@ -93,9 +93,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                     {
                         dataField: 'export',
                         text: 'Export to Canvas',
-                        headerStyle: (colum, colIndex) => {
-                            return { width: '10%', textAlign: 'center', verticalAlign: 'middle' };
-                        },
+                        hidden: !window.sessionStorage.getItem("canvasToken") || !window.matchMedia("screen and (min-width: 992px)").matches,
                         formatter: (cellContent, row) => {
                             return <div>
                                 <Button variant="info" style={{ width: '80%', height: '50%' }}
@@ -108,8 +106,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                                         }
                                     }}>Export</Button>
                             </div>
-                        },
-                        hidden: !window.sessionStorage.getItem("canvasToken")
+                        }
                     }
                     ]}
                     defaultSorted={[{
@@ -185,6 +182,10 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                     {
                         dataField: 'export',
                         text: 'Export to Canvas',
+                        headerStyle: (colum, colIndex) => {
+                            return { width: '10%', textAlign: 'center', verticalAlign: 'middle' };
+                        },
+                        hidden: !window.sessionStorage.getItem("canvasToken") || !window.matchMedia("screen and (min-width: 992px)").matches,
                         formatter: (cellContent, row) => {
                             return <div>
                                 <Button variant="info" style={{ width: '80%', height: '50%' }}
@@ -198,8 +199,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                                     }}
                                 >Export</Button>
                             </div>
-                        },
-                        hidden: !window.sessionStorage.getItem("canvasToken")
+                        }
                     }
 
                     ]}
@@ -218,7 +218,7 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
             <div key="rubrictableDiv" className="mx-auto mt-2">
                 <BootstrapTable
                     bootstrap4
-                    key="rubrictable"
+                    key="assessmentGrouptable"
                     keyField="id"
                     data={posts}
                     columns={[{
@@ -239,9 +239,9 @@ const Posts = ({ posts, loading, get, edit, copynedit, getTag, category, publish
                         dataField: 'assessDate',
                         text: 'Assess Date',
                         headerStyle: (colum, colIndex) => {
-                            return { width: '15%', textAlign: 'center', verticalAlign: 'middle' };
+                            return { width: '20%', textAlign: 'center', verticalAlign: 'middle' };
                         },
-                        hidden: !window.matchMedia("screen and (min-width: 768px)").matches,
+                        hidden: !window.matchMedia("screen and (min-width: 992px)").matches,
                         formatter: (cellContent, row) => {
                             return <span className="text-info" style={{ textAlign: 'center', fontSize: "20px", fontFamily: "sans-serif" }}>
                                 {row.assessDate === null ?
