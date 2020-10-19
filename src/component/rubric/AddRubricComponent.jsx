@@ -208,6 +208,11 @@ class AddRubricComponent extends Component {
         })
     }
     saveRubric = (e) => {
+        if(this.state.name==='')
+        {
+            alert('name cannot be null');
+            return;
+        }
         e.preventDefault();
         let rubric = {
             name: this.state.name,

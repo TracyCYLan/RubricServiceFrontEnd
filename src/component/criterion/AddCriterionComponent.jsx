@@ -57,6 +57,11 @@ class AddCriterionComponent extends Component {
             });
     }
     saveCriterion = (e) => {
+        if(this.state.name==='')
+        {
+            alert('name cannot be null');
+            return;
+        }
         e.preventDefault();
         let criterion = {
             name: this.state.name,

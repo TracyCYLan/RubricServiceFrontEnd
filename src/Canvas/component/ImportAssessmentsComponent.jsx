@@ -43,6 +43,12 @@ class ImportAssessmentsComponent extends Component {
         if (this.state.assignment[0] === undefined) {
             alert("you need to select an assignment!");
         }
+        else if(this.state.name === ''){
+            alert('name cannot be null')
+        }
+        else if(this.state.assessDate === ''){
+            alert('date cannot be null')
+        }
         else {
             e.preventDefault();
             if (this.state.assignment[0].rubric_settings === undefined) {
