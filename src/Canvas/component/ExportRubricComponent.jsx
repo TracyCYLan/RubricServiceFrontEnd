@@ -54,7 +54,7 @@ class ExportRubricComponent extends Component {
     }
     exportRubric = (e) => {
         e.preventDefault();
-        var obj = '';
+        var obj = {};
         if (this.state.bindWithAssignment) {
             if (this.state.needCreateNewAssignment && this.state.assignmentName === '') {
                 alert('Assignment name cannot be null');
