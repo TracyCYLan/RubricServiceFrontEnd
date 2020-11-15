@@ -47,7 +47,7 @@ class GetAssessmentComponent extends Component {
                         state: { fileId: a.id, assessmentGroup: this.state.assessmentGroup, text: res.data }
                     });
                 else
-                    FileDownload(res.data, a.name.split('-')[1]);
+                    FileDownload(res.data, a.name.substr(a.name.indexOf('-')+1));
             }
         )
     }
@@ -82,7 +82,7 @@ class GetAssessmentComponent extends Component {
                 [<span key="list-title">Files: </span>,
                 <ListGroup key="list">
                     {this.state.assessment.artifacts.map((a, indx) =>
-                        <ListGroup.Item key={a.id} action className="text-primary" onClick={() => this.download(a)}>{a.name.split('-')[1]}</ListGroup.Item>)}
+                        <ListGroup.Item key={a.id} action className="text-primary" onClick={() => this.download(a)}>{a.name.substr(a.name.indexOf('-')+1)}</ListGroup.Item>)}
                 </ListGroup>]
 
         ];
