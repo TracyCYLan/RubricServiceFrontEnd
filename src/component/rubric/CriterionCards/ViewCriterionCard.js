@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Card, CardGroup } from 'react-bootstrap';
 import RatingV from '../../RatingCards/RatingView';
+import ReactHtmlParser from 'react-html-parser';
 class ViewCriterionCard extends Component {
 
     constructor(props) {
@@ -8,7 +9,7 @@ class ViewCriterionCard extends Component {
         this.state = {
             criterionId: props.index,
             name: props.name,
-            description: props.description,
+            description: props.description.toString('html'),
             ratings: props.ratings,
             published: props.published,
             reusable: props.reusable,
@@ -27,14 +28,14 @@ class ViewCriterionCard extends Component {
                             this.state.reusable ?
                                 <Button variant="danger float-right" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
                                 :
-                                <span class="float-right">
+                                <span className="float-right">
                                     <Button variant="secondary" size="sm" onClick={() => this.state.changeToEditCriterion(this.state.criterionId)}>Edit</Button>
                                     <Button variant="danger ml-1" size="sm" onClick={this.state.deleteExistedCriterion}>x</Button>
                                 </span>
                     }
                 </Card.Header>
                     <Card.Body>
-                        <Card.Text>{this.state.description}</Card.Text>
+                        { ReactHtmlParser(this.state.description) }
                     </Card.Body>
                 <CardGroup>
                     {this.state.ratings.map(

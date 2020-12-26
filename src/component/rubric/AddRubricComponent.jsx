@@ -15,10 +15,17 @@ const reorder = (list, startIndex, endIndex) => {
 
     return result;
 };
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
 class AddRubricComponent extends Component {
 
     constructor(props) {
         super(props);
+        //if not login, we don't let user to access this page: 
+        if(!aliceObj)
+        {
+            alert('You need to login')
+            this.props.history.push('/rubrics');
+        }
         //if we passed default value to this page: (i.e., copy original one to add)
         if (typeof (this.props.location.state) !== 'undefined') {
             this.state = {
@@ -201,6 +208,11 @@ class AddRubricComponent extends Component {
         })
     }
     saveRubric = (e) => {
+        if(this.state.name==='')
+        {
+            alert('name cannot be null');
+            return;
+        }
         e.preventDefault();
         let rubric = {
             name: this.state.name,
@@ -241,11 +253,11 @@ class AddRubricComponent extends Component {
 
     render() {
         return [
-            <Breadcrumb className="mx-auto mt-2">
-                <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
+            <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
+                <Breadcrumb.Item onClick={()=>this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
                 <Breadcrumb.Item active>Add Rubric</Breadcrumb.Item>
             </Breadcrumb>,
-            <Card className="mx-auto mt-3">
+            <Card key="card" className="mx-auto mt-3">
                 <Card.Body>
                     <Card.Title>Add Rubric</Card.Title>
                     {this.state.showEditRubricCard ?
@@ -260,18 +272,19 @@ class AddRubricComponent extends Component {
                         ></EditRubricCard> :
                         [
                             <ViewRubricCard
+                                key="viewcard"
                                 name={this.state.name}
                                 description={this.state.description}
                                 publishDate={this.state.publishDate}
                                 editRubric={() => { this.setState({ showEditRubricCard: true }) }}
                                 type='add'></ViewRubricCard>,
-                            <Card className="mx-auto mt-1">
+                            <Card key="criteriaCard" className="mx-auto mt-1">
                                 <Card.Body>
                                     <Form>
                                         <Form.Group as={Row} controlId="formGridCriteriaImport">
                                             <Form.Label column lg={2}>Criteria</Form.Label>
                                             <Col md={10}>
-                                                <div class="input-group">
+                                                <div className="input-group">
                                                     <Autocomplete
                                                         key={this.state.resetText}
                                                         onInputChange={this.handleOpenAutoComplete}

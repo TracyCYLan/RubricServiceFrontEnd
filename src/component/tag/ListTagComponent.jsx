@@ -41,7 +41,7 @@ class ListTagComponent extends Component {
     }
 
     getTag(id) {
-        window.localStorage.setItem("tagId", id);
+        window.sessionStorage.setItem("tagId", id);
         this.props.history.push('/tag');
     }
     search = (e) => {
@@ -68,7 +68,7 @@ class ListTagComponent extends Component {
 
     render() {
         return [
-            <Row className="mt-3">
+            <Row key="row" className="mt-3">
                 <Col></Col>
                 <Col className="mt-1">
                     <InputGroup>
@@ -90,6 +90,7 @@ class ListTagComponent extends Component {
                 </Col>
             </Row>
             ,<TagCloud
+                key="cloud"
                 minSize={22}
                 maxSize={45}
                 tags={this.state.tags}

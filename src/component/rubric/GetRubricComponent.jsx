@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, Form, Card, Modal,Breadcrumb } from 'react-bootstrap';
+import { Row, Col, Button, Form, Card, Modal, Breadcrumb } from 'react-bootstrap';
 import { Autocomplete } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
 import EditRubricCard from './RubricCards/EditRubricCard';
@@ -15,27 +15,31 @@ const reorder = (list, startIndex, endIndex) => {
 
     return result;
 };
+const decode = require('jwt-claims');
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
 class GetRubricComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            id: '',
+            id: window.sessionStorage.getItem("rubricId"),
             name: '',
             description: '',
-            loading: true,//in case we haven't finish loading rubric
+            loading: true,//means still loading ... in case we haven't finish loading rubric
             criteria: [],
             message: '',
             published: '',
             publishDate: '',
-            newCriterion: '',//new criterion we add by pressing add btn
+            newCriterion: '',//new criterion we add by pressing addBtn
             suggestionCriteria: [],//for autocomplete
             resetText: true, //will change its value everytime we click import button. this prop will help us to clear the autocomplete field
             openAutoComplete: false,//open auto complete or not
             importedCriterion: '',//the certain criterion we just select in the autocomplete box
             showEditRubricCard: false,//ViewRubricCard or EditRubricCard
             showEditCriterionCard: false,//ViewCriterionCard or EditCriterion
-            showModal: false
+            showModal: false,
+            rubric: '',
+            allowEdit: false
         }
         this.addCriterionBlock = this.addCriterionBlock.bind(this);
         this.addCriterionToRubric = this.addCriterionToRubric.bind(this);
@@ -48,12 +52,14 @@ class GetRubricComponent extends Component {
         this.deleteRubric = this.deleteRubric.bind(this);
         this.editRubric = this.editRubric.bind(this);
         this.saveRubric = this.saveRubric.bind(this);
-        this.publishRubric=this.publishRubric.bind(this);
+        this.publishRubric = this.publishRubric.bind(this);
 
         this.handleOpenAutoComplete = this.handleOpenAutoComplete.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
         this.onDragEnd = this.onDragEnd.bind(this);
+
+        this.showResults = this.showResults.bind(this);
     }
 
     componentDidMount() {
@@ -67,9 +73,20 @@ class GetRubricComponent extends Component {
     }
 
     loadRubric() {
-        ApiService.fetchRubricById(window.localStorage.getItem("rubricId"))
+        ApiService.fetchRubricById(window.sessionStorage.getItem("rubricId"))
             .then((res) => {
                 let rubric = res.data;
+                let aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
+                let temp = false;
+                if (aliceObj) {
+                    var claims = decode(JSON.parse(aliceObj)['id_token']);
+                    if(claims)
+                    {
+                        var sub = claims['sub'];
+                        if (res.data && res.data.creator && sub === res.data.creator.sub)
+                            temp = true;
+                    }
+                }
                 this.setState({
                     loading: false,
                     id: rubric.id,
@@ -77,23 +94,31 @@ class GetRubricComponent extends Component {
                     description: rubric.description,
                     criteria: rubric.criteria,
                     published: rubric.published,
-                    publishDate: rubric.publishDate === null ? '' : new Date(rubric.publishDate).toLocaleDateString('fr-CA')
+                    publishDate: rubric.publishDate === null ? '' : new Date(rubric.publishDate).toLocaleDateString('fr-CA'),
+                    rubric: rubric,
+                    allowEdit: temp
                 })
+                
             });
     }
     copyneditRubric = (id) => {
-        window.localStorage.setItem("rubricId", id);
-        //send exactly the same content to add-rubric
-        this.props.history.push(
-            {
-                pathname: '/add-rubric',
-                state: {
-                    name: this.state.name + "_copy",
-                    description: this.state.description,
-                    criteria: this.state.criteria
+        if(aliceObj)
+        {
+            window.sessionStorage.setItem("rubricId", id);
+            //send exactly the same content to add-rubric
+            this.props.history.push(
+                {
+                    pathname: '/add-rubric',
+                    state: {
+                        name: this.state.name + "_copy",
+                        description: this.state.description,
+                        criteria: this.state.criteria
+                    }
                 }
-            }
-        );
+            );
+        }
+        else
+            alert('You need to login')
     }
     editRubric = (input_name, input_value) => {
         this.setState({
@@ -113,13 +138,23 @@ class GetRubricComponent extends Component {
             })
         })
     }
-    publishRubric = (id)=>{
-        ApiService.publishRubric(id).then(res=>
-            this.setState({
-                publishDate:new Date().toLocaleDateString('fr-CA'),
-                published:true
-            })
-        );  
+    publishRubric = (id,allowEdit) => {
+        if(aliceObj)
+        {
+            if(allowEdit)
+            {
+                ApiService.publishRubric(id).then(res =>
+                    this.setState({
+                        publishDate: new Date().toLocaleDateString('fr-CA'),
+                        published: true
+                    })
+                );
+            }
+            else
+                alert('You are not authorized to do this action')
+        }
+        else
+            alert('You need to login')
     }
     saveRubric = (e) => {
         e.preventDefault();
@@ -127,7 +162,7 @@ class GetRubricComponent extends Component {
             id: this.state.id,
             name: this.state.name,
             description: this.state.description,
-            publishDate: this.state.publishDate ===''?null:this.state.publishDate
+            publishDate: this.state.publishDate === '' ? null : this.state.publishDate
         };
         ApiService.editRubric(rubric).then(res => {
             this.setState({
@@ -138,11 +173,16 @@ class GetRubricComponent extends Component {
         });
     }
     deleteRubric(id) {
-        ApiService.deleteRubric(id)
+        if(aliceObj)
+        {
+            ApiService.deleteRubric(id)
             .then(res => {
                 this.setState({ message: 'Rubric deleted successfully.' });
                 this.props.history.push('/rubrics');
             })
+        }
+        else
+            alert('You need to login')
     }
     addCriterionBlock = () => {
         if (this.state.newCriterion !== '')
@@ -275,9 +315,19 @@ class GetRubricComponent extends Component {
             criteria: criteria
         });
     }
+
+    showResults() {
+        if(aliceObj){
+            window.sessionStorage.setItem("rubricId", this.state.id);
+            this.props.history.push({ pathname: '/rubric-results', state: { rubric: this.state.rubric } });
+        }
+        else
+            alert('You need to login!');
+    }
+
     render() {
         return (
-            [<Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
+            [<Modal key="modal" show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
                 <Modal.Header closeButton>
                     <Modal.Title>Are you sure you want to delete?</Modal.Title>
                 </Modal.Header>
@@ -291,15 +341,16 @@ class GetRubricComponent extends Component {
                     </Button>
                 </Modal.Footer>
             </Modal>,
-            <Breadcrumb className="mx-auto mt-2">
-            <Breadcrumb.Item href="rubrics">Rubrics</Breadcrumb.Item>
-            <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
-          </Breadcrumb>,
-            <Card className="mx-auto mt-2">
+            <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
+                <Breadcrumb.Item onClick={() => this.props.history.push('/rubrics')}>Rubrics</Breadcrumb.Item>
+                <Breadcrumb.Item active>{this.state.name}</Breadcrumb.Item>
+            </Breadcrumb>,
+            <Card key="card" className="mx-auto mt-2">
                 <Card.Body>
                     {this.state.loading ? '' :
                         (!this.state.published && this.state.showEditRubricCard) ?
                             <EditRubricCard
+                                id={this.state.id}
                                 edit={this.editRubric}
                                 name={this.state.name}
                                 description={this.state.description}
@@ -311,26 +362,29 @@ class GetRubricComponent extends Component {
                             ></EditRubricCard>
                             :
                             <ViewRubricCard
+                                id={this.state.id}
                                 name={this.state.name}
                                 description={this.state.description}
                                 publishDate={this.state.publishDate}
-                                published={this.state.published}
+                                published={this.state.published || (!this.state.allowEdit&&!this.state.published)} //treat it as published if not allow edit and not publish
                                 preDelete={() => { this.setState({ showModal: true }) }}
-                                editRubric={() => { this.setState({ showEditRubricCard: true }) }}
+                                editRubric={() => {this.setState({ showEditRubricCard: true })}}
                                 copyneditRubric={() => this.copyneditRubric(this.state.id)}
-                                publishRubric={()=>this.publishRubric(this.state.id)}
+                                publishRubric={() => this.publishRubric(this.state.id,this.state.allowEdit)}
+                                allowEdit ={this.state.allowEdit}
+                                showResults={() => this.showResults(this.state.id)}
                                 type='view'>
                             </ViewRubricCard>
                     }
                     <Card className="mx-auto mt-1">
                         <Card.Body>
-                            {this.state.published ?//if it's published, just show all criteria
+                            {this.state.published || !this.state.allowEdit ?//if it's published, just show all criteria
                                 <Form>
                                     <Form.Group as={Row} controlId="formGridShowExistedCriterion">
                                         <Col>
                                             {this.state.criteria.map(
                                                 c => <ViewCriterionCard key={c.id} index={c.id} name={c.name} description={c.description} ratings={c.ratings}
-                                                    reusable={c.reusable} published={this.state.published}
+                                                    reusable={c.reusable} published={this.state.published || (!this.state.allowEdit&&!this.state.published)}
                                                     deleteExistedCriterion={() => this.deleteExistedCriterion(c.id)}
                                                     changeToEditCriterion={this.changeToEditCriterion} ></ViewCriterionCard>)}
                                         </Col>
@@ -340,14 +394,15 @@ class GetRubricComponent extends Component {
                                 <Form>
                                     <Form.Group as={Row}>
                                         <Col>
-                                            <Button variant="info" className="float-right" onClick={() => { this.setState({ showEditCriterionCard: !this.state.showEditCriterionCard }) }}>Add or Import Criterion</Button>
+                                            <Button variant="info" className="float-right"
+                                                onClick={() => { this.setState({ showEditCriterionCard: !this.state.showEditCriterionCard }) }}>Add or Import Criterion</Button>
                                         </Col>
                                     </Form.Group>
                                     {this.state.showEditCriterionCard ?//only show import area and editcriterion card when we click addorimport button
-                                        [<Form.Group as={Row} controlId="formGridCriteriaImport">
+                                        [<Form.Group as={Row} controlId="formGridCriteriaImport" key="importCriterion">
                                             <Form.Label column lg={2}>Criteria</Form.Label>
                                             <Col md={10}>
-                                                <div class="input-group">
+                                                <div className="input-group">
                                                     <Autocomplete
                                                         key={this.state.resetText}
                                                         onInputChange={this.handleOpenAutoComplete}
@@ -371,9 +426,8 @@ class GetRubricComponent extends Component {
                                                 </div>
                                             </Col>
                                             <Button variant="outline-info ml-2" onClick={this.addCriterionBlock}>Add new Criterion</Button>
-                                        </Form.Group>
-                                            ,
-                                        <Form.Group as={Row} controlId="formGridEditCriteria">
+                                        </Form.Group>,
+                                        <Form.Group as={Row} controlId="formGridEditCriteria" key="editCriteria">
                                             <Col>
                                                 {
                                                     this.state.newCriterion === '' ? '' :

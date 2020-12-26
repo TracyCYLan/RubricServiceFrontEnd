@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Card, Form} from 'react-bootstrap';
+import { Button, Card} from 'react-bootstrap';
 class RatingEdition extends Component {
 
     constructor(props) {
@@ -45,7 +45,7 @@ class RatingEdition extends Component {
     render() {
         return (
             <Card bg="warning">
-                <Form>
+                <div>
                     <Button className="float-right" variant="warning" size="sm" onClick={this.deleteRating}>x</Button>
                     <Card.Text>
                         <textarea placeholder="description"
@@ -55,7 +55,7 @@ class RatingEdition extends Component {
                             onChange={this.onChange} 
                             rows="6"/>
                     </Card.Text>
-                    <Card.Text class="text-center"><input type="text"
+                    <Card.Text className="text-center"><input type="text"
                             placeholder="value"
                             name="value"
                             className="form-control"
@@ -64,7 +64,7 @@ class RatingEdition extends Component {
                             style={{ width: '30%',display:'inline' }} />
                             <label stlye={{ width: '10%'}}>{'points'}</label>
                     </Card.Text>
-                </Form>
+                </div>
             </Card>
         )
     }

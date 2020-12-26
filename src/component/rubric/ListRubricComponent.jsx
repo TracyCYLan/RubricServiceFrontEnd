@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
 import { Button, InputGroup, FormControl, Row, Col } from 'react-bootstrap';
 import Posts from "../pageComponents/Posts";
+const aliceObj = window.sessionStorage.getItem("oidc.user:https://identity.cysun.org:alice-rubric-service-spa");
 class ListRubricComponent extends Component {
 
     constructor(props) {
@@ -10,7 +11,8 @@ class ListRubricComponent extends Component {
             rubrics: [],
             message: null,
             loading: false,
-            searchingText: ''
+            searchingText: '',
+            resizeVar: true //dummy value for detecting if window resize
         }
         this.addRubric = this.addRubric.bind(this);
         this.reloadRubricList = this.reloadRubricList.bind(this);
@@ -18,10 +20,19 @@ class ListRubricComponent extends Component {
         this.copyneditRubric = this.copyneditRubric.bind(this);
         this.getRubric = this.getRubric.bind(this);
         this.search = this.search.bind(this);
+        this.exportPage = this.exportPage.bind(this);
+        this.handleWindowResize = this.handleWindowResize.bind(this);
     }
 
     componentDidMount() {
         this.reloadRubricList();
+        window.addEventListener('resize', this.handleWindowResize);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleWindowResize);
+    }
+    handleWindowResize() {
+        this.setState({ resizeVar: true })
     }
 
     reloadRubricList() {
@@ -41,39 +52,67 @@ class ListRubricComponent extends Component {
         }
     }
     getRubric(id) {
-        window.localStorage.setItem("rubricId", id);
+        window.sessionStorage.setItem("rubricId", id);
         this.props.history.push('/rubric');
     }
 
     editRubric(id) {
-        window.localStorage.setItem("rubricId", id);
-        this.props.history.push('/edit-rubric');
+        if(aliceObj)
+        {
+            window.sessionStorage.setItem("rubricId", id);
+            this.props.history.push('/edit-rubric');
+        }
+        else
+            alert('You need to login')
     }
 
-    publishRubric = (id)=>{
-        ApiService.publishRubric(id).then(res=>
-            this.setState({rubrics: this.state.rubrics.map(r=>{
-                    if(r.id===id)
-                        return {...r,publishDate:new Date()}
-                    return r
-            })})
-        );  
+    publishRubric = (id) => {
+        if(aliceObj)
+        {
+            ApiService.publishRubric(id).then(res =>
+                this.setState({
+                    rubrics: this.state.rubrics.map(r => {
+                        if (r.id === id)
+                            return { ...r, publishDate: new Date(), published:true }
+                        return r
+                    })
+                })
+            );
+        }
+        else
+            alert('You need to login')
     }
     copyneditRubric(rubric) {
         //send exactly the same content to add-rubric
-        this.props.history.push(
-            {
-                pathname: '/add-rubric',
-                state: {
-                    name: rubric.name + "_copy",
-                    description: rubric.description,
+        if(aliceObj)
+        {
+            this.props.history.push(
+                {
+                    pathname: '/add-rubric',
+                    state: {
+                        name: rubric.name + "_copy",
+                        description: rubric.description,
+                    }
                 }
-            }
-        );
+            );
+        }
+        else
+            alert('You need to login')
     }
     addRubric() {
-        window.localStorage.removeItem("rubricId");
-        this.props.history.push('/add-rubric');
+        if(aliceObj)
+        {
+            window.sessionStorage.removeItem("rubricId");
+            this.props.history.push('/add-rubric');
+        }
+        else
+            alert('You need to Login');
+    }
+
+    //direct to export page along with rubric Id
+    exportPage = (id) => {
+        window.sessionStorage.setItem("rubricId", id);
+        this.props.history.push('/export-rubric');
     }
 
     search = (e) => {
@@ -94,11 +133,11 @@ class ListRubricComponent extends Component {
     }
 
     render() {
-        return (<div>
+        return (<div key="divKey">
             {
                 !this.state.loading ?
-                    [<h2 className="text-center mt-3">All Rubrics</h2>,
-                    <Row>
+                    [<h2 key="h2Key" className="text-center mt-3">All Rubrics</h2>,
+                    <Row key="row">
                         <Col lg={8} md={10}>
                             <Button variant="outline-secondary" onClick={() => this.addRubric()}>Add Rubric</Button>
                         </Col>
@@ -122,12 +161,14 @@ class ListRubricComponent extends Component {
                         </Col>
                     </Row>,
                     <Posts
+                        key="posts"
                         posts={this.state.rubrics}
                         loading={this.state.loading}
                         edit={this.editRubric}
                         copynedit={this.copyneditRubric}
                         get={this.getRubric}
                         publishPost={this.publishRubric}
+                        exportPage={this.exportPage}
                         category='rubric' />
                     ] : <h2>Loading...</h2>
             }</div>);

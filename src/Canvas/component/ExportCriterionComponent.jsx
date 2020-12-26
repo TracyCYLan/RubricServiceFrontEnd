@@ -1,25 +1,26 @@
 import React, { Component } from 'react'
 import ApiService from "../service/CanvasApiService";
 import { Button, Card, Form, Row, Col } from 'react-bootstrap'; //,Row, Col, Button, CardGroup, Form, Card
-import { Typeahead } from 'react-bootstrap-typeahead';
-import 'react-bootstrap-typeahead/css/Typeahead.css';
-class ImportCriterionComponent extends Component {
+
+class ExportCriterionComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
             message: null,
             courseId: '',
             courses: [],
-            criteria: [],
-            criterion: ''
+            criterionId: window.sessionStorage.getItem('criterionId'),
+            outcome_groups: [],
+            outcome_group_id: ''
         }
         this.loadCourses = this.loadCourses.bind(this);
-        this.importCriterion = this.importCriterion.bind(this);
+        this.exportCriterion = this.exportCriterion.bind(this);
+        this.reloadOutcomeGroups = this.reloadOutcomeGroups.bind(this);
     }
 
     componentDidMount() {
         if (window.sessionStorage.getItem("canvasToken") === null) {
-            alert("Need to login on Canvas to import");
+            alert("Need to login on Canvas to export");
             this.props.history.push('/');
         }
         else {
@@ -33,36 +34,34 @@ class ImportCriterionComponent extends Component {
             })
         })
     }
-    importCriterion = (e) => {
-        if (this.state.criterion[0] === undefined) {
-            alert("you need to select one criterion to import!");
-        }
-        else {
-            e.preventDefault();
-            ApiService.importCriterion(this.state.criterion[0].outcome.id, window.sessionStorage.getItem("canvasToken")).then(res => {
-                window.sessionStorage.setItem("criterionId", res.data);
-                this.props.history.push('/criterion');
+    exportCriterion = (e) => {
+        e.preventDefault();
+        ApiService.exportCriterion(this.state.criterionId, this.state.courseId,
+            this.state.outcome_group_id,
+            window.sessionStorage.getItem("canvasToken")).then(res => {
+                window.sessionStorage.removeItem('criterionId');
+                this.props.history.push('/');
             })
-        }
+
     }
-    reloadCriteria() {
-        ApiService.fetchCriteria(this.state.courseId, window.sessionStorage.getItem("canvasToken")).then(res => {
+    reloadOutcomeGroups() {
+        ApiService.fetchOutcomeGroups(this.state.courseId, window.sessionStorage.getItem("canvasToken")).then(res => {
             this.setState({
-                criteria: JSON.parse(res.data)
+                outcome_groups: JSON.parse(res.data)
             })
         })
     }
-    changeCourse = (e) => {
+    changeCourse = (e) =>{
         this.setState({
             courseId: e.target.value
         }, () => {
-            this.reloadCriteria();
+            this.reloadOutcomeGroups();
         });
     }
     render() {
         return <Card className="mx-auto mt-3">
             <Card.Body>
-                <Card.Title>Import Criterion</Card.Title>
+                <Card.Title>Export Criterion</Card.Title>
                 <Form>
                     <Form.Group as={Row} controlId="selectCourseForm">
                         <Form.Label column md={2}>Select Course</Form.Label>
@@ -78,20 +77,20 @@ class ImportCriterionComponent extends Component {
                         </Col>
                     </Form.Group>
                     {this.state.courseId === '' ? '' :
-                        <Form.Group as={Row} controlId="selectOutcomeForm">
-                            <Form.Label column md={2}>Select Outcome</Form.Label>
+                        <Form.Group as={Row} controlId="selectOutcomeGroupForm">
+                            <Form.Label column md={2}>Select Folders</Form.Label>
                             <Col md={10}>
-                                <Typeahead
-                                    {...this.state.criteria}
-                                    id="import-outcome-box"
-                                    onChange={criterion => this.setState({ criterion })}
-                                    options={this.state.criteria}
-                                    labelKey={(option) => option.outcome.title}
-                                    placeholder="Select an outcome"
-                                />
+                                <Form.Control as="select" defaultValue="DEFAULT"
+                                    onChange={(e) => { this.setState({ outcome_group_id: e.target.value }) }} >
+                                    <option value="DEFAULT" disabled>Select an outcome group</option>
+                                    {
+                                        this.state.outcome_groups.map(
+                                            ogroup => <option key={ogroup.id} value={ogroup.id}>{ogroup.title}</option>)
+                                    }
+                                </Form.Control>
                             </Col>
                         </Form.Group>}
-                    {this.state.criterion === '' ? '' : <Button onClick={this.importCriterion}>Import</Button>}
+                    {this.state.outcome_group_id === '' ? '' : <Button onClick={this.exportCriterion}>Export</Button>}
                 </Form>
             </Card.Body>
         </Card>
@@ -99,4 +98,4 @@ class ImportCriterionComponent extends Component {
 
 }
 
-export default ImportCriterionComponent;
+export default ExportCriterionComponent;

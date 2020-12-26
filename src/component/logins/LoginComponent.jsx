@@ -21,16 +21,23 @@ class LoginComponent extends Component {
         this.setState({ [e.target.name]: e.target.value });
     login = (e) => {
         e.preventDefault();
-        alert("before");
         ApiService.login(this.state.username, this.state.pwd).then((res) => {
-            if(res.data === -1)
+            if(res.data==='invalid user')
             {
-                //failed
-                alert("no such user or password is wrong")
-            }         
+                alert("invalid username or password");
+                this.setState({
+                    username: '',
+                    pwd: ''
+                })
+                this.props.history.push('/login');
+            }
             else
             {
-                alert("success")
+                window.sessionStorage.setItem("userToken", res.data);
+                
+                while(!window.sessionStorage.getItem("userToken"));
+                this.props.history.push('/');
+                window.location.reload(false);
             }
         });
     }
@@ -43,9 +50,6 @@ class LoginComponent extends Component {
                 <Form>
                     <Form.Group as={Row} controlId="LoginForm">
                         <Form.Label column md={2}>Login</Form.Label>
-                        <Col md={10}>
-                            <Button onClick={this.goReg}>Register</Button>
-                        </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="username">
                         <Form.Label column md={2}>Username: </Form.Label>
@@ -59,7 +63,14 @@ class LoginComponent extends Component {
                             <Form.Control type="password" placeholder="Enter password" name="pwd" value={this.state.pwd} onChange={this.onChange} />
                         </Col>
                     </Form.Group>
-                    <Button onClick={this.login}>Login</Button>
+                    <Row>
+                        <Col md={2}></Col>
+                        <Col md={8}><Button onClick={this.login} variant="info mb-2">Login</Button></Col>
+                    </Row>
+                    <Row>
+                        <Col md={2}></Col>
+                        <Col md={8}><Button onClick={this.goReg} variant="outline-info">Create an Account</Button></Col>
+                    </Row>
                 </Form>
             </Card.Body>
         </Card>

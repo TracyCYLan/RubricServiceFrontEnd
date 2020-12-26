@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import ApiService from "../../service/ApiService";
-import { Row, Col, Button, CardGroup, Form, Card, Modal,Breadcrumb } from 'react-bootstrap';
+import { Row, Col, Button, CardGroup, Form, Card, Modal, Breadcrumb } from 'react-bootstrap';
 import Rating from '../RatingCards/RatingEdition';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
+import RichTextEditor from 'react-rte';
 class EditCriterionComponent extends Component {
 
     constructor(props) {
@@ -11,7 +12,7 @@ class EditCriterionComponent extends Component {
         this.state = {
             id: '',
             name: '',
-            description: '',
+            description: RichTextEditor.createEmptyValue(),
             publishDate: '',
             ratingCount: 'r0',
             message: '',
@@ -27,6 +28,7 @@ class EditCriterionComponent extends Component {
         this.editRating = this.editRating.bind(this);
         this.handleTag = this.handleTag.bind(this);
         this.getCriterion = this.getCriterion.bind(this);
+        this.richTextonChange = this.richTextonChange.bind(this);
     }
 
     componentDidMount() {
@@ -34,16 +36,15 @@ class EditCriterionComponent extends Component {
     }
 
     loadCriterion() {
-        ApiService.fetchCriterionById(window.localStorage.getItem("criterionId"))
+        ApiService.fetchCriterionById(window.sessionStorage.getItem("criterionId"))
             .then((res) => {
                 let criterion = res.data;
-                console.log(JSON.stringify(criterion));
                 this.setState({
                     id: criterion.id,
                     name: criterion.name,
-                    description: criterion.description,
+                    description: RichTextEditor.createValueFromString(criterion.description,'html'),
                     // publishDate: criterion.publishDate,
-                    publishDate: criterion.publishDate===null?'':new Date(criterion.publishDate).toLocaleDateString('fr-CA'),
+                    publishDate: criterion.publishDate === null ? '' : new Date(criterion.publishDate).toLocaleDateString('fr-CA'),
                     ratings: criterion.ratings,
                     tags: criterion.tags.map(t => t.value)
                 })
@@ -58,12 +59,20 @@ class EditCriterionComponent extends Component {
     onChange = (e) =>
         this.setState({ [e.target.name]: e.target.value });
 
+    richTextonChange = (description) => {
+        this.setState({ description });
+        if (this.props.onChange) {
+            this.props.onChange(
+                description.toString('html')
+            );
+        }
+    };
     addRating = () => {
         var ratings = this.state.ratings;
         //assume maximum rating num till 10
         if (ratings.length >= 21)
             return;
-        ratings.push({ id: this.state.ratingCount, description: '', value: '' });
+        ratings.push({ id: this.state.ratingCount, description: '', value: 0 });
         let num = this.state.ratingCount.substr(1);
         this.setState({ ratingCount: 'r' + (+num + 1) });
         this.setState({
@@ -95,7 +104,7 @@ class EditCriterionComponent extends Component {
         let criterion = {
             id: this.state.id,
             name: this.state.name,
-            description: this.state.description,
+            description: this.state.description.toString('html'),
             publishDate: this.state.publishDate,
             reusable: true
         };
@@ -106,7 +115,7 @@ class EditCriterionComponent extends Component {
             });
     }
     getCriterion() {
-        window.localStorage.setItem("criterionId", this.state.id);
+        window.sessionStorage.setItem("criterionId", this.state.id);
         this.props.history.push('/criterion');
     }
     render() {
@@ -141,7 +150,7 @@ class EditCriterionComponent extends Component {
         }
         return (
             [
-                <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
+                <Modal key="modal" show={this.state.showModal} onHide={() => this.setState({ showModal: false })} animation={true}>
                     <Modal.Header closeButton>
                         <Modal.Title>Are you sure you want to leave this page?</Modal.Title>
                     </Modal.Header>
@@ -155,12 +164,12 @@ class EditCriterionComponent extends Component {
                     </Button>
                     </Modal.Footer>
                 </Modal>,
-                <Breadcrumb className="mx-auto mt-2">
-                <Breadcrumb.Item href="criteria">Criteria</Breadcrumb.Item>
-                <Breadcrumb.Item onClick={this.getCriterion}>View Criterion</Breadcrumb.Item>
-                <Breadcrumb.Item active>Edit Criterion</Breadcrumb.Item>
-              </Breadcrumb>,
-                <Card className="mx-auto mt-3">
+                <Breadcrumb key="breadcrumb" className="mx-auto mt-2">
+                    <Breadcrumb.Item onClick={()=>this.props.history.push('/criteria')}>Criteria</Breadcrumb.Item>
+                    <Breadcrumb.Item onClick={this.getCriterion}>View Criterion</Breadcrumb.Item>
+                    <Breadcrumb.Item active>Edit Criterion</Breadcrumb.Item>
+                </Breadcrumb>,
+                <Card key="card" className="mx-auto mt-3">
                     <Card.Body>
                         <Card.Title>Edit Criterion</Card.Title>
                         <Form>
@@ -173,7 +182,11 @@ class EditCriterionComponent extends Component {
                             <Form.Group as={Row} controlId="formGridDescription">
                                 <Form.Label column md={2}>Description</Form.Label>
                                 <Col md={10}>
-                                    <Form.Control as="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} />
+                                    <RichTextEditor
+                                        value={this.state.description}
+                                        onChange={this.richTextonChange}
+                                    />
+                                    {/* <Form.Control as="textarea" placeholder="description" name="description" value={this.state.description} onChange={this.onChange} /> */}
                                 </Col>
                             </Form.Group>
                             <Form.Group as={Row} controlId="formGridDate">
