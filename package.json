@@ -6,7 +6,7 @@
   "dependencies": {
     "@material-ui/core": "^4.10.2",
     "@material-ui/lab": "^4.0.0-alpha.56",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.0",
     "highcharts": "^8.1.2",
     "highcharts-react-official": "^3.0.0",
